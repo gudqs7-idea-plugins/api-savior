@@ -1,0 +1,64 @@
+<idea-plugin>
+    <id>gudqs7.github.io.doc-savior</id>
+    <name>Docer Savior</name>
+    <vendor email="gudqs7@gmail.com" url="http://gudqs7.github.io">gudqs7</vendor>
+
+    <description><![CDATA[
+        This plugin generates a markdown format interface document based on Swagger annotations with one click, and pastes it directly into any markdown editor, and then you can share it with others without being restricted by Swagger having to start the project!
+        <br/>
+        Usage:
+        <br/>
+        Right-click when editing the code, we provide three entrances: on the Java interface, on the Java method, on the ordinary class,
+         However, it should be noted that on ordinary classes, only parameter description documents in Markdown format will be generated based on the parameters.
+         Right-click on the method to generate a complete interface document in Markdown format according to this method.
+         Finally, on the Java interface, a complete interface document in Markdown format is generated according to all methods!
+    ]]></description>
+
+    <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
+    <idea-version since-build="182.5107.41"/>
+
+    <!-- please see https://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
+         on how to target different products -->
+<!--    <depends>com.intellij.modules.platform</depends>-->
+    <depends>com.intellij.modules.lang</depends>
+    <depends>com.intellij.modules.java</depends>
+
+    <extensions defaultExtensionNs="com.intellij">
+<!--        <notificationGroup id="Docer Savior Notification Group" displayType="BALLOON" key="notification.group.name" />-->
+    </extensions>
+
+    <actions>
+        <group id="cn.gudqs.docer.savior" text="Docer Savior Group">
+            <add-to-group group-id="EditorPopupMenu" anchor="after" relative-to-action="ShowIntentionsGroup"/>
+
+            <action id="cn.gudqs.docer.savior.req.hsf" class="cn.gudqs7.plugins.idea.action.HsfReqDocSaviorAction"
+                    text="生成请求参数文档" description="生成请求参数文档">
+            </action>
+            <action id="cn.gudqs.docer.savior.req.restful" class="cn.gudqs7.plugins.idea.action.RestfulReqDocSaviorAction"
+                    text="生成请求参数文档(Restful)" description="生成请求参数文档(Restful)">
+            </action>
+            <action id="cn.gudqs.docer.savior.hsf" class="cn.gudqs7.plugins.idea.action.HsfDocSaviorAction"
+                    text="生成Api接口文档" description="生成Api接口文档">
+            </action>
+            <action id="cn.gudqs.docer.savior.restful" class="cn.gudqs7.plugins.idea.action.RestfulDocSaviorAction"
+                    text="生成Api接口文档(Restful)" description="生成Api接口文档(Restful)">
+            </action>
+        </group>
+
+        <group id="cn.gudqs.docer.savior.project" text="Docer Savior Project Group">
+            <add-to-group group-id="ProjectViewPopupMenu" anchor="after" relative-to-action="CutCopyPasteGroup"/>
+
+            <action id="cn.gudqs.docer.savior.project.hsf" class="cn.gudqs7.plugins.idea.action.HsfProjectDocSaviorAction"
+                    text="生成Api接口文档" description="生成Api接口文档">
+            </action>
+            <action id="cn.gudqs.docer.savior.project.restful" class="cn.gudqs7.plugins.idea.action.RestfulProjectDocSaviorAction"
+                    text="生成Api接口文档(Restful)" description="生成Api接口文档(Restful)">
+            </action>
+            <action id="cn.gudqs.docer.savior.project.postman" class="cn.gudqs7.plugins.idea.action.PostmanDocerSaviorAction"
+                    text="导出Api到Postman" description="导出Api到Postman">
+            </action>
+        </group>
+
+    </actions>
+
+</idea-plugin>

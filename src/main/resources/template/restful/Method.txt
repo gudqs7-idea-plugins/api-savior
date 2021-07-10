@@ -1,0 +1,39 @@
+# {{interfaceName}}{{interfaceNotes}}
+## 请求信息
+
+### 请求地址
+```
+{{url}}
+```
+
+### 请求方法
+```
+{{method}}
+```
+
+### 请求体类型
+```
+{{contentType}}
+```
+
+## 入参
+### 入参示例(Postman==> Bulk Edit)
+```json
+{{jsonExample}}
+```
+
+### 入参字段说明
+{{paramMemo}}
+
+
+
+## 出参
+### 出参示例
+```json
+{{returnJsonExample}}
+```
+
+### 返回字段说明
+{{resultMemo}}
+
+{{codeMemo}}
