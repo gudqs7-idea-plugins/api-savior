@@ -1,17 +1,52 @@
 <idea-plugin>
     <id>gudqs7.github.io.doc-savior</id>
     <name>Docer Savior</name>
-    <vendor email="gudqs7@gmail.com" url="http://gudqs7.github.io">gudqs7</vendor>
+    <vendor email="gudqs7@gmail.com" url="https://www.yuque.com/gudqs7/docer/ygtgmz">Docer Savior</vendor>
 
     <description><![CDATA[
+        <p>
         This plugin generates a markdown format interface document based on Swagger annotations with one click, and pastes it directly into any markdown editor, and then you can share it with others without being restricted by Swagger having to start the project!
+        </p>
         <br/>
         Usage:
         <br/>
+        <p>
         Right-click when editing the code, we provide three entrances: on the Java interface, on the Java method, on the ordinary class,
          However, it should be noted that on ordinary classes, only parameter description documents in Markdown format will be generated based on the parameters.
          Right-click on the method to generate a complete interface document in Markdown format according to this method.
          Finally, on the Java interface, a complete interface document in Markdown format is generated according to all methods!
+        </p>
+        <br/>
+
+        Chinese:
+        <br/>
+        <p>
+            可参考入门文档: <a href='https://www.yuque.com/gudqs7/docer/ygtgmz'> https://www.yuque.com/gudqs7/docer/ygtgmz </a>
+        </p>
+        <p>
+        本插件一键生成基于Swagger注解的markdown格式界面文档，直接粘贴到任意markdown编辑器中，即可分享给他人，不受Swagger限制，启动项目即可！
+        </p>
+        <br/>
+        <p>
+        编辑代码的时候右键，我们提供三个入口：在Java界面上，在Java方法上，在普通类上，
+          但是需要注意的是，在普通类上，只会根据参数生成Markdown格式的参数描述文档。
+          在方法上右键，根据这个方法生成一个完整的Markdown格式的接口文档。
+          最后，在Java界面上，按照所有方法生成一个完整的Markdown格式的界面文档！
+        </p>
+        <br/>
+        <p>
+        本插件最新版加入了批量导出文档和导出到Postman的功能, 入口均为在包上或类上右键, 可多选;
+        <br/>
+        导出到Postman有两种方式:
+        <br/>
+        &ensp;&ensp;1.点击导出会得到一个json文件, 符合Postman格式, 可通过Postman中的 File->Import 导入!
+            <br/>
+        &ensp;&ensp;2.项目任意目录下新建配置文件 docer-config.properties
+            <br/>
+        &ensp;&ensp;配置 postman.enable=true 和 postman.key=xxx  之后导出则直接生成到Postman默认Workspace 下!
+            <br/>
+        &ensp;&ensp;Postman的key生成参考链接: https://web.postman.co/settings/me/api-keys
+        </p>
     ]]></description>
 
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
@@ -25,22 +60,37 @@
 
     <extensions defaultExtensionNs="com.intellij">
 <!--        <notificationGroup id="Docer Savior Notification Group" displayType="BALLOON" key="notification.group.name" />-->
+        <projectService serviceImplementation="com.zhaow.restful.navigation.action.GotoRequestMappingConfiguration"/>
+
+        <intentionAction>
+            <className>cn.gudqs7.plugins.generate.getter.action.GenerateAllGetterAction</className>
+        </intentionAction>
+        <intentionAction>
+            <className>cn.gudqs7.plugins.generate.setter.action.GenerateAllSetterWithDefaultValAction</className>
+        </intentionAction>
+        <intentionAction>
+            <className>cn.gudqs7.plugins.generate.setter.action.GenerateAllSetterWithoutDefaultValAction</className>
+        </intentionAction>
+
+        <codeInsight.template.postfixTemplateProvider
+                language="JAVA" implementationClass="cn.gudqs7.plugins.generate.postfix.GeneratePostfixTemplateProvider"/>
+
     </extensions>
 
     <actions>
         <group id="cn.gudqs.docer.savior" text="Docer Savior Group">
             <add-to-group group-id="EditorPopupMenu" anchor="after" relative-to-action="ShowIntentionsGroup"/>
 
-            <action id="cn.gudqs.docer.savior.req.hsf" class="cn.gudqs7.plugins.idea.action.HsfReqDocSaviorAction"
+            <action id="cn.gudqs.docer.savior.req.hsf" class="cn.gudqs7.plugins.docer.action.HsfReqDocSaviorAction"
                     text="生成请求参数文档" description="生成请求参数文档">
             </action>
-            <action id="cn.gudqs.docer.savior.req.restful" class="cn.gudqs7.plugins.idea.action.RestfulReqDocSaviorAction"
+            <action id="cn.gudqs.docer.savior.req.restful" class="cn.gudqs7.plugins.docer.action.RestfulReqDocSaviorAction"
                     text="生成请求参数文档(Restful)" description="生成请求参数文档(Restful)">
             </action>
-            <action id="cn.gudqs.docer.savior.hsf" class="cn.gudqs7.plugins.idea.action.HsfDocSaviorAction"
+            <action id="cn.gudqs.docer.savior.hsf" class="cn.gudqs7.plugins.docer.action.HsfDocSaviorAction"
                     text="生成Api接口文档" description="生成Api接口文档">
             </action>
-            <action id="cn.gudqs.docer.savior.restful" class="cn.gudqs7.plugins.idea.action.RestfulDocSaviorAction"
+            <action id="cn.gudqs.docer.savior.restful" class="cn.gudqs7.plugins.docer.action.RestfulDocSaviorAction"
                     text="生成Api接口文档(Restful)" description="生成Api接口文档(Restful)">
             </action>
         </group>
@@ -48,17 +98,28 @@
         <group id="cn.gudqs.docer.savior.project" text="Docer Savior Project Group">
             <add-to-group group-id="ProjectViewPopupMenu" anchor="after" relative-to-action="CutCopyPasteGroup"/>
 
-            <action id="cn.gudqs.docer.savior.project.hsf" class="cn.gudqs7.plugins.idea.action.HsfProjectDocSaviorAction"
+            <action id="cn.gudqs.docer.savior.project.hsf" class="cn.gudqs7.plugins.docer.action.HsfProjectDocSaviorAction"
                     text="生成Api接口文档" description="生成Api接口文档">
             </action>
-            <action id="cn.gudqs.docer.savior.project.restful" class="cn.gudqs7.plugins.idea.action.RestfulProjectDocSaviorAction"
+            <action id="cn.gudqs.docer.savior.project.restful" class="cn.gudqs7.plugins.docer.action.RestfulProjectDocSaviorAction"
                     text="生成Api接口文档(Restful)" description="生成Api接口文档(Restful)">
             </action>
-            <action id="cn.gudqs.docer.savior.project.postman" class="cn.gudqs7.plugins.idea.action.PostmanDocerSaviorAction"
+            <action id="cn.gudqs.docer.savior.project.postman" class="cn.gudqs7.plugins.docer.action.PostmanDocerSaviorAction"
                     text="导出Api到Postman" description="导出Api到Postman">
             </action>
         </group>
 
+
+        <!-- url 导航 -->
+        <action id="Toolkit.GotoService" class="com.zhaow.restful.navigation.action.GotoRequestMappingAction"
+                text="_Service" description="Go to Service"
+                icon="AllIcons.Actions.Search">
+            <add-to-group group-id="GoToTargetEx" anchor="first"/>
+            <keyboard-shortcut keymap="$default" first-keystroke="ctrl BACK_SLASH" />
+            <keyboard-shortcut keymap="$default" first-keystroke="ctrl alt N"/>
+        </action>
+
     </actions>
+
 
 </idea-plugin>
