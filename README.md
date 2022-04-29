@@ -1,9 +1,9 @@
 
 # Generate documents and more based on the controller or interface
 
-[Issues](https://github.com/docer-savior/open-doc-generator-idea-plugin/issues) |
+[Issues](https://github.com/docer-savior/docer-savior-idea-plugin/issues) |
 [Website](https://www.yuque.com/gudqs7/docer/ygtgmz) |
-[LICENSE](https://github.com/docer-savior/open-doc-generator-idea-plugin/blob/master/LICENSE)
+[LICENSE](https://github.com/docer-savior/docer-savior-idea-plugin/blob/master/LICENSE)
 
 ### English introduction
 
