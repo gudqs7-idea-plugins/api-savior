@@ -1,0 +1,96 @@
+<idea-plugin>
+    <id>gudqs7.github.io.doc-savior</id>
+    <name>Docer Savior</name>
+    <vendor email="gudqs7@gmail.com" url="https://www.yuque.com/gudqs7/docer/ygtgmz">Docer Savior</vendor>
+
+    <description><![CDATA[ Description will be added by gradle build]]></description>
+
+    <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
+    <idea-version since-build="182.5107.41"/>
+
+    <!-- please see https://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
+         on how to target different products -->
+<!--    <depends>com.intellij.modules.platform</depends>-->
+    <depends>com.intellij.modules.lang</depends>
+    <depends>com.intellij.modules.java</depends>
+
+    <extensions defaultExtensionNs="com.intellij">
+<!--        <notificationGroup id="Docer Savior Notification Group" displayType="BALLOON" key="notification.group.name" />-->
+        <projectService serviceImplementation="com.zhaow.restful.navigation.action.GotoRequestMappingConfiguration"/>
+
+        <intentionAction>
+            <className>cn.gudqs7.plugins.generate.getter.action.GenerateAllGetterAction</className>
+        </intentionAction>
+        <intentionAction>
+            <className>cn.gudqs7.plugins.generate.setter.action.GenerateAllSetterWithDefaultValAction</className>
+        </intentionAction>
+        <intentionAction>
+            <className>cn.gudqs7.plugins.generate.setter.action.GenerateAllSetterWithoutDefaultValAction</className>
+        </intentionAction>
+
+        <codeInsight.template.postfixTemplateProvider
+                language="JAVA" implementationClass="cn.gudqs7.plugins.generate.postfix.GeneratePostfixTemplateProvider"/>
+
+    </extensions>
+
+    <actions>
+        <group id="cn.gudqs.docer.savior" text="Docer Savior Group">
+            <add-to-group group-id="EditorPopupMenu" anchor="after" relative-to-action="ShowIntentionsGroup"/>
+
+            <action id="cn.gudqs.docer.savior.req.hsf" class="cn.gudqs7.plugins.docer.action.hsf.HsfReqDocSaviorAction"
+                    text="生成请求参数文档" description="生成请求参数文档">
+            </action>
+            <action id="cn.gudqs.docer.savior.req.restful" class="cn.gudqs7.plugins.docer.action.restful.RestfulReqDocSaviorAction"
+                    text="生成请求参数文档(Restful)" description="生成请求参数文档(Restful)">
+            </action>
+            <action id="cn.gudqs.docer.savior.hsf" class="cn.gudqs7.plugins.docer.action.hsf.HsfDocSaviorAction"
+                    text="生成Api接口文档" description="生成Api接口文档">
+            </action>
+            <action id="cn.gudqs.docer.savior.restful" class="cn.gudqs7.plugins.docer.action.restful.RestfulDocSaviorAction"
+                    text="生成Api接口文档(Restful)" description="生成Api接口文档(Restful)">
+            </action>
+            <action id="cn.gudqs.docer.savior.curl" class="cn.gudqs7.plugins.docer.action.restful.RestfulCurlSaviorAction"
+                    text="生成cURL" description="生成cURL">
+            </action>
+            <action id="cn.gudqs.docer.savior.curlRequire" class="cn.gudqs7.plugins.docer.action.restful.RestfulCurlRequireSaviorAction"
+                    text="生成cURL(纯净版)" description="生成cURL(纯净版)">
+            </action>
+        </group>
+
+        <group id="cn.gudqs.docer.savior.project" text="Docer Savior Project Group">
+            <add-to-group group-id="ProjectViewPopupMenu" anchor="after" relative-to-action="CutCopyPasteGroup"/>
+
+            <action id="cn.gudqs.docer.savior.project.hsf" class="cn.gudqs7.plugins.docer.action.hsf.HsfProjectDocSaviorAction"
+                    text="生成Api接口文档" description="生成Api接口文档">
+            </action>
+            <action id="cn.gudqs.docer.savior.project.restful" class="cn.gudqs7.plugins.docer.action.restful.RestfulProjectDocSaviorAction"
+                    text="生成Api接口文档(Restful)" description="生成Api接口文档(Restful)">
+            </action>
+            <action id="cn.gudqs.docer.savior.project.html" class="cn.gudqs7.plugins.docer.action.batch.HtmlDocerSaviorAction"
+                    text="生成Api接口文档(Html)" description="生成Api接口文档(Html)">
+            </action>
+            <action id="cn.gudqs.docer.savior.project.postman" class="cn.gudqs7.plugins.docer.action.batch.PostmanDocerSaviorAction"
+                    text="导出Api到Postman" description="导出Api到Postman">
+            </action>
+            <action id="cn.gudqs.docer.savior.project.amp" class="cn.gudqs7.plugins.docer.action.batch.AmpDocerSaviorAction"
+                    text="导出Api到Amp" description="导出Api到Amp">
+            </action>
+            <action id="cn.gudqs.docer.savior.project.oneapi" class="cn.gudqs7.plugins.docer.action.batch.OneApiDocerSaviorAction"
+                    text="导出Api到OneApi" description="导出Api到OneApi">
+            </action>
+        </group>
+
+
+        <!-- url 导航 -->
+        <action id="Toolkit.GotoService" class="com.zhaow.restful.navigation.action.GotoRequestMappingAction"
+                text="_Service" description="Go to Service"
+                icon="AllIcons.Actions.Search">
+            <add-to-group group-id="GoToTargetEx" anchor="first"/>
+            <keyboard-shortcut keymap="$default" first-keystroke="ctrl BACK_SLASH" />
+            <keyboard-shortcut keymap="$default" first-keystroke="ctrl alt N"/>
+        </action>
+
+    </actions>
+
+
+</idea-plugin>

@@ -1,0 +1,51 @@
+plugins {
+    id 'java'
+    id 'org.jetbrains.intellij' version '0.7.3'
+}
+
+group 'cn.gudqs7.idea.plugins'
+version '2.0.3'
+
+repositories {
+    mavenCentral()
+}
+dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+    compile group: 'org.yaml', name: 'snakeyaml', version: '1.25'
+    implementation 'org.apache.commons:commons-lang3:3.12.0'
+    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.13.2'
+    implementation 'com.fasterxml.jackson.core:jackson-core:2.13.2'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.1'
+    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.13.2'
+    implementation 'com.youbenzi:MDTool:1.2.4'
+    implementation 'org.freemarker:freemarker:2.3.31'
+    annotationProcessor 'org.projectlombok:lombok:1.18.2'
+    compileOnly 'org.projectlombok:lombok:1.18.2'
+}
+
+// See https://github.com/JetBrains/gradle-intellij-plugin/
+intellij {
+//    version '2020.3.2'
+    version '2021.2.2'
+    updateSinceUntilBuild false
+    plugins 'java'
+}
+
+// study from https://github.com/liuzhihang/doc-view/blob/master/build.gradle
+patchPluginXml {
+    pluginDescription = file(descriptionFile).text
+    changeNotes = file(changesFile).text
+}
+test {
+    useJUnitPlatform()
+}
+
+publishPlugin {
+    channels = ''
+    token = System.getenv("JET_PUB_TOKEN")
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+}

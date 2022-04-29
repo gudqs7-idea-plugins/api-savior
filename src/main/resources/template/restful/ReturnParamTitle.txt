@@ -1,0 +1,4 @@
+| **{{fieldName}}** | **{{fieldType}}** | **{{fieldDesc}}** | **{{notes}}** |
+| -------- | -------- | -------- | -------- |
+{{allFields}}
+
