@@ -1,5 +1,6 @@
 <html lang="zh">
 <head>
+    <meta charset="UTF-8">
     <title>${title}</title>
     <style type="text/css">
 

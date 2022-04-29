@@ -1,5 +1,6 @@
 <html lang="zh">
 <head>
+    <meta charset="UTF-8">
     <title>文档目录</title>
     <style type="text/css">
         :root {
