@@ -1,3 +1,14 @@
+[release-img]: https://img.shields.io/github/release/docer-savior/docer-savior-idea-plugin.svg
+[latest-release]: https://github.com/docer-savior/docer-savior-idea-plugin/releases/latest
+[plugin-img]: https://img.shields.io/badge/plugin-16860-orange.svg
+[plugin]: https://plugins.jetbrains.com/plugin/16860
+[jet-img]: https://img.shields.io/badge/plugin-16860-orange.svg
+[jet]: http://localhost:63342/api/installPlugin?action=install&pluginId=gudqs7.github.io.doc-savior
+
+[![GitHub release][release-img]][latest-release] [![Jetbrains Plugins][plugin-img]][plugin] 
+[![Version](http://phpstorm.espend.de/badge/16860/version)][plugin]  
+[![Downloads](http://phpstorm.espend.de/badge/16860/downloads)][plugin]
+[![Install Jetbrains Plugins][jet-img]][jet] 
 
 # Generate documents and more based on the controller or interface
 
