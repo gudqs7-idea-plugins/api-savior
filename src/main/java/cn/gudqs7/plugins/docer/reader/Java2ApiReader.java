@@ -1,8 +1,8 @@
 package cn.gudqs7.plugins.docer.reader;
 
 import cn.gudqs7.plugins.docer.constant.StructureType;
-import cn.gudqs7.plugins.docer.pojo.ParamInfo;
-import cn.gudqs7.plugins.docer.pojo.ParamLineInfo;
+import cn.gudqs7.plugins.docer.pojo.FieldLevelInfo;
+import cn.gudqs7.plugins.docer.pojo.FieldMemoInfo;
 import cn.gudqs7.plugins.docer.pojo.StructureAndCommentInfo;
 import cn.gudqs7.plugins.docer.pojo.annotation.CommentInfo;
 import cn.gudqs7.plugins.docer.reader.base.AbstractReader;
@@ -16,7 +16,7 @@ import java.util.*;
  * @author WQ
  * @date 2022/4/4
  */
-public class Java2ApiReader extends AbstractReader<ParamLineInfo, String> {
+public class Java2ApiReader extends AbstractReader<FieldMemoInfo, Map<String, List<FieldLevelInfo>>> {
 
     public Java2ApiReader(Theme theme) {
         super(theme);
@@ -24,23 +24,19 @@ public class Java2ApiReader extends AbstractReader<ParamLineInfo, String> {
 
     @Override
     protected void beforeRead(StructureAndCommentInfo structureAndCommentInfo, Map<String, Object> data) {
-        Map<Integer, List<ParamInfo>> goMap = new TreeMap<>(Comparator.comparingInt(o -> o));
-        boolean returnType = structureAndCommentInfo.isReturnType();
-
-        data.put("goMap", goMap);
-        data.put("returnType", returnType);
+        Map<String, List<FieldLevelInfo>> levelMap = new TreeMap<>(Comparator.comparingInt(Integer::parseInt));
+        data.put("levelMap", levelMap);
     }
 
     @Override
-    protected String afterRead(StructureAndCommentInfo structureAndCommentInfo, Map<String, Object> data) {
-        Map<Integer, List<ParamInfo>> goMap = getFromData(data, "goMap");
-        return theme.printByGoMap(goMap, structureAndCommentInfo.isReturnType());
+    protected Map<String, List<FieldLevelInfo>> afterRead(StructureAndCommentInfo structureAndCommentInfo, Map<String, Object> data) {
+        return getFromData(data, "levelMap");
     }
 
     @Override
     protected void beforeLoop(StructureAndCommentInfo structureAndCommentInfo, Map<String, Object> loopData, Map<String, Object> data, Map<String, Object> parentData) {
-        List<ParamLineInfo> levelOther = new ArrayList<>();
-        loopData.put("levelOther", levelOther);
+        List<FieldMemoInfo> fieldList = new ArrayList<>();
+        loopData.put("fieldList", fieldList);
         Integer type = structureAndCommentInfo.getType();
         CommentInfo commentInfo = structureAndCommentInfo.getCommentInfo();
         String clazzDesc = "";
@@ -73,46 +69,36 @@ public class Java2ApiReader extends AbstractReader<ParamLineInfo, String> {
     }
 
     @Override
-    protected void inLoop(StructureAndCommentInfo structureAndCommentInfo, ParamLineInfo leafData, Map<String, Object> loopData, Map<String, Object> data, Map<String, Object> parentData) {
-        List<ParamLineInfo> levelOther = getFromData(loopData, "levelOther");
-        levelOther.add(leafData);
+    protected void inLoop(StructureAndCommentInfo structureAndCommentInfo, FieldMemoInfo leafData, Map<String, Object> loopData, Map<String, Object> data, Map<String, Object> parentData) {
+        List<FieldMemoInfo> fieldList = getFromData(loopData, "fieldList");
+        fieldList.add(leafData);
         loopData.put("level", structureAndCommentInfo.getLevel());
     }
 
     @Override
-    protected void afterLoop(StructureAndCommentInfo structureAndCommentInfo, Map<String, Object> data, Map<String, Object> parentData, Map<String, Object> loopData, ParamLineInfo leafData, boolean leaf) {
-        List<ParamLineInfo> levelOther = getFromData(loopData, "levelOther");
-        if (levelOther.size() > 0) {
-            Map<Integer, List<ParamInfo>> goMap = getFromData(data, "goMap");
+    protected void afterLoop(StructureAndCommentInfo structureAndCommentInfo, Map<String, Object> data, Map<String, Object> parentData, Map<String, Object> loopData, FieldMemoInfo leafData, boolean leaf) {
+        List<FieldMemoInfo> fieldList = getFromData(loopData, "fieldList");
+        if (fieldList.size() > 0) {
+            Map<String, List<FieldLevelInfo>> levelMap = getFromData(data, "levelMap");
             String clazzDesc = getFromData(loopData, "clazzDesc");
             String clazzTypeName = getFromData(loopData, "clazzTypeName");
             int level = (int) loopData.get("level");
             String parentClazzTypeName = getFromData(parentData, "parentClassType");
-            boolean afterLevelTwo = level > 2;
-            if (afterLevelTwo && parentClazzTypeName != null) {
-                clazzTypeName = parentClazzTypeName + "=>" + clazzTypeName;
-            }
-            String addition = "";
-            if (StringUtils.isNoneBlank(clazzDesc)) {
-                addition = "（" + clazzDesc + "）";
-            }
-            ParamInfo paramInfo = new ParamInfo();
-            int index = IndexIncrementUtil.getIndex();
-            paramInfo.setLevel(level);
-            paramInfo.setIndex(index);
-            paramInfo.setEn(clazzTypeName);
-            paramInfo.setCn(addition);
-            paramInfo.setAllFields(levelOther);
-
-            List<ParamInfo> list = goMap.computeIfAbsent(level, integer -> new ArrayList<>());
-            list.add(paramInfo);
-            goMap.put(level, list);
+            FieldLevelInfo fieldLevelInfo = new FieldLevelInfo();
+            fieldLevelInfo.setLevel(level);
+            fieldLevelInfo.setParentClazzTypeName(parentClazzTypeName);
+            fieldLevelInfo.setClazzTypeName(clazzTypeName);
+            fieldLevelInfo.setClazzDesc(clazzDesc);
+            fieldLevelInfo.setFieldList(fieldList);
+            String levelStr = String.valueOf(level);
+            List<FieldLevelInfo> list = levelMap.computeIfAbsent(levelStr, integer -> new ArrayList<>());
+            list.add(fieldLevelInfo);
+            levelMap.put(levelStr, list);
         }
     }
 
     @Override
-    protected ParamLineInfo readLeaf(StructureAndCommentInfo structureAndCommentInfo, Map<String, Object> data, Map<String, Object> parentData) {
-        boolean returnType = getFromData(data, "returnType");
+    protected FieldMemoInfo readLeaf(StructureAndCommentInfo structureAndCommentInfo, Map<String, Object> data, Map<String, Object> parentData) {
         String fieldName = structureAndCommentInfo.getFieldName();
         CommentInfo commentInfo = structureAndCommentInfo.getCommentInfo();
         if (commentInfo != null) {
@@ -130,29 +116,27 @@ public class Java2ApiReader extends AbstractReader<ParamLineInfo, String> {
             if (StringUtils.isNotBlank(fieldTypeName)) {
                 fieldTypeName = replaceMd(fieldTypeName);
             }
-            String requiredStr = required ? "是" : "否";
-            String requiredStrMarkdown = required ? "**是**" : "否";
             Integer level = structureAndCommentInfo.getLevel();
 
-            Map<String, String> data0 = new HashMap<>(16);
-            data0.put("fieldName", fieldName);
-            data0.put("fieldType", fieldTypeName);
-            data0.put("requiredStr", requiredStr);
-            data0.put("requiredStrMarkdown", requiredStrMarkdown);
-            data0.put("fieldDesc", fieldDesc);
-            data0.put("notes", notes);
-            data0.put("levelPrefix", getLevelStr(level));
             int index = IndexIncrementUtil.getIndex();
-            String result = getTemplate(theme.getParamContentPath(returnType), data0);
-            return new ParamLineInfo(index, result, level);
+            FieldMemoInfo fieldMemoInfo = new FieldMemoInfo();
+            fieldMemoInfo.setIndex(index);
+            fieldMemoInfo.setLevel(level);
+            fieldMemoInfo.setFieldName(fieldName);
+            fieldMemoInfo.setFieldTypeName(fieldTypeName);
+            fieldMemoInfo.setRequired(required);
+            fieldMemoInfo.setFieldDesc(fieldDesc);
+            fieldMemoInfo.setNotes(notes);
+            fieldMemoInfo.setLevelPrefix(getLevelStr(level));
+            return fieldMemoInfo;
         }
 
         return null;
     }
 
     @Override
-    protected String handleReturnNull() {
-        return "";
+    protected Map<String, List<FieldLevelInfo>> handleReturnNull() {
+        return new HashMap<>(2);
     }
 
     private String getLevelStr(int level) {

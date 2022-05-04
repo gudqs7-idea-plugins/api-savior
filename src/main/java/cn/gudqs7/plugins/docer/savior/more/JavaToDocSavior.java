@@ -1,16 +1,16 @@
 package cn.gudqs7.plugins.docer.savior.more;
 
+import cn.gudqs7.plugins.docer.pojo.FieldLevelInfo;
 import cn.gudqs7.plugins.docer.pojo.StructureAndCommentInfo;
 import cn.gudqs7.plugins.docer.pojo.annotation.CommentInfo;
-import cn.gudqs7.plugins.docer.pojo.annotation.RequestMapping;
 import cn.gudqs7.plugins.docer.savior.base.AbstractSavior;
 import cn.gudqs7.plugins.docer.theme.Theme;
+import cn.gudqs7.plugins.docer.util.FreeMarkerUtil;
 import cn.gudqs7.plugins.docer.util.JsonUtil;
 import cn.gudqs7.plugins.util.PsiClassUtil;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiMethod;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.*;
@@ -63,7 +63,7 @@ public class JavaToDocSavior extends AbstractSavior<Map<String, Object>> {
             return Pair.of("", null);
         }
         String apiName = data.getOrDefault("interfaceName", "").toString();
-        String template = getTemplate(theme.getMethodPath(), data);
+        String template = FreeMarkerUtil.renderTemplate(theme.getMethodPath(), data);
         return Pair.of(template+"\n\n", apiName);
     }
 
@@ -73,15 +73,15 @@ public class JavaToDocSavior extends AbstractSavior<Map<String, Object>> {
             StructureAndCommentInfo paramStructureAndCommentInfo,
             StructureAndCommentInfo returnStructureAndCommentInfo,
             Map<String, Object> param) {
-        String java2apiDoc = java2ApiReader.read(paramStructureAndCommentInfo);
+        Map<String, List<FieldLevelInfo>> paramLevelMap = java2ApiReader.read(paramStructureAndCommentInfo);
+        Map<String, List<FieldLevelInfo>> returnLevelMap = java2ApiReader.read(returnStructureAndCommentInfo);
         Map<String, Object> java2jsonMap = java2JsonReader.read(paramStructureAndCommentInfo);
-        String returnJava2apiDoc = java2ApiReader.read(returnStructureAndCommentInfo);
         Map<String, Object> returnJava2jsonMap = java2JsonReader.read(returnStructureAndCommentInfo);
         String java2jsonStr = JsonUtil.toJson(java2jsonMap);
         String returnJava2jsonStr = JsonUtil.toJson(returnJava2jsonMap);
 
         Map<String, Object> dataByStr = collectDataByStr(project, publicMethod, commentInfo, interfaceClassName,
-                java2apiDoc, returnJava2apiDoc, java2jsonStr, returnJava2jsonStr);
+                paramLevelMap, returnLevelMap, java2jsonStr, returnJava2jsonStr);
 
         theme.afterCollectData(dataByStr, project, publicMethod, interfaceClassName, commentInfo,
                 paramStructureAndCommentInfo, returnStructureAndCommentInfo,
@@ -92,44 +92,28 @@ public class JavaToDocSavior extends AbstractSavior<Map<String, Object>> {
 
     private Map<String, Object> collectDataByStr(
             Project project, PsiMethod publicMethod, CommentInfo commentInfo, String interfaceClassName,
-            String java2apiDoc, String returnJava2apiDoc, String java2jsonStr, String returnJava2jsonStr
+            Map<String, List<FieldLevelInfo>> paramLevelMap, Map<String, List<FieldLevelInfo>> returnLevelMap, String java2jsonStr, String returnJava2jsonStr
     ) {
         String url = commentInfo.getUrl("");
         String contentType = commentInfo.getContentType(theme.getDefaultContentType());
         String method = commentInfo.getMethod("");
-        boolean methodIsGet = RequestMapping.Method.GET.equals(method);
         String methodName = publicMethod.getName();
         String interfaceName = commentInfo.getValue(methodName);
-        String interfaceNotes = "";
         String notes = commentInfo.getNotes("");
-        if (StringUtils.isNotBlank(notes)) {
-            interfaceNotes = "\n> " + notes;
-        }
         String codeMemo = getCodeMemo(project, commentInfo);
 
         Map<String, Object> data = new HashMap<>(16);
         data.put("interfaceName", interfaceName);
-        data.put("interfaceNotes", interfaceNotes);
+        data.put("interfaceNotes", notes);
         data.put("qualifiedMethodName", interfaceClassName + "#" + methodName);
         data.put("url", url);
         data.put("method", method);
-        String contentTypeMd = String.format("\n### 请求体类型\n```\n%s\n```", contentType);
-        data.put("contentType", methodIsGet ? "" : contentTypeMd);
-        data.put("codeMemo", codeMemo);
-
-        boolean noParamMemo = StringUtils.isBlank(java2apiDoc);
-        boolean noResultMemo = StringUtils.isBlank(returnJava2apiDoc);
-        String paramMemoMd = "\n### 入参字段说明\n" + java2apiDoc;
-        String resultMemoMd = "\n### 返回字段说明\n" + returnJava2apiDoc;
-        if (StringUtils.isBlank(returnJava2jsonStr) || "{}".equals(returnJava2jsonStr)) {
-            returnJava2jsonStr = "此接口无任何出参";
-        }
-        boolean usingRequestBody = RequestMapping.ContentType.APPLICATION_JSON.equals(contentType);
-        data.put("jsonExampleType", usingRequestBody? "RequestBody": "Postman==> Bulk Edit");
-        data.put("paramMemo", noParamMemo ? "" : paramMemoMd);
-        data.put("resultMemo", noResultMemo ? "" : resultMemoMd);
+        data.put("contentType", contentType);
+        data.put("paramLevelMap", paramLevelMap);
+        data.put("returnLevelMap", returnLevelMap);
         data.put("jsonExample", java2jsonStr);
         data.put("returnJsonExample", returnJava2jsonStr);
+        data.put("codeMemo", codeMemo);
         return data;
     }
 

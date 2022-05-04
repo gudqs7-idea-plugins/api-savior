@@ -1,5 +1,6 @@
 package cn.gudqs7.plugins.docer.action.base;
 
+import cn.gudqs7.plugins.docer.pojo.FieldLevelInfo;
 import cn.gudqs7.plugins.docer.pojo.PostmanKvInfo;
 import cn.gudqs7.plugins.docer.pojo.StructureAndCommentInfo;
 import cn.gudqs7.plugins.docer.reader.Java2ApiReader;
@@ -9,6 +10,7 @@ import cn.gudqs7.plugins.docer.resolver.StructureAndCommentResolver;
 import cn.gudqs7.plugins.docer.savior.base.BaseSavior;
 import cn.gudqs7.plugins.docer.theme.Theme;
 import cn.gudqs7.plugins.docer.util.ClipboardUtil;
+import cn.gudqs7.plugins.docer.util.FreeMarkerUtil;
 import cn.gudqs7.plugins.docer.util.JsonUtil;
 import cn.gudqs7.plugins.docer.util.RestfulUtil;
 import cn.gudqs7.plugins.util.PsiClassUtil;
@@ -22,6 +24,7 @@ import com.intellij.psi.PsiType;
 import com.intellij.psi.impl.source.PsiClassReferenceType;
 import com.intellij.psi.search.GlobalSearchScope;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -76,7 +79,8 @@ public abstract class AbstractReqDocerSavior extends AbstractOnRightClickSavior 
             structureAndCommentResolver.setProject(project);
             StructureAndCommentInfo structureAndCommentInfo = structureAndCommentResolver.resolveFromClass(classReferenceType);
             String java2json = "";
-            switch (java2ApiReader.getTheme().getThemeType()) {
+            Theme theme = java2ApiReader.getTheme();
+            switch (theme.getThemeType()) {
                 case HSF:
                     Map<String, Object> map = java2JsonReader.read(structureAndCommentInfo);
                     if (map != null) {
@@ -89,10 +93,13 @@ public abstract class AbstractReqDocerSavior extends AbstractOnRightClickSavior 
                 default:
                     break;
             }
-            String java2api = java2ApiReader.read(structureAndCommentInfo);
+            Map<String, List<FieldLevelInfo>> levelMap = java2ApiReader.read(structureAndCommentInfo);
+            Map<String, Object> root = new HashMap<>();
+            root.put("levelMap", levelMap);
+            String template = FreeMarkerUtil.renderTemplate(theme.getFieldPath(), root);
             ClipboardUtil.setSysClipboardText(java2json);
             String message = "已自动的将示例复制到您的剪切板!\n您可以粘贴后再复制下面的参数说明Markdown";
-            Messages.showMultilineInputDialog(project, message, "可以粘贴(Ctrl+V)了", java2api, Messages.getInformationIcon(), null);
+            Messages.showMultilineInputDialog(project, message, "可以粘贴(Ctrl+V)了", template, Messages.getInformationIcon(), null);
         }
     }
 

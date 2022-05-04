@@ -4,29 +4,25 @@ import cn.gudqs7.plugins.docer.annotation.AnnotationHolder;
 import cn.gudqs7.plugins.docer.constant.FieldType;
 import cn.gudqs7.plugins.docer.constant.MapKeyConstant;
 import cn.gudqs7.plugins.docer.constant.ThemeType;
-import cn.gudqs7.plugins.docer.pojo.ParamInfo;
-import cn.gudqs7.plugins.docer.pojo.ParamLineInfo;
 import cn.gudqs7.plugins.docer.pojo.PostmanKvInfo;
 import cn.gudqs7.plugins.docer.pojo.StructureAndCommentInfo;
 import cn.gudqs7.plugins.docer.pojo.annotation.CommentInfo;
 import cn.gudqs7.plugins.docer.pojo.annotation.RequestMapping;
 import cn.gudqs7.plugins.docer.reader.Java2BulkReader;
-import cn.gudqs7.plugins.docer.savior.base.BaseSavior;
 import cn.gudqs7.plugins.docer.util.JsonUtil;
 import cn.gudqs7.plugins.docer.util.RestfulUtil;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiMethod;
-import org.apache.commons.lang3.StringUtils;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author wq
  */
 public class RestfulTheme implements Theme {
 
-    public static final String FINAL_DEFAULT_OBJECT_EXAMPLE = "{}";
     private static RestfulTheme instance;
 
     private final Java2BulkReader java2BulkReader;
@@ -53,63 +49,12 @@ public class RestfulTheme implements Theme {
 
     @Override
     public String getMethodPath() {
-        return "template/restful/Method.txt";
+        return "restful/Method.ftl";
     }
 
     @Override
-    public String getParamContentPath(boolean returnParam) {
-        if (returnParam) {
-            return "template/restful/ReturnParamContent.txt";
-        }
-        return "template/restful/ParamContent.txt";
-    }
-
-    @Override
-    public String getParamTitlePath(boolean returnParam) {
-        if (returnParam) {
-            return "template/restful/ReturnParamTitle.txt";
-        }
-        return "template/restful/ParamTitle.txt";
-    }
-
-    @Override
-    public String printByGoMap(Map<Integer, List<ParamInfo>> goMap, boolean returnParam) {
-        StringBuilder all = new StringBuilder();
-        Map<Integer, ParamLineInfo> lineInfoMap = new TreeMap<>(new Comparator<Integer>() {
-            @Override
-            public int compare(Integer o1, Integer o2) {
-                return o1 - o2;
-            }
-        });
-
-        for (Map.Entry<Integer, List<ParamInfo>> entry : goMap.entrySet()) {
-            Integer key = entry.getKey();
-            List<ParamInfo> paramInfoList = entry.getValue();
-            for (ParamInfo val : paramInfoList) {
-                List<ParamLineInfo> allFields = val.getAllFields();
-                for (ParamLineInfo paramLineInfo : allFields) {
-                    lineInfoMap.put(paramLineInfo.getIndex(), paramLineInfo);
-                }
-            }
-        }
-
-        Map<String, String> data = new HashMap<>(16);
-        data.put("fieldName", "字段");
-        data.put("fieldType", "类型");
-        data.put("required", "必填性");
-        data.put("fieldDesc", "含义");
-        data.put("notes", "其他信息参考");
-        String allFields = lineInfoMap.values().stream().filter(paramLineInfo -> paramLineInfo.getLevel() > 0).map(ParamLineInfo::getLine).collect(Collectors.joining());
-        data.put("allFields", allFields);
-        if (StringUtils.isBlank(allFields)) {
-            return handleNoField(returnParam);
-        }
-        return BaseSavior.getTemplate(getParamTitlePath(returnParam), data);
-    }
-
-    @Override
-    public String handleNoField(boolean returnParam) {
-        return "";
+    public String getFieldPath() {
+        return "restful/field.ftl";
     }
 
     @Override
@@ -126,7 +71,7 @@ public class RestfulTheme implements Theme {
     @Override
     public void afterCollectData(Map<String, Object> dataByStr, Project project, PsiMethod publicMethod, String interfaceClassName, CommentInfo commentInfo, StructureAndCommentInfo paramStructureAndCommentInfo, StructureAndCommentInfo returnStructureAndCommentInfo, Map<String, Object> java2jsonMap, Map<String, Object> returnJava2jsonMap, String java2jsonStr, String returnJava2jsonStr) {
         if (java2jsonMap == null || java2jsonMap.size() == 0) {
-            dataByStr.put("jsonExample", "此接口无任何入参");
+            dataByStr.put("jsonExample", "");
             return;
         }
         // 1.获取 json示例 或 bulk 示例

@@ -2,7 +2,6 @@ package cn.gudqs7.plugins.docer.theme;
 
 import cn.gudqs7.plugins.docer.annotation.AnnotationHolder;
 import cn.gudqs7.plugins.docer.constant.ThemeType;
-import cn.gudqs7.plugins.docer.pojo.ParamInfo;
 import cn.gudqs7.plugins.docer.pojo.StructureAndCommentInfo;
 import cn.gudqs7.plugins.docer.pojo.annotation.CommentInfo;
 import cn.gudqs7.plugins.docer.pojo.annotation.RequestMapping;
@@ -11,7 +10,6 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiMethod;
 import com.intellij.psi.PsiType;
 
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -29,64 +27,20 @@ public interface Theme {
     /**
      * 获取模版
      *
-     * @return
+     * @return 方法模板
      */
     String getMethodPath();
 
     /**
-     * 获取模版
-     *
-     * @return
+     * 获取模板
+     * @return 字段模板
      */
-    default String getParamContentPath() {
-        return getParamContentPath(false);
-    }
-
-    /**
-     * 获取模版
-     *
-     * @param returnParam
-     * @return
-     */
-    String getParamContentPath(boolean returnParam);
-
-    /**
-     * 获取模版
-     *
-     * @return
-     */
-    default String getParamTitlePath() {
-        return getParamTitlePath(false);
-    }
-
-    /**
-     * 获取参数模版-头
-     *
-     * @param returnParam
-     * @return
-     */
-    String getParamTitlePath(boolean returnParam);
-
-    /**
-     * 打印
-     *
-     * @param goMap
-     * @param returnParam
-     * @return
-     */
-    String printByGoMap(Map<Integer, List<ParamInfo>> goMap, boolean returnParam);
-
-    /**
-     * 无任何字段时返回数据
-     * @param returnParam 是否返回值
-     * @return 数据
-     */
-    default String handleNoField(boolean returnParam) {
-        return "";
-    }
+    String getFieldPath();
 
     /**
      * 获取默认的 contentType
+     *
+     * @return 默认的 contentType
      */
     default String getDefaultContentType() {
         return RequestMapping.ContentType.APPLICATION_JSON;

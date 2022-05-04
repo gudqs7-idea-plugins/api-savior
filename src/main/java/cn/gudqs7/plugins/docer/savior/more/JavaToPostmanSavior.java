@@ -9,6 +9,7 @@ import cn.gudqs7.plugins.docer.pojo.annotation.RequestMapping;
 import cn.gudqs7.plugins.docer.reader.Java2BulkReader;
 import cn.gudqs7.plugins.docer.savior.base.AbstractSavior;
 import cn.gudqs7.plugins.docer.theme.Theme;
+import cn.gudqs7.plugins.docer.util.FreeMarkerUtil;
 import cn.gudqs7.plugins.docer.util.JsonUtil;
 import cn.gudqs7.plugins.docer.util.RestfulUtil;
 import cn.gudqs7.plugins.util.PsiClassUtil;
@@ -95,7 +96,7 @@ public class JavaToPostmanSavior extends AbstractSavior<Map<String, Object>> {
     @Override
     protected Map<String, Object> getDataByStructureAndCommentInfo(Project project, PsiMethod publicMethod, CommentInfo commentInfo, String interfaceClassName, StructureAndCommentInfo paramStructureAndCommentInfo, StructureAndCommentInfo returnStructureAndCommentInfo, Map<String, Object> param) {
         Map<String, Object> data = javaToDocSavior.getDataByStructureAndCommentInfo(project, publicMethod, commentInfo, interfaceClassName, paramStructureAndCommentInfo, returnStructureAndCommentInfo, param);
-        String template = getTemplate(theme.getMethodPath(), data);
+        String template = FreeMarkerUtil.renderTemplate(theme.getMethodPath(), data);
 
         String url = commentInfo.getUrl("");
         String contentType = commentInfo.getContentType(theme.getDefaultContentType());
