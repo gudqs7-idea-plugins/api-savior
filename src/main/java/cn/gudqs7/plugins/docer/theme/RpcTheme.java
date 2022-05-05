@@ -34,7 +34,7 @@ public class RpcTheme implements Theme {
 
     @Override
     public ThemeType getThemeType() {
-        return ThemeType.HSF;
+        return ThemeType.RPC;
     }
 
     @Override

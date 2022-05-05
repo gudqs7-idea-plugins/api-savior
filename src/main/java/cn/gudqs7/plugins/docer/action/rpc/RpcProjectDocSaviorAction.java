@@ -1,4 +1,4 @@
-package cn.gudqs7.plugins.docer.action.hsf;
+package cn.gudqs7.plugins.docer.action.rpc;
 
 import cn.gudqs7.plugins.docer.action.base.AbstractProjectDocerSavior;
 import cn.gudqs7.plugins.docer.savior.more.JavaToDocSavior;
@@ -10,10 +10,10 @@ import com.intellij.psi.PsiClass;
 /**
  * @author wq
  */
-public class HsfProjectDocSaviorAction extends AbstractProjectDocerSavior {
+public class RpcProjectDocSaviorAction extends AbstractProjectDocerSavior {
 
-    public HsfProjectDocSaviorAction() {
-        super(new JavaToDocSavior(ThemeHelper.getHsfTheme()));
+    public RpcProjectDocSaviorAction() {
+        super(new JavaToDocSavior(ThemeHelper.getRpcTheme()));
     }
 
     @Override
@@ -23,6 +23,6 @@ public class HsfProjectDocSaviorAction extends AbstractProjectDocerSavior {
 
     @Override
     protected String getDirPrefix() {
-        return "hsf-doc";
+        return "rpc-doc";
     }
 }

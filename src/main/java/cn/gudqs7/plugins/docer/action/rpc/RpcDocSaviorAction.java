@@ -1,4 +1,4 @@
-package cn.gudqs7.plugins.docer.action.hsf;
+package cn.gudqs7.plugins.docer.action.rpc;
 
 import cn.gudqs7.plugins.docer.action.base.AbstractDocerSavior;
 import cn.gudqs7.plugins.docer.annotation.AnnotationHolder;
@@ -12,10 +12,10 @@ import com.intellij.psi.PsiMethod;
 /**
  * @author wq
  */
-public class HsfDocSaviorAction extends AbstractDocerSavior {
+public class RpcDocSaviorAction extends AbstractDocerSavior {
 
-    public HsfDocSaviorAction() {
-        super(ThemeHelper.getHsfTheme());
+    public RpcDocSaviorAction() {
+        super(ThemeHelper.getRpcTheme());
     }
 
     @Override

@@ -81,7 +81,7 @@ public abstract class AbstractReqDocerSavior extends AbstractOnRightClickSavior 
             String java2json = "";
             Theme theme = java2ApiReader.getTheme();
             switch (theme.getThemeType()) {
-                case HSF:
+                case RPC:
                     Map<String, Object> map = java2JsonReader.read(structureAndCommentInfo);
                     if (map != null) {
                         java2json = JsonUtil.toJson(map);

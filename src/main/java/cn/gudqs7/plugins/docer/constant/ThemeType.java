@@ -7,9 +7,9 @@ package cn.gudqs7.plugins.docer.constant;
 public enum ThemeType {
 
     /**
-     * hsf
+     * rpc
      */
-    HSF,
+    RPC,
 
     /**
      * restful

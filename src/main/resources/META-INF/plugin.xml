@@ -37,13 +37,13 @@
         <group id="cn.gudqs.docer.savior" text="Docer Savior Group">
             <add-to-group group-id="EditorPopupMenu" anchor="after" relative-to-action="ShowIntentionsGroup"/>
 
-            <action id="cn.gudqs.docer.savior.req.hsf" class="cn.gudqs7.plugins.docer.action.hsf.HsfReqDocSaviorAction"
+            <action id="cn.gudqs.docer.savior.req.rpc" class="cn.gudqs7.plugins.docer.action.rpc.RpcReqDocSaviorAction"
                     text="生成RPC请求参数文档" description="生成RPC请求参数文档">
             </action>
             <action id="cn.gudqs.docer.savior.req.restful" class="cn.gudqs7.plugins.docer.action.restful.RestfulReqDocSaviorAction"
                     text="生成Api请求参数文档" description="生成Api请求参数文档">
             </action>
-            <action id="cn.gudqs.docer.savior.hsf" class="cn.gudqs7.plugins.docer.action.hsf.HsfDocSaviorAction"
+            <action id="cn.gudqs.docer.savior.rpc" class="cn.gudqs7.plugins.docer.action.rpc.RpcDocSaviorAction"
                     text="生成RPC接口文档" description="生成RPC接口文档">
             </action>
             <action id="cn.gudqs.docer.savior.restful" class="cn.gudqs7.plugins.docer.action.restful.RestfulDocSaviorAction"
@@ -60,7 +60,7 @@
         <group id="cn.gudqs.docer.savior.project" text="Docer Savior Project Group">
             <add-to-group group-id="ProjectViewPopupMenu" anchor="after" relative-to-action="CutCopyPasteGroup"/>
 
-            <action id="cn.gudqs.docer.savior.project.hsf" class="cn.gudqs7.plugins.docer.action.hsf.HsfProjectDocSaviorAction"
+            <action id="cn.gudqs.docer.savior.project.rpc" class="cn.gudqs7.plugins.docer.action.rpc.RpcProjectDocSaviorAction"
                     text="批量生成RPC接口文档" description="批量生成RPC接口文档">
             </action>
             <action id="cn.gudqs.docer.savior.project.restful" class="cn.gudqs7.plugins.docer.action.restful.RestfulProjectDocSaviorAction"

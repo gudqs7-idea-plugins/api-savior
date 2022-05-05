@@ -5,7 +5,7 @@ package cn.gudqs7.plugins.docer.theme;
  */
 public class ThemeHelper {
 
-    public static Theme getHsfTheme() {
+    public static Theme getRpcTheme() {
         return RpcTheme.getInstance();
     }
 

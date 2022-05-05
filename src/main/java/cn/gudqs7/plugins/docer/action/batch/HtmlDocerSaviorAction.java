@@ -99,7 +99,7 @@ public class HtmlDocerSaviorAction extends AbstractBatchDocerSavior {
 
     @Override
     protected @NotNull String getFileExtension() {
-        return ".html";
+        return "html";
     }
 
     @Data
