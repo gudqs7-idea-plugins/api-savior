@@ -1,7 +1,0 @@
-
-####  {{clazzTypeName}} {{addition}}
-
-| **{{fieldName}}** | **{{fieldType}}** | **{{fieldDesc}}** | **{{notes}}** |
-| -------- | -------- | -------- | -------- |
-{{allFields}}
-
