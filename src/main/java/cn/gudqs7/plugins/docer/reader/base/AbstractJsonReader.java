@@ -3,6 +3,7 @@ package cn.gudqs7.plugins.docer.reader.base;
 import cn.gudqs7.plugins.docer.constant.CommentConst;
 import cn.gudqs7.plugins.docer.constant.FieldType;
 import cn.gudqs7.plugins.docer.constant.StructureType;
+import cn.gudqs7.plugins.docer.pojo.ReadOnlyMap;
 import cn.gudqs7.plugins.docer.pojo.StructureAndCommentInfo;
 import cn.gudqs7.plugins.docer.pojo.annotation.CommentInfo;
 import cn.gudqs7.plugins.docer.theme.Theme;
@@ -35,19 +36,18 @@ public abstract class AbstractJsonReader<B> extends AbstractReader<Map<String, O
     }
 
     @Override
-    protected void beforeLoop(StructureAndCommentInfo structureAndCommentInfo, Map<String, Object> loopData, Map<String, Object> data, Map<String, Object> parentData) {
+    protected void beforeLoop(StructureAndCommentInfo structureAndCommentInfo, Map<String, Object> loopData, Map<String, Object> data, ReadOnlyMap parentData) {
         LinkedHashMap<Object, Object> loopObj = new LinkedHashMap<>(32);
         loopData.put("loopObj", loopObj);
-        parentData.put("loopObj", loopObj);
     }
 
     @Override
-    protected void beforeLoop0(StructureAndCommentInfo structureAndCommentInfo, StructureAndCommentInfo parentStructureAndCommentInfo, Map<String, Object> data, Map<String, Object> parentData) {
+    protected void beforeLoop0(StructureAndCommentInfo structureAndCommentInfo, StructureAndCommentInfo parentStructureAndCommentInfo, Map<String, Object> data, ReadOnlyMap parentData) {
 
     }
 
     @Override
-    protected void inLoop(StructureAndCommentInfo structureAndCommentInfo, Map<String, Object> leafData, Map<String, Object> loopData, Map<String, Object> data, Map<String, Object> parentData) {
+    protected void inLoop(StructureAndCommentInfo structureAndCommentInfo, Map<String, Object> leafData, Map<String, Object> loopData, Map<String, Object> data, ReadOnlyMap parentData) {
         if (structureAndCommentInfo != null && structureAndCommentInfo.isLeaf()) {
             Boolean onlyRequire = (Boolean) data.get("onlyRequire");
             if (onlyRequire != null && onlyRequire) {
@@ -63,7 +63,7 @@ public abstract class AbstractJsonReader<B> extends AbstractReader<Map<String, O
     }
 
     @Override
-    protected void afterLoop(StructureAndCommentInfo structureAndCommentInfo, Map<String, Object> data, Map<String, Object> parentData, Map<String, Object> loopData, Map<String, Object> leafData, boolean leaf) {
+    protected void afterLoop(StructureAndCommentInfo structureAndCommentInfo, Map<String, Object> data, ReadOnlyMap parentData, Map<String, Object> loopData, Map<String, Object> leafData, boolean leaf) {
         Map<String, Object> map = getFromData(data, "map");
         Map<String, Object> loopObj = getFromData(loopData, "loopObj");
         String fieldName = structureAndCommentInfo.getFieldName();
@@ -124,7 +124,7 @@ public abstract class AbstractJsonReader<B> extends AbstractReader<Map<String, O
     }
 
     @Override
-    protected Map<String, Object> readLeaf(StructureAndCommentInfo structureAndCommentInfo, Map<String, Object> data, Map<String, Object> parentData) {
+    protected Map<String, Object> readLeaf(StructureAndCommentInfo structureAndCommentInfo, Map<String, Object> data, ReadOnlyMap parentData) {
         String fieldName = structureAndCommentInfo.getFieldName();
         if (fieldName != null) {
             Map<String, Object> map = new LinkedHashMap<>();
@@ -169,7 +169,7 @@ public abstract class AbstractJsonReader<B> extends AbstractReader<Map<String, O
      * @param parentData              父数据
      * @return JsonMap结构中具体的 Val
      */
-    protected Object getJsonMapVal(StructureAndCommentInfo structureAndCommentInfo, Map<String, Object> data, Map<String, Object> parentData) {
+    protected Object getJsonMapVal(StructureAndCommentInfo structureAndCommentInfo, Map<String, Object> data, ReadOnlyMap parentData) {
         String originalFieldType = structureAndCommentInfo.getOriginalFieldType();
         CommentInfo commentInfo = structureAndCommentInfo.getCommentInfo();
         Object baseExampleVal = getBaseExampleVal(originalFieldType, commentInfo);

@@ -2,6 +2,7 @@ package cn.gudqs7.plugins.docer.reader;
 
 import cn.gudqs7.plugins.docer.pojo.ComplexInfo;
 import cn.gudqs7.plugins.docer.pojo.FieldCommentInfo;
+import cn.gudqs7.plugins.docer.pojo.ReadOnlyMap;
 import cn.gudqs7.plugins.docer.pojo.StructureAndCommentInfo;
 import cn.gudqs7.plugins.docer.pojo.annotation.CommentInfo;
 import cn.gudqs7.plugins.docer.reader.base.AbstractJsonReader;
@@ -26,7 +27,7 @@ public class Java2ComplexReader extends AbstractJsonReader<Map<String, Object>> 
     }
 
     @Override
-    protected Object getJsonMapVal(StructureAndCommentInfo structureAndCommentInfo, Map<String, Object> data, Map<String, Object> parentData) {
+    protected Object getJsonMapVal(StructureAndCommentInfo structureAndCommentInfo, Map<String, Object> data, ReadOnlyMap parentData) {
         CommentInfo commentInfo = structureAndCommentInfo.getCommentInfo();
         FieldCommentInfo fieldCommentInfo = new FieldCommentInfo();
         fieldCommentInfo.setFieldDesc(commentInfo.getValue(""));

@@ -39,7 +39,7 @@ public enum FieldType {
     /**
      * 返回值
      */
-    RETURN(7),
+    RETURN_VOID(7),
 
     /**
      * Set

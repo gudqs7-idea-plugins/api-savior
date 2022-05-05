@@ -3,6 +3,7 @@ package cn.gudqs7.plugins.docer.reader;
 import cn.gudqs7.plugins.docer.constant.StructureType;
 import cn.gudqs7.plugins.docer.pojo.FieldLevelInfo;
 import cn.gudqs7.plugins.docer.pojo.FieldMemoInfo;
+import cn.gudqs7.plugins.docer.pojo.ReadOnlyMap;
 import cn.gudqs7.plugins.docer.pojo.StructureAndCommentInfo;
 import cn.gudqs7.plugins.docer.pojo.annotation.CommentInfo;
 import cn.gudqs7.plugins.docer.reader.base.AbstractReader;
@@ -34,7 +35,7 @@ public class Java2ApiReader extends AbstractReader<FieldMemoInfo, Map<String, Li
     }
 
     @Override
-    protected void beforeLoop(StructureAndCommentInfo structureAndCommentInfo, Map<String, Object> loopData, Map<String, Object> data, Map<String, Object> parentData) {
+    protected void beforeLoop(StructureAndCommentInfo structureAndCommentInfo, Map<String, Object> loopData, Map<String, Object> data, ReadOnlyMap parentData) {
         List<FieldMemoInfo> fieldList = new ArrayList<>();
         loopData.put("fieldList", fieldList);
         Integer type = structureAndCommentInfo.getType();
@@ -44,12 +45,10 @@ public class Java2ApiReader extends AbstractReader<FieldMemoInfo, Map<String, Li
         switch (StructureType.of(type)) {
             case PSI_CLASS:
             case PSI_FIELD:
+            case PSI_PARAM:
             case PSI_RETURN:
                 clazzDesc = commentInfo.getValue("");
-                clazzTypeName = structureAndCommentInfo.getFieldType();
-                break;
-            case PSI_PARAM:
-                clazzTypeName = "请求参数";
+                clazzTypeName = structureAndCommentInfo.getOriginalFieldType();
                 break;
             case PSI_PARAM_LIST:
                 clazzTypeName = "Params";
@@ -58,33 +57,35 @@ public class Java2ApiReader extends AbstractReader<FieldMemoInfo, Map<String, Li
             default:
                 break;
         }
-        clazzTypeName = replaceMd(clazzTypeName);
+        if (clazzTypeName != null) {
+            clazzTypeName = replaceMd(clazzTypeName);
+        }
         clazzDesc = replaceMd(clazzDesc);
         loopData.put("clazzTypeName", clazzTypeName);
         loopData.put("clazzDesc", clazzDesc);
     }
 
     @Override
-    protected void beforeLoop0(StructureAndCommentInfo structureAndCommentInfo, StructureAndCommentInfo parentStructureAndCommentInfo, Map<String, Object> data, Map<String, Object> parentData) {
+    protected void beforeLoop0(StructureAndCommentInfo structureAndCommentInfo, StructureAndCommentInfo parentStructureAndCommentInfo, Map<String, Object> data, ReadOnlyMap parentData) {
 
     }
 
     @Override
-    protected void inLoop(StructureAndCommentInfo structureAndCommentInfo, FieldMemoInfo leafData, Map<String, Object> loopData, Map<String, Object> data, Map<String, Object> parentData) {
+    protected void inLoop(StructureAndCommentInfo structureAndCommentInfo, FieldMemoInfo leafData, Map<String, Object> loopData, Map<String, Object> data, ReadOnlyMap parentData) {
         List<FieldMemoInfo> fieldList = getFromData(loopData, "fieldList");
         fieldList.add(leafData);
         loopData.put("level", structureAndCommentInfo.getLevel());
     }
 
     @Override
-    protected void afterLoop(StructureAndCommentInfo structureAndCommentInfo, Map<String, Object> data, Map<String, Object> parentData, Map<String, Object> loopData, FieldMemoInfo leafData, boolean leaf) {
+    protected void afterLoop(StructureAndCommentInfo structureAndCommentInfo, Map<String, Object> data, ReadOnlyMap parentData, Map<String, Object> loopData, FieldMemoInfo leafData, boolean leaf) {
         List<FieldMemoInfo> fieldList = getFromData(loopData, "fieldList");
         if (fieldList.size() > 0) {
             Map<String, List<FieldLevelInfo>> levelMap = getFromData(data, "levelMap");
             int level = (int) loopData.get("level");
             String clazzDesc = getFromData(loopData, "clazzDesc");
             String clazzTypeName = getFromData(loopData, "clazzTypeName");
-            String parentClazzTypeName = getFromData(parentData, "clazzTypeName");
+            String parentClazzTypeName = parentData.get("clazzTypeName", "");
             FieldLevelInfo fieldLevelInfo = new FieldLevelInfo();
             fieldLevelInfo.setLevel(level);
             fieldLevelInfo.setParentClazzTypeName(parentClazzTypeName);
@@ -99,7 +100,7 @@ public class Java2ApiReader extends AbstractReader<FieldMemoInfo, Map<String, Li
     }
 
     @Override
-    protected FieldMemoInfo readLeaf(StructureAndCommentInfo structureAndCommentInfo, Map<String, Object> data, Map<String, Object> parentData) {
+    protected FieldMemoInfo readLeaf(StructureAndCommentInfo structureAndCommentInfo, Map<String, Object> data, ReadOnlyMap parentData) {
         String fieldName = structureAndCommentInfo.getFieldName();
         CommentInfo commentInfo = structureAndCommentInfo.getCommentInfo();
         if (commentInfo != null) {
@@ -114,6 +115,9 @@ public class Java2ApiReader extends AbstractReader<FieldMemoInfo, Map<String, Li
                 notes = replaceMd(notes);
             }
             String fieldTypeName = structureAndCommentInfo.getFieldType();
+            Integer fieldTypeCode = structureAndCommentInfo.getFieldTypeCode();
+            String originalFieldType = structureAndCommentInfo.getOriginalFieldType();
+            Integer originalFieldTypeCode = structureAndCommentInfo.getOriginalFieldTypeCode();
             if (StringUtils.isNotBlank(fieldTypeName)) {
                 fieldTypeName = replaceMd(fieldTypeName);
             }
@@ -125,6 +129,10 @@ public class Java2ApiReader extends AbstractReader<FieldMemoInfo, Map<String, Li
             fieldMemoInfo.setLevel(level);
             fieldMemoInfo.setFieldName(fieldName);
             fieldMemoInfo.setFieldTypeName(fieldTypeName);
+            fieldMemoInfo.setOriginalFieldTypeName(originalFieldType);
+            fieldMemoInfo.setFieldTypeCode(fieldTypeCode);
+            fieldMemoInfo.setOriginalFieldTypeCode(originalFieldTypeCode);
+
             fieldMemoInfo.setRequired(required);
             fieldMemoInfo.setFieldDesc(fieldDesc);
             fieldMemoInfo.setNotes(notes);

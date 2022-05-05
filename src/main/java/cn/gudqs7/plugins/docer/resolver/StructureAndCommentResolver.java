@@ -99,6 +99,7 @@ public class StructureAndCommentResolver extends BaseSavior implements IStructur
         root.setType(StructureType.PSI_PARAM_LIST.getType());
         root.setPsiParameterList(parameterList);
         root.setFieldType("Params");
+        root.setOriginalFieldType("Params");
         root.setFieldTypeCode(FieldType.PARAM_LIST.getType());
         root.setLevel(level);
 
@@ -130,7 +131,8 @@ public class StructureAndCommentResolver extends BaseSavior implements IStructur
             StructureAndCommentInfo structureAndCommentInfo = new StructureAndCommentInfo();
             structureAndCommentInfo.setReturnType(true);
             structureAndCommentInfo.setFieldType("Void");
-            structureAndCommentInfo.setFieldTypeCode(FieldType.RETURN.getType());
+            structureAndCommentInfo.setOriginalFieldType("Void");
+            structureAndCommentInfo.setFieldTypeCode(FieldType.RETURN_VOID.getType());
             structureAndCommentInfo.setType(StructureType.PSI_RETURN.getType());
             structureAndCommentInfo.setReturnTypeElement(returnTypeElement);
             return structureAndCommentInfo;
@@ -185,6 +187,7 @@ public class StructureAndCommentResolver extends BaseSavior implements IStructur
         }
         StructureAndCommentInfo root = new StructureAndCommentInfo();
         root.setFieldType(clazzTypeName);
+        root.setOriginalFieldType(clazzTypeName);
         root.setFieldTypeCode(FieldType.POJO.getType());
         root.setType(StructureType.PSI_CLASS.getType());
         root.setPsiClass(psiClass);
@@ -256,6 +259,7 @@ public class StructureAndCommentResolver extends BaseSavior implements IStructur
         structureAndCommentInfo.setFieldType(fieldTypeName);
         structureAndCommentInfo.setOriginalFieldType(psiFieldTypeName);
         structureAndCommentInfo.setFieldTypeCode(fieldTypeCode);
+        structureAndCommentInfo.setOriginalFieldTypeCode(FieldType.BASE.getType());
 
         // 普通字段, 即刻返回
         String typeSimpleName = psiFieldType.getPresentableText();
@@ -357,9 +361,10 @@ public class StructureAndCommentResolver extends BaseSavior implements IStructur
                 if (structureAndCommentInfoChild != null && structureAndCommentInfoChild.getChildren().size() > 0) {
                     structureAndCommentInfo.setLeaf(false);
                     structureAndCommentInfo.copyChild(structureAndCommentInfoChild.getChildren());
-                    if (fieldTypeCode == 1) {
+                    if (fieldTypeCode == FieldType.BASE.getType()) {
                         structureAndCommentInfo.setFieldTypeCode(FieldType.POJO.getType());
                     }
+                    structureAndCommentInfo.setOriginalFieldTypeCode(FieldType.POJO.getType());
                 }
             }
 

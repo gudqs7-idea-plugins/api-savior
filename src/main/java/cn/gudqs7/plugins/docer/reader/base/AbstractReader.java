@@ -1,6 +1,7 @@
 package cn.gudqs7.plugins.docer.reader.base;
 
 import cn.gudqs7.plugins.docer.constant.MapKeyConstant;
+import cn.gudqs7.plugins.docer.pojo.ReadOnlyMap;
 import cn.gudqs7.plugins.docer.pojo.StructureAndCommentInfo;
 import cn.gudqs7.plugins.docer.savior.base.BaseSavior;
 import cn.gudqs7.plugins.docer.theme.Theme;
@@ -33,13 +34,13 @@ public abstract class AbstractReader<T, B> extends BaseSavior implements IStruct
             return handleReturnNull();
         }
         project = structureAndCommentInfo.getProject();
-        Map<String, Object> parentData = new HashMap<>(8);
+        ReadOnlyMap parentData = new ReadOnlyMap();
         beforeRead(structureAndCommentInfo, data);
         read0(structureAndCommentInfo, data, parentData, false);
         return afterRead(structureAndCommentInfo, data);
     }
 
-    public T read0(StructureAndCommentInfo structureAndCommentInfo, Map<String, Object> data, Map<String, Object> parentData, boolean fromLoop) {
+    public T read0(StructureAndCommentInfo structureAndCommentInfo, Map<String, Object> data, ReadOnlyMap parentData, boolean fromLoop) {
         if (structureAndCommentInfo == null) {
             return null;
         }
@@ -66,7 +67,7 @@ public abstract class AbstractReader<T, B> extends BaseSavior implements IStruct
                 for (Map.Entry<String, StructureAndCommentInfo> entry : children.entrySet()) {
                     StructureAndCommentInfo value = entry.getValue();
                     beforeLoop0(value, structureAndCommentInfo, data, parentData);
-                    T leafData0 = read0(value, data, loopData, true);
+                    T leafData0 = read0(value, data, ReadOnlyMap.of(loopData), true);
                     if (leafData0 != null) {
                         inLoop(value, leafData0, loopData, data, parentData);
                     }
@@ -117,46 +118,42 @@ public abstract class AbstractReader<T, B> extends BaseSavior implements IStruct
 
     /**
      * 循环前初始化
-     *
-     * @param structureAndCommentInfo 结构+注释信息
+     *  @param structureAndCommentInfo 结构+注释信息
+     * @param loopData                循环数据
      * @param data                    主数据
      * @param parentData              变化数据
-     * @param loopData                循环数据
      */
-    protected abstract void beforeLoop(StructureAndCommentInfo structureAndCommentInfo, Map<String, Object> loopData, Map<String, Object> data, Map<String, Object> parentData);
+    protected abstract void beforeLoop(StructureAndCommentInfo structureAndCommentInfo, Map<String, Object> loopData, Map<String, Object> data, ReadOnlyMap parentData);
 
     /**
      * 循环中初始化
-     *
-     * @param structureAndCommentInfo       结构+注释信息
+     *  @param structureAndCommentInfo       结构+注释信息
+     * @param parentStructureAndCommentInfo 父信息
      * @param data                          主数据
      * @param parentData                    变化数据
-     * @param parentStructureAndCommentInfo 父信息
      */
-    protected abstract void beforeLoop0(StructureAndCommentInfo structureAndCommentInfo, StructureAndCommentInfo parentStructureAndCommentInfo, Map<String, Object> data, Map<String, Object> parentData);
+    protected abstract void beforeLoop0(StructureAndCommentInfo structureAndCommentInfo, StructureAndCommentInfo parentStructureAndCommentInfo, Map<String, Object> data, ReadOnlyMap parentData);
 
     /**
      * 循环实际代码
-     *
-     * @param structureAndCommentInfo 结构+注释信息
-     * @param data                    主数据
-     * @param parentData              变化数据
+     *  @param structureAndCommentInfo 结构+注释信息
      * @param leafData                遍历中的节点数据
      * @param loopData                循环数据
+     * @param data                    主数据
+     * @param parentData              变化数据
      */
-    protected abstract void inLoop(StructureAndCommentInfo structureAndCommentInfo, T leafData, Map<String, Object> loopData, Map<String, Object> data, Map<String, Object> parentData);
+    protected abstract void inLoop(StructureAndCommentInfo structureAndCommentInfo, T leafData, Map<String, Object> loopData, Map<String, Object> data, ReadOnlyMap parentData);
 
     /**
      * 循环后处理
-     *
-     * @param structureAndCommentInfo 结构+注释信息
+     *  @param structureAndCommentInfo 结构+注释信息
      * @param data                    主数据
      * @param parentData              变化数据
      * @param loopData                循环数据
      * @param leafData                当前节点数据
      * @param leaf                    是否子节点
      */
-    protected abstract void afterLoop(StructureAndCommentInfo structureAndCommentInfo, Map<String, Object> data, Map<String, Object> parentData, Map<String, Object> loopData, T leafData, boolean leaf);
+    protected abstract void afterLoop(StructureAndCommentInfo structureAndCommentInfo, Map<String, Object> data, ReadOnlyMap parentData, Map<String, Object> loopData, T leafData, boolean leaf);
 
     /**
      * 组装节点数据
@@ -166,7 +163,7 @@ public abstract class AbstractReader<T, B> extends BaseSavior implements IStruct
      * @param parentData              变化数据
      * @return 节点数据
      */
-    protected abstract T readLeaf(StructureAndCommentInfo structureAndCommentInfo, Map<String, Object> data, Map<String, Object> parentData);
+    protected abstract T readLeaf(StructureAndCommentInfo structureAndCommentInfo, Map<String, Object> data, ReadOnlyMap parentData);
 
     /**
      * 处理 structureAndCommentInfo 为空的情况

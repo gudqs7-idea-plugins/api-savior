@@ -54,6 +54,7 @@ public class StructureAndCommentInfo {
      * 7:返回值
      */
     private Integer fieldTypeCode = 1;
+    private Integer originalFieldTypeCode = 1;
 
     private transient PsiClass psiClass;
     private transient PsiField psiField;

@@ -54,7 +54,7 @@ public class PsiClassUtil {
         PsiField[] fields = psiClass.getFields();
         PsiClassType[] extendsListTypes = psiClass.getExtendsListTypes();
         if (extendsListTypes.length == 0) {
-            return fields;
+            return filterPsiField(Arrays.asList(fields));
         }
         List<PsiField> allFields = new ArrayList<>();
         for (PsiClassType extendsListType : extendsListTypes) {
@@ -65,19 +65,18 @@ public class PsiClassUtil {
             allFields.addAll(Arrays.asList(getAllFieldsByPsiClass(extendCls)));
         }
         allFields.addAll(Arrays.asList(fields));
-        Map<String, PsiField> psiFieldMap = new LinkedHashMap<>(32);
-        allFields.forEach((psiField -> {
-            PsiModifierList modifierList = psiField.getModifierList();
-            if (modifierList != null) {
-                if (modifierList.hasModifierProperty(PsiModifier.STATIC) || modifierList.hasModifierProperty(PsiModifier.TRANSIENT)) {
-                    return;
-                }
-            }
-            psiFieldMap.put(psiField.getName(), psiField);
-        }));
-        return psiFieldMap.values().toArray(new PsiField[0]);
+        return filterPsiField(allFields);
     }
 
+    private static PsiField[] filterPsiField(List<PsiField> allFieldList) {
+        return allFieldList.stream().filter(psiField -> {
+            PsiModifierList modifierList = psiField.getModifierList();
+            if (modifierList != null) {
+                return !modifierList.hasModifierProperty(PsiModifier.STATIC) && !modifierList.hasModifierProperty(PsiModifier.TRANSIENT);
+            }
+            return true;
+        }).toArray(PsiField[]::new);
+    }
 
     public static boolean isNotSystemClass(PsiClass psiClass) {
         if (psiClass == null) {

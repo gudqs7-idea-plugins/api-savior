@@ -4,6 +4,7 @@ import cn.gudqs7.plugins.docer.constant.CommentConst;
 import cn.gudqs7.plugins.docer.constant.FieldType;
 import cn.gudqs7.plugins.docer.constant.MapKeyConstant;
 import cn.gudqs7.plugins.docer.pojo.PostmanKvInfo;
+import cn.gudqs7.plugins.docer.pojo.ReadOnlyMap;
 import cn.gudqs7.plugins.docer.pojo.StructureAndCommentInfo;
 import cn.gudqs7.plugins.docer.pojo.annotation.CommentInfo;
 import cn.gudqs7.plugins.docer.reader.base.AbstractJsonReader;
@@ -148,7 +149,7 @@ public class Java2BulkReader extends AbstractJsonReader<List<PostmanKvInfo>> {
     }
 
     @Override
-    protected Object getJsonMapVal(StructureAndCommentInfo structureAndCommentInfo, Map<String, Object> data, Map<String, Object> parentData) {
+    protected Object getJsonMapVal(StructureAndCommentInfo structureAndCommentInfo, Map<String, Object> data, ReadOnlyMap parentData) {
         return structureAndCommentInfo;
     }
 }

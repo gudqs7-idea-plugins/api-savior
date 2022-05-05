@@ -29,6 +29,26 @@ public class FieldMemoInfo {
     private String fieldTypeName;
 
     /**
+     * 原始字段类型
+     */
+    private String originalFieldTypeName;
+
+
+    /**
+     * 当前类型code
+     *
+     * @see cn.gudqs7.plugins.docer.constant.FieldType
+     */
+    private Integer fieldTypeCode;
+
+    /**
+     * 原始当前类型code
+     *
+     * @see cn.gudqs7.plugins.docer.constant.FieldType
+     */
+    private Integer originalFieldTypeCode;
+
+    /**
      * 是否要求必填
      */
     private Boolean required;
