@@ -58,9 +58,10 @@ public class Java2ApiReader extends AbstractReader<FieldMemoInfo, Map<String, Li
             default:
                 break;
         }
+        clazzTypeName = replaceMd(clazzTypeName);
+        clazzDesc = replaceMd(clazzDesc);
         loopData.put("clazzTypeName", clazzTypeName);
         loopData.put("clazzDesc", clazzDesc);
-        parentData.put("parentClassType", clazzTypeName);
     }
 
     @Override
@@ -80,10 +81,10 @@ public class Java2ApiReader extends AbstractReader<FieldMemoInfo, Map<String, Li
         List<FieldMemoInfo> fieldList = getFromData(loopData, "fieldList");
         if (fieldList.size() > 0) {
             Map<String, List<FieldLevelInfo>> levelMap = getFromData(data, "levelMap");
+            int level = (int) loopData.get("level");
             String clazzDesc = getFromData(loopData, "clazzDesc");
             String clazzTypeName = getFromData(loopData, "clazzTypeName");
-            int level = (int) loopData.get("level");
-            String parentClazzTypeName = getFromData(parentData, "parentClassType");
+            String parentClazzTypeName = getFromData(parentData, "clazzTypeName");
             FieldLevelInfo fieldLevelInfo = new FieldLevelInfo();
             fieldLevelInfo.setLevel(level);
             fieldLevelInfo.setParentClazzTypeName(parentClazzTypeName);

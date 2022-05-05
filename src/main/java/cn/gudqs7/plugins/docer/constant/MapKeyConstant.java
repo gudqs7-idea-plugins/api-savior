@@ -14,4 +14,6 @@ public interface MapKeyConstant {
 
     String FIELD_PREFIX_INIT = "-1";
 
+    String READER_PARENT_KEY = "__parent__";
+
 }

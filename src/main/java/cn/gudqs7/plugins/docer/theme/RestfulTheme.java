@@ -48,13 +48,8 @@ public class RestfulTheme implements Theme {
     }
 
     @Override
-    public String getMethodPath() {
-        return "restful/Method.ftl";
-    }
-
-    @Override
-    public String getFieldPath() {
-        return "restful/field.ftl";
+    public String getPathPrefix() {
+        return "restful";
     }
 
     @Override

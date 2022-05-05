@@ -14,18 +14,18 @@ import java.util.Map;
 /**
  * @author wq
  */
-public class HsfTheme implements Theme {
+public class RpcTheme implements Theme {
 
-    private HsfTheme() {
+    private RpcTheme() {
     }
 
-    private static HsfTheme instance;
+    private static RpcTheme instance;
 
-    public static HsfTheme getInstance() {
+    public static RpcTheme getInstance() {
         if (instance == null) {
-            synchronized (HsfTheme.class) {
+            synchronized (RpcTheme.class) {
                 if (instance == null) {
-                    instance = new HsfTheme();
+                    instance = new RpcTheme();
                 }
             }
         }
@@ -38,13 +38,8 @@ public class HsfTheme implements Theme {
     }
 
     @Override
-    public String getMethodPath() {
-        return "hsf/Method.ftl";
-    }
-
-    @Override
-    public String getFieldPath() {
-        return "hsf/field.ftl";
+    public String getPathPrefix() {
+        return "rpc";
     }
 
     //

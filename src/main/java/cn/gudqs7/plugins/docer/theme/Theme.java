@@ -5,11 +5,15 @@ import cn.gudqs7.plugins.docer.constant.ThemeType;
 import cn.gudqs7.plugins.docer.pojo.StructureAndCommentInfo;
 import cn.gudqs7.plugins.docer.pojo.annotation.CommentInfo;
 import cn.gudqs7.plugins.docer.pojo.annotation.RequestMapping;
+import cn.gudqs7.plugins.docer.util.ConfigHolder;
+import cn.gudqs7.plugins.docer.util.FreeMarkerUtil;
 import cn.gudqs7.plugins.docer.util.ParamFilter;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiMethod;
 import com.intellij.psi.PsiType;
+import org.apache.commons.lang3.StringUtils;
 
+import java.io.InputStream;
 import java.util.Map;
 
 /**
@@ -25,17 +29,53 @@ public interface Theme {
     ThemeType getThemeType();
 
     /**
+     * 获取模版路径前缀
+     *
+     * @return 模版路径前缀
+     */
+    String getPathPrefix();
+
+    /**
      * 获取模版
      *
      * @return 方法模板
      */
-    String getMethodPath();
+    default String getMethodPath() {
+        String pathPrefix = getPathPrefix();
+        Map<String, String> config = ConfigHolder.getConfig();
+        if (config != null) {
+            String methodTheme = config.get("docer.theme.method." + pathPrefix);
+            if (StringUtils.isNotBlank(methodTheme)) {
+                String methodPath = pathPrefix + "/method-" + methodTheme + ".ftl";
+                InputStream inputStream = FreeMarkerUtil.class.getClassLoader().getResourceAsStream("template/ftl/" + methodPath);
+                if (inputStream != null) {
+                    return methodPath;
+                }
+            }
+        }
+        return pathPrefix + "/method.ftl";
+    }
 
     /**
      * 获取模板
+     *
      * @return 字段模板
      */
-    String getFieldPath();
+    default String getFieldPath() {
+        String pathPrefix = getPathPrefix();
+        Map<String, String> config = ConfigHolder.getConfig();
+        if (config != null) {
+            String fieldTheme = config.get("docer.theme.field." + pathPrefix);
+            if (StringUtils.isNotBlank(fieldTheme)) {
+                String fieldPath = pathPrefix + "/field-" + fieldTheme + ".ftl";
+                InputStream inputStream = FreeMarkerUtil.class.getClassLoader().getResourceAsStream("template/ftl/" + fieldPath);
+                if (inputStream != null) {
+                    return fieldPath;
+                }
+            }
+        }
+        return pathPrefix + "/field.ftl";
+    }
 
     /**
      * 获取默认的 contentType
@@ -65,6 +105,12 @@ public interface Theme {
         return oldVal;
     }
 
+    /**
+     * 判断是否跳过该方法
+     *
+     * @param annotationHolder 注释信息
+     * @return 是否跳过该方法
+     */
     default boolean handleMethodHidden(AnnotationHolder annotationHolder) {
         return false;
     }

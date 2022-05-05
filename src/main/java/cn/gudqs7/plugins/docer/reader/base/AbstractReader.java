@@ -1,5 +1,6 @@
 package cn.gudqs7.plugins.docer.reader.base;
 
+import cn.gudqs7.plugins.docer.constant.MapKeyConstant;
 import cn.gudqs7.plugins.docer.pojo.StructureAndCommentInfo;
 import cn.gudqs7.plugins.docer.savior.base.BaseSavior;
 import cn.gudqs7.plugins.docer.theme.Theme;
@@ -60,12 +61,12 @@ public abstract class AbstractReader<T, B> extends BaseSavior implements IStruct
             Map<String, StructureAndCommentInfo> children = structureAndCommentInfo.getChildren();
             if (children != null && children.size() > 0) {
                 Map<String, Object> loopData = new HashMap<>(8);
-                // todo 可考虑将 parentData 重置, 以做到 parentData 总是父节点相关的数据; 目前是, 父节点/父父节点... 数据都可以在里面
+                loopData.put(MapKeyConstant.READER_PARENT_KEY, parentData);
                 beforeLoop(structureAndCommentInfo, loopData, data, parentData);
                 for (Map.Entry<String, StructureAndCommentInfo> entry : children.entrySet()) {
                     StructureAndCommentInfo value = entry.getValue();
                     beforeLoop0(value, structureAndCommentInfo, data, parentData);
-                    T leafData0 = read0(value, data, parentData, true);
+                    T leafData0 = read0(value, data, loopData, true);
                     if (leafData0 != null) {
                         inLoop(value, leafData0, loopData, data, parentData);
                     }

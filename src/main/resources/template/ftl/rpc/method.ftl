@@ -2,30 +2,13 @@
 <#if interfaceNotes?? && interfaceNotes != ''>
 > ${interfaceNotes}
 </#if>
-
-## 请求信息
-
-### 请求地址
+## 方法信息
 ```
-${url}
+{{qualifiedMethodName}}
 ```
-
-### 请求方法
-```
-${method}
-```
-
-<#if method?? && method != 'GET' && contentType??>
-### 请求体类型
-```
-${contentType}
-```
-</#if>
-
-## 入参
+## 入参说明
 <#if jsonExample?? && jsonExample != '' && jsonExample != '{}' >
-<#assign jsonExampleType = (contentType?? && contentType=='applicatin/json')?string('RequestBody','Postman Bulk Edit')>
-### 入参示例 (${jsonExampleType})
+### 入参示例
 ```json
 ${jsonExample}
 ```
@@ -45,7 +28,7 @@ ${jsonExample}
     </#list>
 </#list>
 
-<#if fieldList?? && (fieldList?size > 0)>
+
 ### 入参字段说明
 
 | **字段** | **类型** | **必填** | **含义** | **其他参考信息** |
