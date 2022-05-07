@@ -75,18 +75,7 @@ public class FileUtil {
             PsiJavaFile psiJavaFile = (PsiJavaFile) element;
             String packageName = psiJavaFile.getPackageName();
             if (StringUtils.isNotBlank(packageName)) {
-                String[] packageArray = packageName.split("\\.");
-                int length = packageArray.length;
-                if (length > 0) {
-                    if (length == 1) {
-                        return packageArray[0];
-                    }
-                    if (length > 1) {
-                        return packageArray[length - 2] + "." + packageArray[length - 1];
-                    }
-                } else {
-                    return packageName;
-                }
+                return packageName;
             }
         }
         if (element instanceof PsiClass) {

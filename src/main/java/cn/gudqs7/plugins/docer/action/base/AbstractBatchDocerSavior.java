@@ -3,6 +3,7 @@ package cn.gudqs7.plugins.docer.action.base;
 import cn.gudqs7.plugins.docer.annotation.AnnotationHolder;
 import cn.gudqs7.plugins.docer.pojo.annotation.CommentInfo;
 import cn.gudqs7.plugins.docer.util.*;
+import cn.gudqs7.plugins.util.PsiUtil;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
@@ -145,7 +146,7 @@ public abstract class AbstractBatchDocerSavior extends AnAction {
                                         continue;
                                     }
 
-                                    String moduleName = getModuleName(packageNameUniqueAtomic, psiClass0, commentInfo);
+                                    String moduleName = getModuleName(project, packageNameUniqueAtomic, psiClass0, commentInfo);
                                     String fileParentDir = getDirPrefix() + File.separator + moduleName;
                                     File parent = new File(docRootDirPath + File.separator + fileParentDir);
                                     String fileName = getFileName(psiClass0, commentInfo);
@@ -287,11 +288,25 @@ public abstract class AbstractBatchDocerSavior extends AnAction {
         return commentInfo.getItemName(psiClass0.getName());
     }
 
-    protected String getModuleName(AtomicReference<String> packageNameUniqueAtomic, PsiClass psiClass0, CommentInfo commentInfo) {
+    protected String getModuleName(Project project, AtomicReference<String> packageNameUniqueAtomic, PsiClass psiClass0, CommentInfo commentInfo) {
         String suffix = "other";
         String packageName = packageNameUniqueAtomic.get();
         if (StringUtils.isNotBlank(packageName)) {
-            suffix = packageName;
+            String[] packageArray = packageName.split("\\.");
+            int length = packageArray.length;
+            if (length > 1) {
+                suffix = packageArray[length - 2] + "." + packageArray[length - 1];
+            } else {
+                suffix = packageName;
+            }
+
+            // 从 package-info.java 的注释中获取模块信息
+            PsiJavaFile psiJavaFile = PsiUtil.getPsiJavaFileByName(project, packageName, "package-info.java");
+            PsiComment packageComment = PsiUtil.getPackageComment(psiJavaFile);
+            String module = PsiUtil.getCommentTagByPsiComment(packageComment, "module");
+            if (module != null) {
+                suffix = module;
+            }
         }
         if (commentInfo != null) {
             suffix = commentInfo.getSingleStr("module", suffix);
