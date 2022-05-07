@@ -103,7 +103,7 @@ public class HTMLDecorator implements Decorator {
 
         String value = valueParts[0].getValue();
         StringBuilder tmp = new StringBuilder("<pre>");
-        tmp.append("<code>");
+        tmp.append("<code class=\"language-json\">");
         value = value.replaceAll("<", "&lt;");
         value = value.replaceAll(">", "&gt;");
         if (value.endsWith("\n")) {
@@ -161,16 +161,24 @@ public class HTMLDecorator implements Decorator {
     private String formatByType(BlockType type, String value, ValuePart valuePart) {
         switch (type) {
             case BOLD_WORD:
+                value = value.replaceAll("<", "&lt;");
+                value = value.replaceAll(">", "&gt;");
                 return "<strong>" + value + "</strong>";
             case ITALIC_WORD:
+                value = value.replaceAll("<", "&lt;");
+                value = value.replaceAll(">", "&gt;");
                 return "<em>" + value + "</em>";
             case STRIKE_WORD:
+                value = value.replaceAll("<", "&lt;");
+                value = value.replaceAll(">", "&gt;");
                 return "<del>" + value + "</del>";
             case CODE_WORD:
                 value = value.replaceAll("<", "&lt;");
                 value = value.replaceAll(">", "&gt;");
                 return "<code>" + value + "</code>";
             case HEADLINE:
+                value = value.replaceAll("<", "&lt;");
+                value = value.replaceAll(">", "&gt;");
                 int level = valuePart.getLevel() + 1;
                 return "<h" + level + ">" + value + "</h" + level + ">";
             case LINK:
@@ -181,6 +189,8 @@ public class HTMLDecorator implements Decorator {
             case ROW:
                 return "<br/>";
             default:
+                value = value.replaceAll("<", "&lt;");
+                value = value.replaceAll(">", "&gt;");
                 return value;
         }
     }
