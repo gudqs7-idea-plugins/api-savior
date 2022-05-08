@@ -51,7 +51,7 @@
 
 #### 效果图
 
-![gen-api](https://github.com/docer-savior/docer-savior-idea-plugin/blob/master/parts/usage/gen-api.gif)  
-![export-to-postman](https://github.com/docer-savior/docer-savior-idea-plugin/blob/master/parts/usage/export-to-postman.gif)  
-![all-get](https://github.com/docer-savior/docer-savior-idea-plugin/blob/master/parts/usage/allget.gif)  
-![all-get-by-intention-action](https://github.com/docer-savior/docer-savior-idea-plugin/blob/master/parts/usage/allget-by-intention-action.gif)  
+![gen-api](https://github.com/docer-savior/docer-savior-idea-plugin/raw/master/parts/usage/gen-api.gif)  
+![export-to-postman](https://github.com/docer-savior/docer-savior-idea-plugin/raw/master/parts/usage/export-to-postman.gif)  
+![all-get](https://github.com/docer-savior/docer-savior-idea-plugin/raw/master/parts/usage/allget.gif)  
+![all-get-by-intention-action](https://github.com/docer-savior/docer-savior-idea-plugin/raw/master/parts/usage/allget-by-intention-action.gif)  
