@@ -20,6 +20,9 @@ public class GenerateConvertTemplate extends GenerateBaseTemplate {
     }
 
     private static boolean isApplicable0(PsiElement psiElement) {
+        if (psiElement == null) {
+            return false;
+        }
         if (psiElement instanceof PsiJavaToken) {
             PsiJavaToken psiJavaToken = (PsiJavaToken) psiElement;
             IElementType tokenType = psiJavaToken.getTokenType();

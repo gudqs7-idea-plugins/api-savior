@@ -15,6 +15,9 @@ public abstract class AbstractVariableGenerateTemplate extends GenerateBaseTempl
     }
 
     private static boolean isApplicable0(PsiElement psiElement) {
+        if (psiElement == null) {
+            return false;
+        }
         if (psiElement instanceof PsiIdentifier) {
             PsiElement parent = psiElement.getParent();
             if (parent instanceof PsiReferenceExpression) {

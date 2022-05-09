@@ -10,11 +10,11 @@ import org.jetbrains.annotations.NotNull;
  * @author WQ
  * @date 2021/10/1
  */
-public abstract class GenerateAllSetterTemplate extends AbstractVariableGenerateTemplate {
+public abstract class AbstractGenerateAllSetterTemplate extends AbstractVariableGenerateTemplate {
 
     private final boolean generateDefaultVal;
 
-    public GenerateAllSetterTemplate(boolean generateDefaultVal, String templateName, String example) {
+    public AbstractGenerateAllSetterTemplate(boolean generateDefaultVal, String templateName, String example) {
         super(templateName, example);
         this.generateDefaultVal = generateDefaultVal;
     }

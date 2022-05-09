@@ -26,6 +26,9 @@ public class GenerateAllSetterByBuilderTemplate extends GenerateBaseTemplate {
     }
 
     private static boolean isApplicable0(PsiElement psiElement) {
+        if (psiElement == null) {
+            return false;
+        }
         String methodName = "";
         if (psiElement instanceof PsiJavaToken) {
             PsiJavaToken psiJavaToken = (PsiJavaToken) psiElement;
