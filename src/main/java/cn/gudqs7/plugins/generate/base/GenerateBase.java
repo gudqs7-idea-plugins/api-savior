@@ -11,6 +11,7 @@ import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
 import com.intellij.psi.impl.source.PsiClassReferenceType;
+import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashSet;
@@ -43,12 +44,12 @@ public interface GenerateBase {
      * @return 类型
      */
     @SuppressWarnings("AlibabaMethodTooLong")
-    default String handlerByPsiType(Set<String> newImportList, Project project, PsiType psiFieldType, String typeNameFormat, String typeName) {
+    default Pair<String, String> handlerByPsiType(Set<String> newImportList, Project project, PsiType psiFieldType, String typeNameFormat, String typeName) {
+        String right = "";
         String fieldTypeName = String.format(typeNameFormat, typeName);
-
         String typeSimpleName = psiFieldType.getPresentableText();
         if (BaseTypeUtil.isJavaBaseType(typeSimpleName) || "Object".equals(typeSimpleName)) {
-            return fieldTypeName;
+            return Pair.of(fieldTypeName, right);
         }
 
         boolean isArrayType = psiFieldType instanceof PsiArrayType;
@@ -92,27 +93,22 @@ public interface GenerateBase {
                 return handlerByPsiType(newImportList, project, realPsiType, typeFormat, realTypeName);
             }
 
-            // 枚举
-            if (resolveClass.isEnum()) {
-                return fieldTypeName;
-            }
-
             // List
             if (PsiUtil.isPsiTypeFromList(psiFieldType, project)) {
-                return getFieldTypeNameByCollection(newImportList, project, typeNameFormat, fieldTypeName, parameters,
+                return getFieldTypeNameByCollection(newImportList, project, typeNameFormat, fieldTypeName, parameters, right,
                         "java.util.List", "List<%s>");
             }
 
             // Set
             if (PsiUtil.isPsiTypeFromSet(psiFieldType, project)) {
                 return getFieldTypeNameByCollection(newImportList, project, typeNameFormat, fieldTypeName, parameters,
-                        "java.util.Set", "Set<%s>");
+                        right, "java.util.Set", "Set<%s>");
             }
 
             // Collection
             if (PsiUtil.isPsiTypeFromCollection(psiFieldType, project)) {
                 return getFieldTypeNameByCollection(newImportList, project, typeNameFormat, fieldTypeName, parameters,
-                        "java.util.Collection", "Collection<%s>");
+                        right, "java.util.Collection", "Collection<%s>");
             }
 
             // Map
@@ -130,16 +126,19 @@ public interface GenerateBase {
                     String realTypeName = valueType.getPresentableText();
                     return handlerByPsiType(newImportList, project, valueType, typeFormat, realTypeName);
                 } else {
-                    return fieldTypeName;
+                    return Pair.of(fieldTypeName, right);
                 }
+            }
+            if (resolveClass.isInterface()) {
+                right = "{}";
             }
             if (resolveClass.getQualifiedName() != null) {
                 newImportList.add(resolveClass.getQualifiedName());
             }
         } else {
-            System.out.println(psiFieldType.getPresentableText() + " ==> not basic type, not ReferenceType");
+            System.out.println(fieldTypeName + " ==> not basic type, not ReferenceType");
         }
-        return fieldTypeName;
+        return Pair.of(fieldTypeName, right);
     }
 
     /**
@@ -149,11 +148,12 @@ public interface GenerateBase {
      * @param typeNameFormat typeName 格式化
      * @param fieldTypeName  类型
      * @param parameters 泛型参数集合
+     * @param right
      * @param importCodeStr 需要引入的包
      * @param format 格式化
      * @return 类型
      */
-    default String getFieldTypeNameByCollection(Set<String> newImportList, Project project, String typeNameFormat, String fieldTypeName, PsiType[] parameters, String importCodeStr, String format) {
+    default Pair<String, String> getFieldTypeNameByCollection(Set<String> newImportList, Project project, String typeNameFormat, String fieldTypeName, PsiType[] parameters, String right, String importCodeStr, String format) {
         if (parameters.length > 0) {
             newImportList.add(importCodeStr);
             PsiType elementType = parameters[0];
@@ -161,7 +161,7 @@ public interface GenerateBase {
             String realTypeName = elementType.getPresentableText();
             return handlerByPsiType(newImportList, project, elementType, typeFormat, realTypeName);
         } else {
-            return fieldTypeName;
+            return Pair.of(fieldTypeName, right);
         }
     }
 

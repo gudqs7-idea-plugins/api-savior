@@ -9,6 +9,7 @@ import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiParameter;
 import com.intellij.psi.PsiType;
 import com.intellij.psi.impl.source.PsiClassReferenceType;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.Set;
 
@@ -50,8 +51,10 @@ public abstract class AbstractDefaultValGenerate extends AbstractMethodListGener
                             newImportList.add(commonDefaultValImport);
                         }
                     } else {
-                        String fieldType = handlerByPsiType(newImportList, project, psiType, "%s", typeName);
-                        defaultVal = "new " + fieldType + "()";
+                        Pair<String, String> pair = handlerByPsiType(newImportList, project, psiType, "%s", typeName);
+                        String fieldType = pair.getLeft();
+                        String right = pair.getRight();
+                        defaultVal = "new " + fieldType + "()" + right;
                     }
                 }
             }

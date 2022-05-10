@@ -15,13 +15,15 @@ public class BaseTypeUtil {
     static {
         // 此处处理不能直接 new 的类型, 也就是接口, 常用的接口目前只想到三大集合
         COMMON_DEFAULT_VAL_MAP.put("java.util.List", "new ArrayList<>()");
-        COMMON_DEFAULT_VAL_MAP.put("java.util.Map", "new HashMap<>()");
+        COMMON_DEFAULT_VAL_MAP.put("java.util.Map", "new HashMap<>(2)");
         COMMON_DEFAULT_VAL_MAP.put("java.util.Set", "new HashSet<>()");
+        COMMON_DEFAULT_VAL_MAP.put("java.util.Collection", "new ArrayList<>()");
         COMMON_DEFAULT_VAL_MAP.put("java.math.BigDecimal", "new BigDecimal(0)");
 
         COMMON_DEFAULT_VAL_IMPORT_MAP.put("java.util.List", "java.util.ArrayList");
         COMMON_DEFAULT_VAL_IMPORT_MAP.put("java.util.Map", "java.util.HashMap");
         COMMON_DEFAULT_VAL_IMPORT_MAP.put("java.util.Set", "java.util.HashSet");
+        COMMON_DEFAULT_VAL_IMPORT_MAP.put("java.util.Collection", "java.util.ArrayList");
         COMMON_DEFAULT_VAL_IMPORT_MAP.put("java.math.BigDecimal", "java.math.BigDecimal");
     }
 
@@ -32,9 +34,11 @@ public class BaseTypeUtil {
     public static String getJavaBaseTypeDefaultVal(String typeName) {
         switch (typeName.toLowerCase()) {
             case "byte":
+                return "(byte) 0";
+            case "short":
+                return "(short) 0";
             case "int":
             case "integer":
-            case "short":
                 return "0";
             case "char":
             case "character":

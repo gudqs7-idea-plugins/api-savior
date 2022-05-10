@@ -7,6 +7,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiMethod;
 import com.intellij.psi.PsiType;
+import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -43,7 +44,9 @@ public class GenerateGetter extends AbstractMethodListGenerate {
         }
         Project project = method.getProject();
         String typeName = returnType.getPresentableText();
-        String fieldType = handlerByPsiType(newImportList, project, returnType, "%s", typeName);
+        Pair<String, String> pair = handlerByPsiType(newImportList, project, returnType, "%s", typeName);
+        String fieldType = pair.getLeft();
+        String right = pair.getRight();
         return fieldType + " " + recvVarName + " = " + sourceVarName + "." + methodName + "();";
     }
 
