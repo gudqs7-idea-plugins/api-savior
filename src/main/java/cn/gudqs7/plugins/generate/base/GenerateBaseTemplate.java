@@ -10,6 +10,7 @@ import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Condition;
 import com.intellij.openapi.util.TextRange;
+import com.intellij.psi.PsiCodeBlock;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
@@ -25,6 +26,10 @@ import java.util.function.Function;
 public abstract class GenerateBaseTemplate extends PostfixTemplateWithExpressionSelector {
 
     public GenerateBaseTemplate(String templateName, String example, Function<PsiElement, Boolean> isApplicable) {
+        this(templateName, example, isApplicable, GenerateBaseTemplate::getExpressions);
+    }
+
+    public GenerateBaseTemplate(String templateName, String example, Function<PsiElement, Boolean> isApplicable, Function<PsiElement, PsiElement> expressionGetFn) {
         super(
                 templateName,
                 templateName,
@@ -32,7 +37,7 @@ public abstract class GenerateBaseTemplate extends PostfixTemplateWithExpression
                 new PostfixTemplateExpressionSelectorBase(psiElement -> true) {
                     @Override
                     protected List<PsiElement> getNonFilteredExpressions(@NotNull PsiElement context, @NotNull Document document, int offset) {
-                        return ContainerUtil.createMaybeSingletonList(JavaPostfixTemplatesUtils.getTopmostExpression(context));
+                        return ContainerUtil.createMaybeSingletonList(expressionGetFn.apply(context));
                     }
 
                     @Override
@@ -47,6 +52,16 @@ public abstract class GenerateBaseTemplate extends PostfixTemplateWithExpression
                 },
                 null
         );
+    }
+
+    /**
+     * 获取传到 expandForChooseExpression 方法的 PsiElement 数据, 逻辑与 isApplicable 保持一致即可
+     *
+     * @param context 当前 psiElement
+     * @return 传到 expandForChooseExpression 方法的 PsiElement
+     */
+    public static PsiElement getExpressions(PsiElement context) {
+        return JavaPostfixTemplatesUtils.getTopmostExpression(context);
     }
 
     /**
@@ -83,6 +98,9 @@ public abstract class GenerateBaseTemplate extends PostfixTemplateWithExpression
     }
 
     protected void removeExpressionFromEditor(@NotNull PsiElement expression, @NotNull Editor editor) {
+        while (!(expression.getParent() instanceof PsiCodeBlock)) {
+            expression = expression.getParent();
+        }
         Document document = editor.getDocument();
         TextRange textRange = expression.getTextRange();
         int endOffset = textRange.getEndOffset();

@@ -56,7 +56,7 @@ public class GenerateBuilder extends AbstractDefaultValGenerate {
         }
         String typeFullName = baseVar.getVarName();
         String varName = typeFullName.substring(0, 1).toLowerCase() + typeFullName.substring(1);
-        builder.append(typeFullName).append("<Object> ").append(varName).append(" = ").append(typeFullName).append(".builder()\n");
+        builder.append(typeFullName).append(" ").append(varName).append(" = ").append(typeFullName).append(".builder()\n");
     }
 
     @Override

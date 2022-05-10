@@ -10,25 +10,25 @@ import com.intellij.psi.*;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.tree.IElementType;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 
 /**
  * @author WQ
  * @date 2021/10/1
  */
-@SuppressWarnings("PostfixTemplateDescriptionNotFound")
 public class GenerateAllSetterByBuilderTemplate extends GenerateBaseTemplate {
 
     private final boolean generateDefaultVal;
 
     public GenerateAllSetterByBuilderTemplate() {
-        super("allbuilder", "Generate builder", GenerateAllSetterByBuilderTemplate::isApplicable0);
+        super("allbuilder", "Generate builder",
+                GenerateAllSetterByBuilderTemplate::isApplicable0,
+                GenerateAllSetterByBuilderTemplate::getExpressions
+        );
         this.generateDefaultVal = true;
     }
 
-    private static boolean isApplicable0(PsiElement psiElement) {
-        if (psiElement == null) {
-            return false;
-        }
+    private static Pair<String, PsiElement> getRightPsiElement(PsiElement psiElement) {
         String methodName = "";
         if (psiElement instanceof PsiJavaToken) {
             PsiJavaToken psiJavaToken = (PsiJavaToken) psiElement;
@@ -48,6 +48,16 @@ public class GenerateAllSetterByBuilderTemplate extends GenerateBaseTemplate {
                     break;
             }
         }
+        return Pair.of(methodName, psiElement);
+    }
+
+    private static boolean isApplicable0(PsiElement psiElement) {
+        if (psiElement == null) {
+            return false;
+        }
+        Pair<String, PsiElement> rightPsiElement = getRightPsiElement(psiElement);
+        String methodName = rightPsiElement.getLeft();
+        psiElement = rightPsiElement.getRight();
         if ("builder".equals(methodName)) {
             if (psiElement instanceof PsiReferenceExpression) {
                 PsiReferenceExpression expression = (PsiReferenceExpression) psiElement;
@@ -55,6 +65,22 @@ public class GenerateAllSetterByBuilderTemplate extends GenerateBaseTemplate {
             }
         }
         return false;
+    }
+
+    public static PsiElement getExpressions(PsiElement psiElement) {
+        if (psiElement == null) {
+            return null;
+        }
+        Pair<String, PsiElement> rightPsiElement = getRightPsiElement(psiElement);
+        String methodName = rightPsiElement.getLeft();
+        psiElement = rightPsiElement.getRight();
+        if ("builder".equals(methodName)) {
+            if (psiElement instanceof PsiReferenceExpression) {
+                PsiReferenceExpression expression = (PsiReferenceExpression) psiElement;
+                return psiElement;
+            }
+        }
+        return null;
     }
 
     @Override

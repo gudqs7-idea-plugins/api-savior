@@ -1,0 +1,26 @@
+import lombok.Builder;
+import lombok.Data;
+
+@Builder
+@Data
+class Foo {
+
+    private Integer testInt;
+
+    private Long testLong;
+
+    private Float testFloat;
+
+    private Double testDouble;
+
+    private Boolean testBoolean;
+
+}
+
+public class App {
+
+    public void test() {
+        Foo.builder()$key
+    }
+
+}

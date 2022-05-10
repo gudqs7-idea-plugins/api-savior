@@ -1,5 +1,6 @@
 package cn.gudqs7.plugins.generate.base;
 
+import cn.gudqs7.plugins.docer.util.ActionUtil;
 import cn.gudqs7.plugins.generate.util.BaseTypeUtil;
 import cn.gudqs7.plugins.util.PsiDocumentUtil;
 import cn.gudqs7.plugins.util.PsiUtil;
@@ -201,13 +202,18 @@ public interface GenerateBase {
      * @param editor             editor
      */
     default void insertCodeByPsiTypeWithTemplate(Document document, PsiDocumentManager psiDocumentManager, PsiFile containingFile, Editor editor) {
-        HashSet<String> newImportList = new HashSet<>();
-        String insertCode = generateCode("", newImportList);
-        TemplateManager manager = TemplateManager.getInstance(containingFile.getProject());
-        Template template = manager.createTemplate("", "", insertCode + "$END$");
-        template.setToReformat(true);
-        manager.startTemplate(editor, template);
-        PsiDocumentUtil.addImportToFile(psiDocumentManager, (PsiJavaFile) containingFile, document, newImportList);
+        try {
+            HashSet<String> newImportList = new HashSet<>();
+            String insertCode = generateCode("", newImportList);
+            System.out.println("insertCodeByPsiTypeWithTemplate :: " + insertCode);
+            TemplateManager manager = TemplateManager.getInstance(containingFile.getProject());
+            Template template = manager.createTemplate("", "", insertCode + "$END$");
+            template.setToReformat(true);
+            manager.startTemplate(editor, template);
+            PsiDocumentUtil.addImportToFile(psiDocumentManager, (PsiJavaFile) containingFile, document, newImportList);
+        } catch (Throwable throwable) {
+            ActionUtil.handleException(throwable);
+        }
     }
 
 

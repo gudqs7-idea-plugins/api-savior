@@ -65,7 +65,6 @@ public abstract class AbstractMethodListGenerate implements GenerateBase {
     }
 
     protected void beforeAppend(StringBuilder builder, String splitText, HashSet<String> newImportList) {
-
         builder.append(splitText);
     }
 
