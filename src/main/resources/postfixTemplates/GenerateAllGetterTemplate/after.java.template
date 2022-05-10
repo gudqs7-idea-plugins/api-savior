@@ -1,0 +1,29 @@
+import lombok.Data;
+
+@Data
+class Foo {
+
+    private Integer testInt;
+
+    private Long testLong;
+
+    private Float testFloat;
+
+    private Double testDouble;
+
+    private Boolean testBoolean;
+
+}
+
+public class App {
+
+    public void test() {
+        Foo foo = new Foo();
+        <spot>Integer testInt = foo.getTestInt();
+        Long testLong = foo.getTestLong();
+        Float testFloat = foo.getTestFloat();
+        Double testDouble = foo.getTestDouble();
+        Boolean testBoolean = foo.getTestBoolean();</spot>
+    }
+
+}

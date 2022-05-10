@@ -1,7 +1,5 @@
-import lombok.Builder;
 import lombok.Data;
 
-@Builder
 @Data
 class Foo {
 
@@ -20,7 +18,12 @@ class Foo {
 public class App {
 
     public void test() {
-        <spot>Foo.builder()</spot>$key
+        Foo foo = new Foo();
+        <spot>foo.setTestInt();
+        foo.setTestLong();
+        foo.setTestFloat();
+        foo.setTestDouble();
+        foo.setTestBoolean();</spot>
     }
 
 }

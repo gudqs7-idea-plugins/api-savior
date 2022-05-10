@@ -20,13 +20,13 @@ class Foo {
 public class App {
 
     public void test() {
-        Foo foo = Foo.builder()
+        <spot>Foo foo = Foo.builder()
                 .testInt(0)
                 .testLong(0L)
                 .testFloat(0f)
                 .testDouble(0D)
                 .testBoolean(false)
-                .build();
+                .build();</spot>
     }
 
 }

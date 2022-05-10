@@ -12,7 +12,6 @@ import com.intellij.psi.tree.IElementType;
 /**
  * @author WQ
  */
-@SuppressWarnings("PostfixTemplateDescriptionNotFound")
 public class GenerateConvertTemplate extends GenerateBaseTemplate {
 
     public GenerateConvertTemplate() {

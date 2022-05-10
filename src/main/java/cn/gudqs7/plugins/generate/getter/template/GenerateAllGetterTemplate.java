@@ -9,7 +9,6 @@ import org.jetbrains.annotations.NotNull;
  * @author WQ
  * @date 2021/10/1
  */
-@SuppressWarnings("PostfixTemplateDescriptionNotFound")
 public class GenerateAllGetterTemplate extends AbstractVariableGenerateTemplate {
 
     public GenerateAllGetterTemplate() {
