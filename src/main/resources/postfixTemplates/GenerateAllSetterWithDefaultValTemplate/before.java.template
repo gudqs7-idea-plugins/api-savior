@@ -1,5 +1,14 @@
 import lombok.Data;
 
+public class App {
+
+    public void test() {
+        Foo foo = new Foo();
+        <spot>foo</spot>$key
+    }
+
+}
+
 @Data
 class Foo {
 
@@ -12,14 +21,5 @@ class Foo {
     private Double testDouble;
 
     private Boolean testBoolean;
-
-}
-
-public class App {
-
-    public void test() {
-        Foo foo = new Foo();
-        <spot>foo</spot>$key
-    }
 
 }

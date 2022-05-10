@@ -1,6 +1,20 @@
 import lombok.Builder;
 import lombok.Data;
 
+public class App {
+
+    public void test() {
+        <spot>Foo foo = Foo.builder()
+                .testInt(0)
+                .testLong(0L)
+                .testFloat(0f)
+                .testDouble(0D)
+                .testBoolean(false)
+                .build();</spot>
+    }
+
+}
+
 @Builder
 @Data
 class Foo {
@@ -14,19 +28,5 @@ class Foo {
     private Double testDouble;
 
     private Boolean testBoolean;
-
-}
-
-public class App {
-
-    public void test() {
-        <spot>Foo foo = Foo.builder()
-                .testInt(0)
-                .testLong(0L)
-                .testFloat(0f)
-                .testDouble(0D)
-                .testBoolean(false)
-                .build();</spot>
-    }
 
 }

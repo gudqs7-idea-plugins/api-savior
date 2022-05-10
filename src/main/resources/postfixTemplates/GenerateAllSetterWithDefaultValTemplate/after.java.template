@@ -1,5 +1,18 @@
 import lombok.Data;
 
+public class App {
+
+    public void test() {
+        Foo foo = new Foo();
+        <spot>foo.setTestInt(0);
+        foo.setTestLong(0L);
+        foo.setTestFloat(0f);
+        foo.setTestDouble(0D);
+        foo.setTestBoolean(false);</spot>
+    }
+
+}
+
 @Data
 class Foo {
 
@@ -12,18 +25,5 @@ class Foo {
     private Double testDouble;
 
     private Boolean testBoolean;
-
-}
-
-public class App {
-
-    public void test() {
-        Foo foo = new Foo();
-        <spot>foo.setTestInt(0);
-        foo.setTestLong(0L);
-        foo.setTestFloat(0f);
-        foo.setTestDouble(0D);
-        foo.setTestBoolean(false);</spot>
-    }
 
 }

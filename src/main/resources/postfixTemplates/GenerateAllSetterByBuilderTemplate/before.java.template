@@ -1,6 +1,14 @@
 import lombok.Builder;
 import lombok.Data;
 
+public class App {
+
+    public void test() {
+        <spot>Foo.builder()</spot>$key
+    }
+
+}
+
 @Builder
 @Data
 class Foo {
@@ -14,13 +22,5 @@ class Foo {
     private Double testDouble;
 
     private Boolean testBoolean;
-
-}
-
-public class App {
-
-    public void test() {
-        <spot>Foo.builder()</spot>$key
-    }
 
 }
