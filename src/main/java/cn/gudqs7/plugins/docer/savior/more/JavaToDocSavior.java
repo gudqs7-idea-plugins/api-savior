@@ -1,5 +1,6 @@
 package cn.gudqs7.plugins.docer.savior.more;
 
+import cn.gudqs7.plugins.docer.constant.MapKeyConstant;
 import cn.gudqs7.plugins.docer.pojo.FieldLevelInfo;
 import cn.gudqs7.plugins.docer.pojo.StructureAndCommentInfo;
 import cn.gudqs7.plugins.docer.pojo.annotation.CommentInfo;
@@ -78,7 +79,7 @@ public class JavaToDocSavior extends AbstractSavior<Map<String, Object>> {
         Map<String, Object> java2jsonMap = java2JsonReader.read(paramStructureAndCommentInfo);
         Map<String, Object> returnJava2jsonMap = java2JsonReader.read(returnStructureAndCommentInfo);
         String java2jsonStr = JsonUtil.toJson(java2jsonMap);
-        String returnJava2jsonStr = JsonUtil.toJson(returnJava2jsonMap);
+        String returnJava2jsonStr = JsonUtil.toJson(returnJava2jsonMap.getOrDefault(MapKeyConstant.RETURN_FIELD_NAME, new Object()));
 
         Map<String, Object> dataByStr = collectDataByStr(project, publicMethod, commentInfo, interfaceClassName,
                 paramLevelMap, returnLevelMap, java2jsonStr, returnJava2jsonStr);

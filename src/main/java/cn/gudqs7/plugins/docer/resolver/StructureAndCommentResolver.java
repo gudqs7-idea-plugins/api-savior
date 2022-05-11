@@ -146,7 +146,7 @@ public class StructureAndCommentResolver extends BaseSavior implements IStructur
 
         AnnotationHolder psiReturnTypeHolder = AnnotationHolder.getPsiReturnTypeHolder(returnTypeElement);
         CommentInfo commentInfo = psiReturnTypeHolder.getCommentInfo();
-        StructureAndCommentInfo structureAndCommentInfo = resolveByPsiType(null, "", returnType, commentInfo, null, MapKeyConstant.FIELD_PREFIX_INIT, level);
+        StructureAndCommentInfo structureAndCommentInfo = resolveByPsiType(null, MapKeyConstant.RETURN_FIELD_NAME, returnType, commentInfo, null, MapKeyConstant.FIELD_PREFIX_INIT, level);
         structureAndCommentInfo.setReturnType(true);
         structureAndCommentInfo.setType(StructureType.PSI_RETURN.getType());
         structureAndCommentInfo.setReturnTypeElement(returnTypeElement);

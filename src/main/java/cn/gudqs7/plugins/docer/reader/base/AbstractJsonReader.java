@@ -118,7 +118,7 @@ public abstract class AbstractJsonReader<B> extends AbstractReader<Map<String, O
         if (structureAndCommentInfo.getParent() == null) {
             // 当单个返回值为pojo时, leafData 数据赋值成功, 但 map 仍为空, 需要添加到 map 中
             if (StructureType.of(type) == StructureType.PSI_RETURN) {
-                map.putAll(loopObj);
+                map.putAll(leafData);
             }
         }
     }

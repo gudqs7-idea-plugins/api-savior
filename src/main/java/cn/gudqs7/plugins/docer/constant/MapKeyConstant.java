@@ -16,4 +16,6 @@ public interface MapKeyConstant {
 
     String READER_PARENT_KEY = "__parent__";
 
+    String RETURN_FIELD_NAME = "root";
+
 }
