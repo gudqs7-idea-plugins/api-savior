@@ -23,6 +23,6 @@ public class RpcProjectDocSaviorAction extends AbstractProjectDocerSavior {
 
     @Override
     protected String getDirPrefix() {
-        return "rpc-doc";
+        return "rpc";
     }
 }

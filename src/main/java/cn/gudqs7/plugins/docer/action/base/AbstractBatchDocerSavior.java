@@ -20,7 +20,6 @@ import com.intellij.psi.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.util.*;
@@ -46,9 +45,9 @@ public abstract class AbstractBatchDocerSavior extends AnAction {
         PsiDirectory psiDirectory = ActionUtil.getPsiDirectory(psiElement);
 
         try {
-            PsiClass firstClass = getFirstPsiClass(e, project, psiClass, psiDirectory);
-            if (firstClass != null) {
-                init(e, project, psiElement, firstClass);
+            VirtualFile virtualFile = getFirstPsiFile(e, project, psiElement, false);
+            if (virtualFile != null) {
+                initConfig(e, project, psiElement, virtualFile);
             }
             boolean update0 = update0(e, project, psiElement, psiClass, psiDirectory);
             if (update0) {
@@ -105,12 +104,27 @@ public abstract class AbstractBatchDocerSavior extends AnAction {
             psiClassList = getPsiClassList(e, project, psiDirectory, psiClassList);
             if (!CollectionUtils.isEmpty(psiClassList)) {
                 PsiClass firstClass = new ArrayList<>(psiClassList).get(0);
-                init(e, project, psiElement, firstClass);
+                initConfig(e, project, psiElement, firstClass.getContainingFile().getVirtualFile());
                 final Set<PsiClass> finalPsiClassList = psiClassList;
+
+                String dirRoot = "api-doc";
+                String dirPrefix = getDirPrefix();
+                Map<String, String> config = ConfigHolder.getConfig();
+                if (config != null) {
+                    dirRoot = config.getOrDefault("dir.root", dirRoot);
+                    String overrideDir = config.get("dir." + dirPrefix);
+                    if (StringUtils.isNotBlank(overrideDir)) {
+                        dirRoot = overrideDir;
+                    } else {
+                        dirRoot = dirRoot + File.separator + dirPrefix;
+                    }
+                }
+
                 String projectFilePath = project.getBasePath();
-                String docRootDirPath = projectFilePath + "/" + API_DOC_ROOT_DIR_NAME;
+                String docRootDirPath = projectFilePath + File.separator + dirRoot;
                 String title = getModelTitle();
                 AtomicBoolean hasCancelAtomic = new AtomicBoolean(false);
+                String finalDirRoot = dirRoot;
                 ProgressManager.getInstance().run(new Task.Modal(project, title, true) {
                     @Override
                     public void run(@NotNull ProgressIndicator indicator) {
@@ -147,8 +161,8 @@ public abstract class AbstractBatchDocerSavior extends AnAction {
                                     }
 
                                     String moduleName = getModuleName(project, packageNameUniqueAtomic, psiClass0, commentInfo);
-                                    String fileParentDir = getDirPrefix() + File.separator + moduleName;
-                                    File parent = new File(docRootDirPath + File.separator + fileParentDir);
+                                    String fileParentDir = finalDirRoot + File.separator + moduleName;
+                                    File parent = new File(projectFilePath, fileParentDir);
                                     String fileName = getFileName(psiClass0, commentInfo);
                                     String fullFileName = fileName + "." + getFileExtension();
                                     float fraction = i++ / size;
@@ -191,11 +205,10 @@ public abstract class AbstractBatchDocerSavior extends AnAction {
         return false;
     }
 
-    protected void init(AnActionEvent e, Project project, PsiElement psiElement, PsiClass firstClass) {
+    protected void initConfig(AnActionEvent e, Project project, PsiElement psiElement, VirtualFile virtualFile) {
         AtomicReference<Map<String, String>> configAtomic = new AtomicReference<>(new HashMap<>());
         ApplicationManager.getApplication().invokeAndWait(() -> {
-            PsiFile psiFile = firstClass.getContainingFile();
-            configAtomic.set(ConfigUtil.getConfig("docer-config.properties", psiFile));
+            configAtomic.set(ConfigUtil.getConfig("docer-config.properties", project, virtualFile));
         });
         Map<String, String> config = configAtomic.get();
         ConfigHolder.putConfig(config);
@@ -205,22 +218,32 @@ public abstract class AbstractBatchDocerSavior extends AnAction {
         ConfigHolder.removeConfig();
     }
 
-    @Nullable
-    private PsiClass getFirstPsiClass(@NotNull AnActionEvent e, Project project, PsiClass psiClass, PsiDirectory psiDirectory) {
-        PsiClass firstClass = null;
+    private VirtualFile getFirstPsiFile(@NotNull AnActionEvent e, Project project, PsiElement psiElement, boolean isFromArray) {
+        PsiClass psiClass = ActionUtil.getPsiClass(psiElement);
+        PsiDirectory psiDirectory = ActionUtil.getPsiDirectory(psiElement);
         boolean isRightClickOnClass = psiClass != null;
+        boolean isRightClickOnDirectory = psiDirectory != null;
         if (isRightClickOnClass) {
-            firstClass = psiClass;
-        } else {
-            Set<PsiClass> psiClassList = new TreeSet<>(
-                    Comparator.comparing(PsiClass::getQualifiedName)
-            );
-            psiClassList = getPsiClassList(e, project, psiDirectory, psiClassList);
-            if (psiClassList.size() > 0) {
-                firstClass = new ArrayList<>(psiClassList).get(0);
+            if (isNeedDealPsiClass(psiClass, project)) {
+                return psiClass.getContainingFile().getVirtualFile();
             }
         }
-        return firstClass;
+        if (isRightClickOnDirectory) {
+            return psiDirectory.getVirtualFile();
+        }
+
+        if (isFromArray) {
+            return null;
+        }
+        Object data = e.getDataContext().getData("psi.Element.array");
+        if (data instanceof PsiElement[]) {
+            PsiElement[] psiElements = (PsiElement[]) data;
+            if (psiElements.length > 1) {
+                PsiElement psiElement0 = psiElements[0];
+                return getFirstPsiFile(e, project, psiElement0, true);
+            }
+        }
+        return null;
     }
 
     private Set<PsiClass> getPsiClassList(@NotNull AnActionEvent e, Project project, PsiDirectory psiDirectory, Set<PsiClass> psiClassList) {
@@ -384,7 +407,7 @@ public abstract class AbstractBatchDocerSavior extends AnAction {
      * @param fraction        for循环进度百分比, 可用于进度条
      */
     protected void runLoop(Project project, PsiClass psiClass0, AtomicBoolean hasCancelAtomic, CommentInfo commentInfo, String moduleName, String fileName, File parent, String fileParentDir, String fullFileName, Map<String, Object> otherMap, ProgressIndicator indicator, float fraction) {
-        indicator.setText2("文件写入中：" + API_DOC_ROOT_DIR_NAME + File.separator + fileParentDir + File.separator + fullFileName);
+        indicator.setText2("文件写入中：" + fileParentDir + File.separator + fullFileName);
         indicator.setFraction(fraction);
 
         ApplicationManager.getApplication().invokeAndWait(() -> {

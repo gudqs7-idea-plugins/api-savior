@@ -3,10 +3,7 @@ package cn.gudqs7.plugins.docer.util;
 import com.intellij.notification.*;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiDirectory;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiMethod;
+import com.intellij.psi.*;
 import org.apache.commons.lang3.StringUtils;
 
 import java.net.InetAddress;
@@ -48,6 +45,18 @@ public class ActionUtil {
         PsiClass psiClass = null;
         if (psiElement instanceof PsiClass) {
             psiClass = (PsiClass) psiElement;
+        }
+        if (psiElement instanceof PsiJavaFile) {
+            PsiJavaFile psiJavaFile = (PsiJavaFile) psiElement;
+            PsiClass[] classes = psiJavaFile.getClasses();
+            for (PsiClass psiClass0 : classes) {
+                PsiModifierList modifierList = psiClass0.getModifierList();
+                if (modifierList != null) {
+                    if (modifierList.hasModifierProperty(PsiModifier.PUBLIC)) {
+                        return psiClass0;
+                    }
+                }
+            }
         }
         return psiClass;
     }

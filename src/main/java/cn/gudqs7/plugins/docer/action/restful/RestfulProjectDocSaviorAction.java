@@ -23,6 +23,6 @@ public class RestfulProjectDocSaviorAction extends AbstractProjectDocerSavior {
 
     @Override
     protected String getDirPrefix() {
-        return "restful-doc";
+        return "restful";
     }
 }

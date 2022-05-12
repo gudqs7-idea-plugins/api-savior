@@ -82,7 +82,7 @@ public class HtmlDocerSaviorAction extends AbstractBatchDocerSavior {
             Map<String, Object> root = new HashMap<>(8);
             root.put("moduleList", moduleList);
             String template = FreeMarkerUtil.renderTemplate("index.ftl", root);
-            File parent = new File(docRootDirPath + File.separator + getDirPrefix());
+            File parent = new File(docRootDirPath);
             FileUtil.writeStringToFile(template, parent, "index.html");
         }
     }

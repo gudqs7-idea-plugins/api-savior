@@ -72,7 +72,7 @@ public class PostmanDocerSaviorAction extends AbstractBatchDocerSavior {
     }
 
     @Override
-    protected void runLoopAfter(Project project, ProgressIndicator indicator, AtomicBoolean hasCancelAtomic, Set<PsiClass> finalPsiClassList, String apiDocPath, Map<String, Object> otherMap) {
+    protected void runLoopAfter(Project project, ProgressIndicator indicator, AtomicBoolean hasCancelAtomic, Set<PsiClass> finalPsiClassList, String docRootDirPath, Map<String, Object> otherMap) {
         Map<String, List<Map<String, Object>>> itemListMap0 = getItemListMap0(otherMap);
         if (itemListMap0 == null) {
             return;
@@ -139,7 +139,7 @@ public class PostmanDocerSaviorAction extends AbstractBatchDocerSavior {
         postmanObj.put("variable", Collections.singletonList(variable));
         String json = JsonUtil.toJson(postmanObj);
 
-        File parent = new File(apiDocPath + File.separator + "postman");
+        File parent = new File(docRootDirPath);
         FileUtil.writeStringToFile(json, parent, postmanName + ".postman_collection.json");
 
         if (postmanEnalbe && StringUtils.isNotBlank(postmanKey)) {

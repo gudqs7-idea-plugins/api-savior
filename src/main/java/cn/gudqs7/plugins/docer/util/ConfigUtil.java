@@ -16,8 +16,7 @@ import java.util.Properties;
  */
 public class ConfigUtil {
 
-    public static Map<String, String> getConfig(String configName, PsiFile psiFile0) {
-        Project project = psiFile0.getProject();
+    public static Map<String, String> getConfig(String configName, Project project, VirtualFile currentVirtualFile) {
         PsiFile[] filesByName = FilenameIndex.getFilesByName(project, configName, GlobalSearchScope.projectScope(project));
         if (filesByName.length > 0) {
             Properties back = null;
@@ -27,7 +26,7 @@ public class ConfigUtil {
                     VirtualFile virtualFile = psiFile.getVirtualFile();
                     properties.load(virtualFile.getInputStream());
 
-                    String path = psiFile0.getVirtualFile().getPath();
+                    String path = currentVirtualFile.getPath();
                     String configFilePath = virtualFile.getPath();
                     String projectBasePath1 = getProjectBasePath(path);
                     String projectBasePath2 = getProjectBasePath(configFilePath);
