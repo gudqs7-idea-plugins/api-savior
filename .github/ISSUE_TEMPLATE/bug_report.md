@@ -1,7 +1,7 @@
 ---
 name: 错误报告
 about: 创建报告以帮助我们改进
-title: "[BUG]"
+title: "[BUG] 版本xxx有xxx问题"
 labels: bug
 assignees: gudqs7
 

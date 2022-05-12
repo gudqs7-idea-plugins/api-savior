@@ -1,7 +1,7 @@
 ---
 name: 功能要求
 about: 为这个项目提出一个想法
-title: "[Feature]"
+title: "[Feature] 建议添加xxx"
 labels: feat
 assignees: gudqs7
 
