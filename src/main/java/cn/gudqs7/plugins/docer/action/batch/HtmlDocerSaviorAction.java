@@ -13,6 +13,7 @@ import com.intellij.psi.PsiClass;
 import com.youbenzi.mdtool.tool.MDTool;
 import lombok.Data;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 
@@ -40,6 +41,9 @@ public class HtmlDocerSaviorAction extends AbstractBatchDocerSavior {
         Pair<String, List<String>> markdownPair = docSavior.generateApiByServiceInterfaceV2(psiClass0, project);
         String markdown = markdownPair.getLeft();
         List<String> apiNameList = markdownPair.getRight();
+        if (StringUtils.isBlank(markdown)) {
+            return "";
+        }
 
         List<CategoryItem> categoryItemList = (List<CategoryItem>) otherMap.computeIfAbsent("categoryItemList", k -> new ArrayList<>());
         for (String apiName : apiNameList) {

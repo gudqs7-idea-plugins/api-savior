@@ -49,7 +49,7 @@ public abstract class AbstractBatchDocerSavior extends AnAction {
             if (virtualFile != null) {
                 initConfig(e, project, psiElement, virtualFile);
             }
-            boolean update0 = update0(e, project, psiElement, psiClass, psiDirectory);
+            boolean update0 = isNotShow(e, project, psiElement, psiClass, psiDirectory);
             if (update0) {
                 e.getPresentation().setVisible(false);
                 return;
@@ -149,18 +149,21 @@ public abstract class AbstractBatchDocerSavior extends AnAction {
                                         return;
                                     }
                                     AtomicReference<CommentInfo> apiModelPropertyAtomic = new AtomicReference<>(null);
-                                    AtomicReference<String> packageNameUniqueAtomic = new AtomicReference<>("");
+                                    AtomicReference<String> moduleNameAtomic = new AtomicReference<>("");
                                     ApplicationManager.getApplication().invokeAndWait(() -> {
                                         AnnotationHolder psiClassHolder = AnnotationHolder.getPsiClassHolder(psiClass0);
-                                        apiModelPropertyAtomic.set(psiClassHolder.getCommentInfo());
-                                        packageNameUniqueAtomic.set(FileUtil.getPackageNameByPsiClass(psiClass0));
+                                        CommentInfo commentInfo = psiClassHolder.getCommentInfo();
+                                        apiModelPropertyAtomic.set(commentInfo);
+                                        String packageName = FileUtil.getPackageNameByPsiClass(psiClass0);
+                                        String moduleName = getModuleName(project, packageName, psiClass0, commentInfo);
+                                        moduleNameAtomic.set(moduleName);
                                     });
                                     CommentInfo commentInfo = apiModelPropertyAtomic.get();
                                     if (commentInfo == null || commentInfo.isHidden(false)) {
                                         continue;
                                     }
 
-                                    String moduleName = getModuleName(project, packageNameUniqueAtomic, psiClass0, commentInfo);
+                                    String moduleName = moduleNameAtomic.get();
                                     String fileParentDir = finalDirRoot + File.separator + moduleName;
                                     File parent = new File(projectFilePath, fileParentDir);
                                     String fileName = getFileName(psiClass0, commentInfo);
@@ -201,7 +204,7 @@ public abstract class AbstractBatchDocerSavior extends AnAction {
         }
     }
 
-    protected boolean update0(@NotNull AnActionEvent e, Project project, PsiElement psiElement, PsiClass psiClass, PsiDirectory psiDirectory) {
+    protected boolean isNotShow(@NotNull AnActionEvent e, Project project, PsiElement psiElement, PsiClass psiClass, PsiDirectory psiDirectory) {
         return false;
     }
 
@@ -311,9 +314,8 @@ public abstract class AbstractBatchDocerSavior extends AnAction {
         return commentInfo.getItemName(psiClass0.getName());
     }
 
-    protected String getModuleName(Project project, AtomicReference<String> packageNameUniqueAtomic, PsiClass psiClass0, CommentInfo commentInfo) {
+    protected String getModuleName(Project project, String packageName, PsiClass psiClass0, CommentInfo commentInfo) {
         String suffix = "other";
-        String packageName = packageNameUniqueAtomic.get();
         if (StringUtils.isNotBlank(packageName)) {
             String[] packageArray = packageName.split("\\.");
             int length = packageArray.length;

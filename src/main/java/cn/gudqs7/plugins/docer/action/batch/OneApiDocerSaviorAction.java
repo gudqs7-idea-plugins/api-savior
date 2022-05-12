@@ -34,7 +34,7 @@ public class OneApiDocerSaviorAction extends AbstractBatchDocerSavior {
     }
 
     @Override
-    protected boolean update0(@NotNull AnActionEvent e, Project project, PsiElement psiElement, PsiClass psiClass, PsiDirectory psiDirectory) {
+    protected boolean isNotShow(@NotNull AnActionEvent e, Project project, PsiElement psiElement, PsiClass psiClass, PsiDirectory psiDirectory) {
         boolean flag = true;
         Map<String, String> config = ConfigHolder.getConfig();
         if (config != null) {

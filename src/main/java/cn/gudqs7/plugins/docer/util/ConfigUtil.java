@@ -1,11 +1,13 @@
 package cn.gudqs7.plugins.docer.util;
 
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.search.FilenameIndex;
 import com.intellij.psi.search.GlobalSearchScope;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -17,13 +19,20 @@ import java.util.Properties;
 public class ConfigUtil {
 
     public static Map<String, String> getConfig(String configName, Project project, VirtualFile currentVirtualFile) {
-        PsiFile[] filesByName = FilenameIndex.getFilesByName(project, configName, GlobalSearchScope.projectScope(project));
-        if (filesByName.length > 0) {
-            Properties back = null;
-            for (PsiFile psiFile : filesByName) {
-                try {
-                    Properties properties = new Properties();
+        try {
+            String defaultConfigPath = project.getBasePath() + File.separator + configName;
+            VirtualFile virtualFileByDefault = LocalFileSystem.getInstance().findFileByPath(defaultConfigPath);
+            if (virtualFileByDefault != null) {
+                Properties properties = new Properties();
+                properties.load(virtualFileByDefault.getInputStream());
+                return toMap(properties);
+            }
+            PsiFile[] filesByName = FilenameIndex.getFilesByName(project, configName, GlobalSearchScope.projectScope(project));
+            if (filesByName.length > 0) {
+                Properties back = null;
+                for (PsiFile psiFile : filesByName) {
                     VirtualFile virtualFile = psiFile.getVirtualFile();
+                    Properties properties = new Properties();
                     properties.load(virtualFile.getInputStream());
 
                     String path = currentVirtualFile.getPath();
@@ -36,12 +45,11 @@ public class ConfigUtil {
                     if (back == null) {
                         back = properties;
                     }
-                } catch (Exception ignored) {
                 }
-            }
-            if (back != null) {
                 return toMap(back);
             }
+        } catch (Exception e) {
+            ActionUtil.handleException(e);
         }
         return null;
     }

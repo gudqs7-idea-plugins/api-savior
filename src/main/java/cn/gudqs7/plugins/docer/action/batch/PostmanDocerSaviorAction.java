@@ -119,6 +119,9 @@ public class PostmanDocerSaviorAction extends AbstractBatchDocerSavior {
         Integer psiClassCount = (Integer) otherMap.getOrDefault("psiClassCount", 0);
         if (psiClassCount == 1) {
             Map<String, Object> lastPostmanItem = (Map<String, Object>) otherMap.get("lastPostmanItem");
+            if (lastPostmanItem == null) {
+                return;
+            }
             postmanName = projectName + "-" + lastPostmanItem.getOrDefault("name", postmanName).toString();
             // 去除模块
             itemList.clear();
