@@ -3,6 +3,7 @@ package cn.gudqs7.plugins.generate.convert;
 import cn.gudqs7.plugins.generate.base.AbstractMethodListGenerate;
 import cn.gudqs7.plugins.generate.base.BaseVar;
 import cn.gudqs7.plugins.util.PsiClassUtil;
+import cn.gudqs7.plugins.util.PsiUtil;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiMethod;
 import com.intellij.psi.PsiParameter;
@@ -43,7 +44,12 @@ public class GenerateConvert extends AbstractMethodListGenerate {
         PsiParameter[] parameters = parameterList.getParameters();
         if (parameters.length > 0) {
             String methodName = method.getName();
-            String getMethodName = methodName.replaceFirst("set", "get");
+            String methodPrefix = "get";
+            boolean setterIsBoolean = PsiUtil.setMethodIsBoolean(method);
+            if (setterIsBoolean) {
+                methodPrefix = "is";
+            }
+            String getMethodName = methodName.replaceFirst("set", methodPrefix);
             String setVal = getSetVal(getMethodName);
             return generateName + "." + methodName + "(" + setVal + ");";
         } else {

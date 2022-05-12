@@ -10,7 +10,7 @@
 [![Downloads](http://phpstorm.espend.de/badge/16860/downloads)][plugin]
 [![Install Plugins][jet-img]][jet]
 
-# Generate documents and more based on the controller or interface
+# Generate Api documents and more based on the controller or interface
 
 [Issues](https://github.com/docer-savior/docer-savior-idea-plugin/issues) |
 [Website](https://www.yuque.com/gudqs7/docer/ygtgmz) |

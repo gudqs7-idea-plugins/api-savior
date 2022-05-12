@@ -308,4 +308,21 @@ public class PsiUtil {
         return null;
     }
 
+    /**
+     * 判断这个 setter 对应的字段是否为 boolean 类型(不包括 Boxing)
+     *
+     * @param method 方法
+     * @return setter 对应的字段是否为 boolean 类型
+     */
+    public static boolean setMethodIsBoolean(PsiMethod method) {
+        PsiParameter[] parameters = method.getParameterList().getParameters();
+        if (parameters.length > 0) {
+            PsiParameter parameter = parameters[0];
+            PsiType psiType = parameter.getType();
+            if (!(psiType instanceof PsiClassReferenceType)) {
+                return "boolean".equals(psiType.getCanonicalText());
+            }
+        }
+        return false;
+    }
 }
