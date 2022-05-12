@@ -278,7 +278,8 @@ public class StructureAndCommentResolver extends BaseSavior implements IStructur
                     typeSimpleName = typeSimpleName.substring(0, typeSimpleName.indexOf("<")) + "<" + name0 + ">";
                 }
                 // 此处 put 只影响普通 class, 不影响 list, map 等
-                structureAndCommentInfo.setFieldType(typeSimpleName);
+                fieldTypeName = String.format(typeNameFormat, typeSimpleName);
+                structureAndCommentInfo.setFieldType(fieldTypeName);
             }
 
 
