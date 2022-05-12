@@ -47,11 +47,24 @@
 
 #### 其他
 
-**使用文档 [https://www.yuque.com/gudqs7/docer/ygtgmz](https://www.yuque.com/gudqs7/docer/ygtgmz)**
+- **使用文档 [https://www.yuque.com/gudqs7/docer/ygtgmz](https://www.yuque.com/gudqs7/docer/ygtgmz)**
+- **文档示例 [https://github.com/docer-savior/docer-savior-plugin-usage-examples](https://github.com/docer-savior/docer-savior-plugin-usage-examples)**
+
+##### 文档示例 - HTML 文档
+
+> 相关文件位于 docs 下, 已使用 github pages 部署, 可通过 [文档首页](https://docer-savior.github.io/docer-savior-plugin-usage-examples/) 直接访问
+
+##### 文档示例 - Markdown 文档
+
+- [用户接口.md](https://github.com/docer-savior/docer-savior-plugin-usage-examples/blob/master/doc-example/restful/%E7%94%A8%E6%88%B7%E6%A8%A1%E5%9D%97/%E7%94%A8%E6%88%B7%E6%8E%A5%E5%8F%A3.md)
+- [用户VIP接口.md](https://github.com/docer-savior/docer-savior-plugin-usage-examples/blob/master/doc-example/restful/%E7%94%A8%E6%88%B7%E6%A8%A1%E5%9D%97/%E7%94%A8%E6%88%B7VIP%E6%8E%A5%E5%8F%A3.md)
+- [下单接口.md](https://github.com/docer-savior/docer-savior-plugin-usage-examples/blob/master/doc-example/restful/%E8%AE%A2%E5%8D%95%E6%A8%A1%E5%9D%97/%E4%B8%8B%E5%8D%95%E6%8E%A5%E5%8F%A3.md)
+- [订单接口.md](https://github.com/docer-savior/docer-savior-plugin-usage-examples/blob/master/doc-example/restful/%E8%AE%A2%E5%8D%95%E6%A8%A1%E5%9D%97/%E8%AE%A2%E5%8D%95%E6%8E%A5%E5%8F%A3.md)
+
 
 #### 效果图
 
 ![gen-api](https://github.com/docer-savior/docer-savior-idea-plugin/raw/master/parts/usage/gen-api.gif)  
 ![export-to-postman](https://github.com/docer-savior/docer-savior-idea-plugin/raw/master/parts/usage/export-to-postman.gif)  
 ![all-get](https://github.com/docer-savior/docer-savior-idea-plugin/raw/master/parts/usage/allget.gif)  
-![all-get-by-intention-action](https://github.com/docer-savior/docer-savior-idea-plugin/raw/master/parts/usage/allget-by-intention-action.gif)  
+![all-get-by-intention-action](https://github.com/docer-savior/docer-savior-idea-plugin/raw/master/parts/usage/allget-by-intention-action.gif)
