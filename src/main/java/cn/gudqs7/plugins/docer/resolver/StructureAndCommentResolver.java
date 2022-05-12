@@ -51,28 +51,6 @@ public class StructureAndCommentResolver extends BaseSavior implements IStructur
     }
 
     @Override
-    public StructureAndCommentInfo resolveFromParameter(PsiParameter psiParameter) {
-        if (psiParameter == null) {
-            return null;
-        }
-        PsiType psiFieldType = psiParameter.getType();
-        String fieldName = psiParameter.getName();
-
-        int level = 0;
-        // 普通类型
-        String typeName = psiFieldType.getPresentableText();
-        if (isJavaBaseType(typeName) || "Object".equals(typeName) || PsiUtil.isPsiTypeFromMap(psiFieldType, project)) {
-            level = 1;
-        }
-        AnnotationHolder annotationHolder = AnnotationHolder.getPsiParameterHolder(psiParameter);
-        CommentInfo commentInfo = annotationHolder.getCommentInfo();
-        StructureAndCommentInfo structureAndCommentInfo = resolveByPsiType(null, fieldName, psiFieldType, commentInfo, null, MapKeyConstant.FIELD_PREFIX_INIT, level);
-        structureAndCommentInfo.setType(StructureType.PSI_PARAM.getType());
-        structureAndCommentInfo.setPsiParameter(psiParameter);
-        return structureAndCommentInfo;
-    }
-
-    @Override
     public StructureAndCommentInfo resolveFromParameterList(PsiParameterList parameterList) {
         if (parameterList == null || parameterList.isEmpty()) {
             return null;
@@ -84,12 +62,7 @@ public class StructureAndCommentResolver extends BaseSavior implements IStructur
         if (parameterListParameters.length == 1) {
             PsiParameter parameterListParameter = parameterListParameters[0];
             PsiType psiFieldType = parameterListParameter.getType();
-            level = 0;
-            // 普通类型
-            String typeName = psiFieldType.getPresentableText();
-            if (isJavaBaseType(typeName) || "Object".equals(typeName) || PsiUtil.isPsiTypeFromMap(psiFieldType, project)) {
-                level = 1;
-            }
+            level = getLevelByPsiType(psiFieldType);
         } else {
             // 若有多个参数, 则不能为 0.
             level = 1;
@@ -121,6 +94,20 @@ public class StructureAndCommentResolver extends BaseSavior implements IStructur
         return root;
     }
 
+    private int getLevelByPsiType(PsiType psiFieldType) {
+        // 普通类型 或 List / Map / MultipartFile 时需展示
+        String typeName = psiFieldType.getPresentableText();
+        if (isJavaBaseType(typeName)
+                || "Object".equals(typeName)
+                || PsiUtil.isPsiTypeFromMap(psiFieldType, project)
+                || PsiUtil.isPsiTypeFromCollection(psiFieldType, project)
+                || PsiUtil.isPsiTypeFromXxx(psiFieldType, project, AnnotationHolder.QNAME_OF_MULTIPART_FILE)
+        ) {
+            return 1;
+        }
+        return 0;
+    }
+
     @Override
     public StructureAndCommentInfo resolveFromReturnVal(PsiTypeElement returnTypeElement) {
         if (returnTypeElement == null) {
@@ -137,12 +124,7 @@ public class StructureAndCommentResolver extends BaseSavior implements IStructur
             structureAndCommentInfo.setReturnTypeElement(returnTypeElement);
             return structureAndCommentInfo;
         }
-        int level = 0;
-        // 普通类型
-        String typeName = returnType.getPresentableText();
-        if (isJavaBaseType(typeName) || "Object".equals(typeName) || PsiUtil.isPsiTypeFromMap(returnType, project)) {
-            level = 1;
-        }
+        int level = getLevelByPsiType(returnType);
 
         AnnotationHolder psiReturnTypeHolder = AnnotationHolder.getPsiReturnTypeHolder(returnTypeElement);
         CommentInfo commentInfo = psiReturnTypeHolder.getCommentInfo();

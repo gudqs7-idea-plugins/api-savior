@@ -209,7 +209,7 @@ public class PsiMethodAnnotationHolderImpl implements AnnotationHolder {
                 String method;
                 List<String> methodList = getAnnotationListValueByQname(QNAME_OF_MAPPING, "method");
                 if (CollectionUtils.isEmpty(methodList)) {
-                    method = "GET/POST";
+                    method = "GET/POST/PUT/DELETE";
                 } else {
                     method = String.join("/", methodList);
                 }

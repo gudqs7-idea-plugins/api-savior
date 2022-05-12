@@ -18,6 +18,7 @@ public class BaseTypeUtil {
         COMMON_DEFAULT_VAL_MAP.put("java.util.Map", "new HashMap<>(2)");
         COMMON_DEFAULT_VAL_MAP.put("java.util.Set", "new HashSet<>()");
         COMMON_DEFAULT_VAL_MAP.put("java.util.Collection", "new ArrayList<>()");
+        COMMON_DEFAULT_VAL_MAP.put("java.lang.Number", "0");
         COMMON_DEFAULT_VAL_MAP.put("java.math.BigDecimal", "new BigDecimal(0)");
 
         COMMON_DEFAULT_VAL_IMPORT_MAP.put("java.util.List", "java.util.ArrayList");
