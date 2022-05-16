@@ -4,10 +4,7 @@ import cn.gudqs7.plugins.docer.annotation.AnnotationHolder;
 import cn.gudqs7.plugins.docer.pojo.annotation.CommentInfo;
 import cn.gudqs7.plugins.docer.util.*;
 import cn.gudqs7.plugins.util.PsiUtil;
-import com.intellij.openapi.actionSystem.AnAction;
-import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.actionSystem.CommonDataKeys;
-import com.intellij.openapi.actionSystem.PlatformDataKeys;
+import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.progress.ProcessCanceledException;
 import com.intellij.openapi.progress.ProgressIndicator;
@@ -29,7 +26,7 @@ import java.util.concurrent.atomic.AtomicReference;
 /**
  * @author wq
  */
-public abstract class AbstractBatchDocerSavior extends AnAction {
+public abstract class AbstractBatchDocerSavior extends AnAction implements UpdateInBackground {
 
     public final String API_DOC_ROOT_DIR_NAME = "api-doc";
 
@@ -209,11 +206,7 @@ public abstract class AbstractBatchDocerSavior extends AnAction {
     }
 
     protected void initConfig(AnActionEvent e, Project project, PsiElement psiElement, VirtualFile virtualFile) {
-        AtomicReference<Map<String, String>> configAtomic = new AtomicReference<>(new HashMap<>());
-        ApplicationManager.getApplication().invokeAndWait(() -> {
-            configAtomic.set(ConfigUtil.getConfig("docer-config.properties", project, virtualFile));
-        });
-        Map<String, String> config = configAtomic.get();
+        Map<String, String> config = ConfigUtil.getConfig("docer-config.properties", project, virtualFile);
         ConfigHolder.putConfig(config);
     }
 

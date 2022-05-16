@@ -31,6 +31,7 @@
         <codeInsight.template.postfixTemplateProvider
                 language="JAVA" implementationClass="cn.gudqs7.plugins.generate.postfix.GeneratePostfixTemplateProvider"/>
 
+        <errorHandler implementation="cn.gudqs7.plugins.error.ReportSubmitter"/>
     </extensions>
 
     <actions>

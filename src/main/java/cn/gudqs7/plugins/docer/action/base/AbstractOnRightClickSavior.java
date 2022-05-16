@@ -4,10 +4,7 @@ import cn.gudqs7.plugins.docer.annotation.AnnotationHolder;
 import cn.gudqs7.plugins.docer.util.ActionUtil;
 import cn.gudqs7.plugins.docer.util.ClipboardUtil;
 import cn.gudqs7.plugins.util.PsiUtil;
-import com.intellij.openapi.actionSystem.AnAction;
-import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.actionSystem.CommonDataKeys;
-import com.intellij.openapi.actionSystem.PlatformDataKeys;
+import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
@@ -17,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * @author wq
  */
-public abstract class AbstractOnRightClickSavior extends AnAction {
+public abstract class AbstractOnRightClickSavior extends AnAction implements UpdateInBackground {
 
     @Override
     public void update(@NotNull AnActionEvent e) {
@@ -101,7 +98,7 @@ public abstract class AbstractOnRightClickSavior extends AnAction {
      * 根据方法判断是否应该展示
      *
      * @param psiMethod 方法
-     * @param project
+     * @param project   项目
      * @param e         e
      */
     protected abstract void checkPsiMethod(PsiMethod psiMethod, Project project, AnActionEvent e);
