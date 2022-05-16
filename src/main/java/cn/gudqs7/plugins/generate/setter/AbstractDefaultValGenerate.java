@@ -31,7 +31,7 @@ public abstract class AbstractDefaultValGenerate extends AbstractMethodListGener
         if (generateDefaultVal) {
             PsiType psiType = parameter.getType();
             String typeName = psiType.getPresentableText();
-            String defaultVal0 = BaseTypeUtil.getJavaBaseTypeDefaultVal(typeName);
+            String defaultVal0 = BaseTypeUtil.getJavaBaseTypeDefaultValStr(typeName);
             // 基础类型
             if (defaultVal0 != null) {
                 defaultVal = defaultVal0;

@@ -1,19 +1,19 @@
 package cn.gudqs7.plugins.docer.reader.base;
 
-import cn.gudqs7.plugins.docer.constant.CommentConst;
 import cn.gudqs7.plugins.docer.constant.FieldType;
 import cn.gudqs7.plugins.docer.constant.StructureType;
 import cn.gudqs7.plugins.docer.pojo.ReadOnlyMap;
 import cn.gudqs7.plugins.docer.pojo.StructureAndCommentInfo;
 import cn.gudqs7.plugins.docer.pojo.annotation.CommentInfo;
 import cn.gudqs7.plugins.docer.theme.Theme;
-import org.apache.commons.lang.time.DateFormatUtils;
-import org.apache.commons.lang3.RandomUtils;
-import org.apache.commons.lang3.StringUtils;
+import cn.gudqs7.plugins.docer.util.ActionUtil;
+import cn.gudqs7.plugins.generate.util.BaseTypeUtil;
+import com.intellij.psi.PsiType;
 
-import java.io.UnsupportedEncodingException;
-import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author WQ
@@ -170,138 +170,22 @@ public abstract class AbstractJsonReader<B> extends AbstractReader<Map<String, O
      * @return JsonMap结构中具体的 Val
      */
     protected Object getJsonMapVal(StructureAndCommentInfo structureAndCommentInfo, Map<String, Object> data, ReadOnlyMap parentData) {
-        String originalFieldType = structureAndCommentInfo.getOriginalFieldType();
-        CommentInfo commentInfo = structureAndCommentInfo.getCommentInfo();
-        Object baseExampleVal = getBaseExampleVal(originalFieldType, commentInfo);
+        Object baseExampleVal = getBaseExampleVal(structureAndCommentInfo);
         if (baseExampleVal == null) {
             baseExampleVal = new Object();
         }
         return baseExampleVal;
     }
 
-    public Object getBaseExampleVal(String fieldType, CommentInfo commentInfo) {
-        String example = commentInfo.getExample("");
-        boolean noExampleValue = StringUtils.isBlank(example);
-        Object paramValue = null;
+    public Object getBaseExampleVal(StructureAndCommentInfo structureAndCommentInfo) {
         try {
-            switch (fieldType.toLowerCase()) {
-                case "byte":
-                    paramValue = noExampleValue ? RandomUtils.nextBytes(1)[0] : Byte.parseByte(example);
-                    break;
-                case "char":
-                case "character":
-                    paramValue = noExampleValue ? randomChar() : example.charAt(0);
-                    break;
-                case "boolean":
-                    paramValue = noExampleValue ? RandomUtils.nextBoolean() : Boolean.parseBoolean(example);
-                    break;
-                case "int":
-                case "integer":
-                    paramValue = noExampleValue ? RandomUtils.nextInt(1, 128) : Integer.parseInt(example);
-                    break;
-                case "double":
-                    paramValue = noExampleValue ? RandomUtils.nextDouble(50, 1000) : Double.parseDouble(example);
-                    break;
-                case "float":
-                    paramValue = noExampleValue ? RandomUtils.nextFloat(10, 100) : Float.parseFloat(example);
-                    break;
-                case "long":
-                    paramValue = noExampleValue ? RandomUtils.nextLong(10, 1000) : Long.parseLong(example);
-                    break;
-                case "short":
-                    paramValue = noExampleValue ? randomShort() : Short.parseShort(example);
-                    break;
-                case "number":
-                    paramValue = 0;
-                    break;
-                case "bigdecimal":
-                    paramValue = noExampleValue ? BigDecimal.valueOf(RandomUtils.nextDouble(50, 1000)) : new BigDecimal(example);
-                    break;
-                case "string":
-                case "multipartfile":
-                    paramValue = noExampleValue ? randomString(commentInfo) : example;
-                    break;
-                case "date":
-                    paramValue = noExampleValue ? randomDate() : example;
-                    break;
-                default:
-                    break;
-            }
+            CommentInfo commentInfo = structureAndCommentInfo.getCommentInfo();
+            PsiType psiType = structureAndCommentInfo.getPsiType();
+            return BaseTypeUtil.getDefaultVal(psiType, commentInfo);
         } catch (Exception e) {
-            paramValue = example;
-        }
-        return paramValue;
-    }
-
-    private String randomDate() {
-        Date now = new Date();
-        now.setTime(System.currentTimeMillis() + RandomUtils.nextLong(0, 86400000));
-        return DateFormatUtils.formatUTC(now, "yyyy-MM-dd'T'HH:mm:ss.SSS+0000");
-    }
-
-    private String randomString(CommentInfo commentInfo) {
-        String fieldDesc = commentInfo.getValue("");
-        Boolean random = commentInfo.getSingleBool("random", false);
-        Boolean guid = commentInfo.getSingleBool("guid", false);
-        if (guid) {
-            return UUID.randomUUID().toString().toUpperCase();
-        }
-        if (random || StringUtils.isBlank(fieldDesc)) {
-            int length = RandomUtils.nextInt(5, 20);
-            StringBuilder stringBuilder = new StringBuilder();
-            for (int i = 0; i < length; i++) {
-                stringBuilder.append(randomChar(false));
-            }
-            return stringBuilder.toString();
-        } else {
-            if (fieldDesc.contains(CommentConst.BREAK_LINE)) {
-                fieldDesc = fieldDesc.substring(0, fieldDesc.indexOf(CommentConst.BREAK_LINE));
-            }
-            return fieldDesc + RandomUtils.nextInt(1, 128);
+            ActionUtil.handleException(e);
+            return null;
         }
     }
-
-    private short randomShort() {
-        return (short) RandomUtils.nextInt(1, 100);
-    }
-
-    private char randomChar() {
-        boolean en = RandomUtils.nextBoolean();
-        return randomChar(en);
-    }
-
-    private char randomChar(boolean en) {
-        if (en) {
-            boolean upper = RandomUtils.nextBoolean();
-            if (upper) {
-                return (char) RandomUtils.nextInt(65, 90);
-            } else {
-                return (char) RandomUtils.nextInt(97, 122);
-            }
-        } else {
-            String str = "";
-            int highCode;
-            int lowCode;
-
-            Random random = new Random();
-
-            //B0 + 0~39(16~55) 一级汉字所占区
-            highCode = (176 + Math.abs(random.nextInt(39)));
-            //A1 + 0~93 每区有94个汉字
-            lowCode = (161 + Math.abs(random.nextInt(93)));
-
-            byte[] b = new byte[2];
-            b[0] = (Integer.valueOf(highCode)).byteValue();
-            b[1] = (Integer.valueOf(lowCode)).byteValue();
-
-            try {
-                str = new String(b, "GBK");
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }
-            return str.charAt(0);
-        }
-    }
-
-
+    
 }

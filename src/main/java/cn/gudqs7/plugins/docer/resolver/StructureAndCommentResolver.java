@@ -9,6 +9,7 @@ import cn.gudqs7.plugins.docer.pojo.annotation.CommentInfo;
 import cn.gudqs7.plugins.docer.savior.base.BaseSavior;
 import cn.gudqs7.plugins.docer.theme.Theme;
 import cn.gudqs7.plugins.docer.util.DataHolder;
+import cn.gudqs7.plugins.generate.util.BaseTypeUtil;
 import cn.gudqs7.plugins.util.PsiClassUtil;
 import cn.gudqs7.plugins.util.PsiUtil;
 import com.intellij.openapi.project.Project;
@@ -97,8 +98,7 @@ public class StructureAndCommentResolver extends BaseSavior implements IStructur
     private int getLevelByPsiType(PsiType psiFieldType) {
         // 普通类型 或 List / Map / MultipartFile 时需展示
         String typeName = psiFieldType.getPresentableText();
-        if (isJavaBaseType(typeName)
-                || "Object".equals(typeName)
+        if (BaseTypeUtil.isBaseTypeOrObject(psiFieldType)
                 || PsiUtil.isPsiTypeFromMap(psiFieldType, project)
                 || PsiUtil.isPsiTypeFromCollection(psiFieldType, project)
                 || PsiUtil.isPsiTypeFromXxx(psiFieldType, project, AnnotationHolder.QNAME_OF_MULTIPART_FILE)
@@ -157,8 +157,7 @@ public class StructureAndCommentResolver extends BaseSavior implements IStructur
             }
         }
         String clazzTypeName = psiClass.getName();
-        if (isJavaBaseType(clazzTypeName) || "Object".equals(clazzTypeName)) {
-            System.out.println("resolveFromClass0 - shouldn't in! type=" + clazzTypeName);
+        if (BaseTypeUtil.isBaseTypeOrObject(psiClass)) {
             return null;
         }
 
@@ -242,10 +241,11 @@ public class StructureAndCommentResolver extends BaseSavior implements IStructur
         structureAndCommentInfo.setOriginalFieldType(psiFieldTypeName);
         structureAndCommentInfo.setFieldTypeCode(fieldTypeCode);
         structureAndCommentInfo.setOriginalFieldTypeCode(FieldType.BASE.getType());
+        structureAndCommentInfo.setPsiType(psiFieldType);
 
         // 普通字段, 即刻返回
         String typeSimpleName = psiFieldType.getPresentableText();
-        if (isJavaBaseTypeOrObject(typeSimpleName)) {
+        if (BaseTypeUtil.isBaseTypeOrObject(psiFieldType)) {
             return structureAndCommentInfo;
         }
 

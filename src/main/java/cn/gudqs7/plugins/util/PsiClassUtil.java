@@ -196,16 +196,11 @@ public class PsiClassUtil {
     public static boolean isNormalInterface(PsiClass psiClass, Project project) {
         if (psiClass.isInterface()) {
             String name = psiClass.getQualifiedName();
-            String qNameOfList = "java.util.List";
-            String qNameOfMap = "java.util.Map";
-            String qNameOfSet = "java.util.Set";
-            boolean psiClassFromList = PsiUtil.isPsiClassFromXxx(psiClass, project, qNameOfList);
-            boolean psiClassFromMap = PsiUtil.isPsiClassFromXxx(psiClass, project, qNameOfMap);
-            boolean psiClassFromSet = PsiUtil.isPsiClassFromXxx(psiClass, project, qNameOfSet);
+            boolean psiClassFromCollection = PsiUtil.isPsiClassFromXxx(psiClass, project, "java.util.Collection");
+            boolean psiClassFromMap = PsiUtil.isPsiClassFromXxx(psiClass, project, "java.util.Map");
             // 不是 (list,map,set)
-            return !(psiClassFromList
-                    || psiClassFromMap
-                    || psiClassFromSet);
+            return !(psiClassFromCollection
+                    || psiClassFromMap);
         }
         return false;
     }

@@ -7,12 +7,12 @@ import cn.gudqs7.plugins.docer.reader.Java2ApiReader;
 import cn.gudqs7.plugins.docer.reader.Java2BulkReader;
 import cn.gudqs7.plugins.docer.reader.Java2JsonReader;
 import cn.gudqs7.plugins.docer.resolver.StructureAndCommentResolver;
-import cn.gudqs7.plugins.docer.savior.base.BaseSavior;
 import cn.gudqs7.plugins.docer.theme.Theme;
 import cn.gudqs7.plugins.docer.util.ClipboardUtil;
 import cn.gudqs7.plugins.docer.util.FreeMarkerUtil;
 import cn.gudqs7.plugins.docer.util.JsonUtil;
 import cn.gudqs7.plugins.docer.util.RestfulUtil;
+import cn.gudqs7.plugins.generate.util.BaseTypeUtil;
 import cn.gudqs7.plugins.util.PsiClassUtil;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.Project;
@@ -62,7 +62,7 @@ public abstract class AbstractReqDocerSavior extends AbstractOnRightClickSavior 
             return;
         }
         String presentableText = psiClass.getName();
-        if (BaseSavior.isJavaBaseType(presentableText) || "Object".equals(presentableText)) {
+        if (BaseTypeUtil.isBaseTypeOrObject(psiClass)) {
             notVisible(e);
         }
     }

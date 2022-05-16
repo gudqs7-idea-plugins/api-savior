@@ -48,7 +48,7 @@ public interface GenerateBase {
         String right = "";
         String fieldTypeName = String.format(typeNameFormat, typeName);
         String typeSimpleName = psiFieldType.getPresentableText();
-        if (BaseTypeUtil.isJavaBaseType(typeSimpleName) || "Object".equals(typeSimpleName)) {
+        if (BaseTypeUtil.isBaseTypeOrObject(psiFieldType)) {
             return Pair.of(fieldTypeName, right);
         }
 

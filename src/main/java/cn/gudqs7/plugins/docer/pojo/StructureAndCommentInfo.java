@@ -19,18 +19,54 @@ import java.util.Map;
 @Data
 public class StructureAndCommentInfo {
 
+    /**
+     * 父级
+     */
     private StructureAndCommentInfo parent;
+
+    /**
+     * 子元素
+     */
     private final Map<String, StructureAndCommentInfo> children = new LinkedHashMap<>(32);
+
+    /**
+     * 其他信息
+     */
     private final Map<String, Object> other = new HashMap<>(32);
 
+    /**
+     * 是否为返回类型
+     */
     private boolean returnType = false;
+
+    /**
+     * 是否叶子节点
+     */
     private boolean leaf = false;
 
+    /**
+     * 当前层级
+     */
     private Integer level;
+
+    /**
+     * 字段名称
+     */
     private String fieldName;
+
+    /**
+     * 字段类型(缩写)
+     */
     private String fieldType;
+
+    /**
+     * 字段原始类型
+     */
     private String originalFieldType;
 
+    /**
+     * 注释/注解信息
+     */
     private CommentInfo commentInfo;
 
     /**
@@ -54,8 +90,20 @@ public class StructureAndCommentInfo {
      * 7:返回值
      */
     private Integer fieldTypeCode = 1;
+
+    /**
+     * 原始类型
+     */
     private Integer originalFieldTypeCode = 1;
 
+    /**
+     * 类型信息
+     */
+    private PsiType psiType;
+
+    /**
+     * 相关信息
+     */
     private transient PsiClass psiClass;
     private transient PsiField psiField;
     private transient PsiParameter psiParameter;

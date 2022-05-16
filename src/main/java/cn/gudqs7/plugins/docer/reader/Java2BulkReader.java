@@ -91,7 +91,7 @@ public class Java2BulkReader extends AbstractJsonReader<List<PostmanKvInfo>> {
                 if (commentInfo != null) {
                     desc = commentInfo.getValue(desc);
                     desc = desc.replaceAll(CommentConst.BREAK_LINE, "\n");
-                    Object exampleVal = getBaseExampleVal(originalFieldType, commentInfo);
+                    Object exampleVal = getBaseExampleVal(structureAndCommentInfo);
                     if (exampleVal != null) {
                         example = String.valueOf(exampleVal);
                     }
