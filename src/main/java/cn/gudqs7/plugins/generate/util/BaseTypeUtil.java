@@ -139,15 +139,21 @@ public class BaseTypeUtil {
     }
 
     public static boolean isJavaBaseType(String typeName) {
-        return JAVA_BASE_TYPE_MAP.containsKey(typeName);
+        if (typeName == null) {
+            return false;
+        }
+        return JAVA_BASE_TYPE_MAP.containsKey(typeName.toLowerCase());
     }
 
     public static boolean isOtherBaseType(String qName) {
+        if (qName == null) {
+            return false;
+        }
         return OTHER_BASE_TYPE_MAP.containsKey(qName);
     }
 
     public static boolean isBaseType(String typeName, String qName) {
-        return isJavaBaseType(typeName) && isOtherBaseType(qName);
+        return isJavaBaseType(typeName) || isOtherBaseType(qName);
     }
 
     public static String getJavaBaseTypeDefaultValStr(String typeName) {
