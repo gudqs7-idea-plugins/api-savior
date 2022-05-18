@@ -25,14 +25,21 @@ public class BaseTypeUtil {
     private static final Map<String, TypeInfo> OTHER_INTERFACE_MAP = new HashMap<>(32);
 
     static {
+        Function<CommentInfo, Object> stringGetFn = commentInfo -> {
+            String example = commentInfo.getExample("");
+            boolean noExampleValue = StringUtils.isBlank(example);
+            return noExampleValue ? randomString(commentInfo) : example;
+        };
         // 此处处理不能直接 new 的类型, 也就是接口, 常用的接口目前只想到三大集合
         OTHER_INTERFACE_MAP.put("java.util.List", TypeInfo.of("java.util.ArrayList", "new ArrayList<>()", new ArrayList<>()));
         OTHER_INTERFACE_MAP.put("java.util.Map", TypeInfo.of("java.util.HashMap", "new HashMap<>(2)", new HashMap<>(2)));
         OTHER_INTERFACE_MAP.put("java.util.Set", TypeInfo.of("java.util.HashSet", "new HashSet<>()", new HashSet<>(2)));
         OTHER_INTERFACE_MAP.put("java.util.Collection", TypeInfo.of("java.util.ArrayList", "new ArrayList<>()", new ArrayList<>()));
+        OTHER_INTERFACE_MAP.put("org.springframework.web.multipart.MultipartFile", TypeInfo.of("null", stringGetFn));
 
         // other base
-        OTHER_BASE_TYPE_MAP.put("java.math.BigDecimal", TypeInfo.of("java.math.BigDecimal", "new BigDecimal(0)", commentInfo->{
+        OTHER_BASE_TYPE_MAP.put("java.lang.Number", TypeInfo.of("0", commentInfo -> 0));
+        OTHER_BASE_TYPE_MAP.put("java.math.BigDecimal", TypeInfo.of("java.math.BigDecimal", "new BigDecimal(0)", commentInfo -> {
             String example = commentInfo.getExample("");
             boolean noExampleValue = StringUtils.isBlank(example);
             return noExampleValue ? BigDecimal.valueOf(RandomUtils.nextDouble(50, 1000)) : new BigDecimal(example);
@@ -41,15 +48,11 @@ public class BaseTypeUtil {
         OTHER_BASE_TYPE_MAP.put("java.sql.Date", TypeInfo.of("java.sql.Date", "new Date(System.currentTimeMillis())", randomDate()));
         OTHER_BASE_TYPE_MAP.put("java.sql.Timestamp", TypeInfo.of("java.sql.Timestamp", "new Timestamp(System.currentTimeMillis())", randomDate()));
         OTHER_BASE_TYPE_MAP.put("java.sql.Time", TypeInfo.of("java.sql.Time", "new Time(System.currentTimeMillis())", randomDate()));
-        Function<CommentInfo, Object> stringGetFn = commentInfo -> {
-            String example = commentInfo.getExample("");
-            boolean noExampleValue = StringUtils.isBlank(example);
-            return noExampleValue ? randomString(commentInfo) : example;
-        };
+
         OTHER_BASE_TYPE_MAP.put("java.sql.Blob", TypeInfo.of("javax.sql.rowset.serial.SerialBlob", "new SerialBlob(new byte[]{})", stringGetFn));
-        OTHER_BASE_TYPE_MAP.put("java.sql.Clob", TypeInfo.of("javax.sql.rowset.serial.SerialClob.SerialClob", "new SerialClob(new char[]{})", stringGetFn));
-        OTHER_BASE_TYPE_MAP.put("java.sql.NClob", TypeInfo.of("javax.sql.rowset.serial.SerialClob.SerialClob", "new SerialClob(new char[]{})", stringGetFn));
-        OTHER_BASE_TYPE_MAP.put("org.springframework.web.multipart.MultipartFile", TypeInfo.of( "null", stringGetFn));
+        OTHER_BASE_TYPE_MAP.put("java.sql.Clob", TypeInfo.of("javax.sql.rowset.serial.SerialClob", "new SerialClob(new char[]{})", stringGetFn));
+        OTHER_BASE_TYPE_MAP.put("java.sql.NClob", TypeInfo.of("javax.sql.rowset.serial.SerialClob", "new SerialClob(new char[]{})", stringGetFn));
+
 
         // java base
         JAVA_BASE_TYPE_MAP.put("byte", TypeInfo.of("(byte) 0", commentInfo -> {
@@ -69,7 +72,6 @@ public class BaseTypeUtil {
         });
         JAVA_BASE_TYPE_MAP.put("int", typeInfoForInt);
         JAVA_BASE_TYPE_MAP.put("integer", typeInfoForInt);
-        JAVA_BASE_TYPE_MAP.put("number", TypeInfo.of("0", commentInfo -> 0));
         TypeInfo typeInfoForChar = TypeInfo.of("'0'", commentInfo -> {
             String example = commentInfo.getExample("");
             boolean noExampleValue = StringUtils.isBlank(example);
@@ -100,22 +102,12 @@ public class BaseTypeUtil {
         JAVA_BASE_TYPE_MAP.put("string", TypeInfo.of("\"\"", stringGetFn));
     }
 
-    public static Object getDefaultVal(PsiType psiType, CommentInfo commentInfo) {
-        if (psiType == null) {
-            return null;
-        }
-        String typeName = psiType.getPresentableText();
-        String qName = psiType.getCanonicalText();
-        TypeInfo typeInfo = JAVA_BASE_TYPE_MAP.get(typeName);
-        if (typeInfo == null) {
-            typeInfo = OTHER_BASE_TYPE_MAP.get(qName);
-        }
-        if (typeInfo != null) {
-            return typeInfo.getDefaultValGetFn().apply(commentInfo);
-        }
-        return null;
-    }
-
+    /**
+     * 根据类型和全限定名判断是否为两种基础类型或 Object
+     *
+     * @param psiType 类型和全限定名
+     * @return 是否为两种基础类型或 Object
+     */
     public static boolean isBaseTypeOrObject(PsiType psiType) {
         if (psiType == null) {
             return false;
@@ -125,6 +117,12 @@ public class BaseTypeUtil {
         return isBaseType(typeName, qName) || typeIsObject(typeName);
     }
 
+    /**
+     * 根据类型和全限定名判断是否为两种基础类型或 Object
+     *
+     * @param psiClass 类型和全限定名
+     * @return 是否为两种基础类型或 Object
+     */
     public static boolean isBaseTypeOrObject(PsiClass psiClass) {
         if (psiClass == null) {
             return false;
@@ -134,10 +132,33 @@ public class BaseTypeUtil {
         return isBaseType(typeName, qName) || typeIsObject(typeName);
     }
 
+    /**
+     * 根据类型判断是否为Java基本类型或 Object
+     *
+     * @param typeName 类型
+     * @return 是否为Java基本类型或 Object
+     */
     public static boolean isJavaBaseTypeOrObject(String typeName) {
         return isJavaBaseType(typeName) || typeIsObject(typeName);
     }
 
+    /**
+     * 根据类型和全限定名判断是否为两种基础类型
+     *
+     * @param typeName 类型
+     * @param qName    全限定名
+     * @return 是否为两种基础类型
+     */
+    public static boolean isBaseType(String typeName, String qName) {
+        return isJavaBaseType(typeName) || isOtherBaseType(qName);
+    }
+
+    /**
+     * 根据类型判断是否为Java基本类型
+     *
+     * @param typeName 类型
+     * @return 是否为Java基本类型
+     */
     public static boolean isJavaBaseType(String typeName) {
         if (typeName == null) {
             return false;
@@ -145,6 +166,12 @@ public class BaseTypeUtil {
         return JAVA_BASE_TYPE_MAP.containsKey(typeName.toLowerCase());
     }
 
+    /**
+     * 根据全限定名判断是否为其他基本类型
+     *
+     * @param qName 全限定名
+     * @return 是否为其他基本类型
+     */
     public static boolean isOtherBaseType(String qName) {
         if (qName == null) {
             return false;
@@ -152,42 +179,97 @@ public class BaseTypeUtil {
         return OTHER_BASE_TYPE_MAP.containsKey(qName);
     }
 
-    public static boolean isBaseType(String typeName, String qName) {
-        return isJavaBaseType(typeName) || isOtherBaseType(qName);
-    }
-
+    /**
+     * 获取Java 基本类型的默认值
+     *
+     * @param typeName 类型
+     * @return 默认值
+     */
     public static String getJavaBaseTypeDefaultValStr(String typeName) {
-        TypeInfo typeInfo = JAVA_BASE_TYPE_MAP.get(typeName);
+        if (typeName == null) {
+            return null;
+        }
+        TypeInfo typeInfo = JAVA_BASE_TYPE_MAP.get(typeName.toLowerCase());
         if (typeInfo == null) {
             return null;
         }
         return typeInfo.getDefaultValStr();
     }
 
-    public static String getCommonDefaultVal(String qName) {
-        TypeInfo typeInfo = getTypeInfoByQName(qName);
+    /**
+     * 根据全限定名获取默认值字符串
+     *
+     * @param qName 全限定名
+     * @return 默认值字符串
+     */
+    public static String getDefaultValStrByQname(String qName) {
+        TypeInfo typeInfo = getTypeInfoByQname(qName);
         if (typeInfo == null) {
             return null;
         }
         return typeInfo.getDefaultValStr();
     }
 
-    public static String getCommonDefaultValImport(String qName) {
-        TypeInfo typeInfo = getTypeInfoByQName(qName);
+    /**
+     * 根据全限定名获取默认值对应的导入包信息
+     *
+     * @param qName 全限定名
+     * @return 导入包信息
+     */
+    public static String getDefaultValImportByQname(String qName) {
+        TypeInfo typeInfo = getTypeInfoByQname(qName);
         if (typeInfo == null) {
             return null;
         }
         return typeInfo.getImportStr();
     }
 
-    public static TypeInfo getTypeInfoByQName(String qName) {
+    /**
+     * 获取两种 base 类型的默认值
+     *
+     * @param psiType     psiType
+     * @param commentInfo 参数
+     * @return 默认值
+     */
+    public static Object getBaseDefaultVal(PsiType psiType, CommentInfo commentInfo) {
+        if (psiType == null) {
+            return null;
+        }
+        String typeName = psiType.getPresentableText();
+        String qName = psiType.getCanonicalText();
+        TypeInfo typeInfo = JAVA_BASE_TYPE_MAP.get(typeName.toLowerCase());
+        if (typeInfo == null) {
+            typeInfo = OTHER_BASE_TYPE_MAP.get(qName);
+        }
+        if (typeInfo != null) {
+            return typeInfo.getDefaultValGetFn().apply(commentInfo);
+        }
+        return null;
+    }
+
+    /**
+     * 获取特定类型的默认值
+     *
+     * @param qName       特定类型全限定名
+     * @param commentInfo 参数
+     * @return 默认值
+     */
+    public static Object getInterfaceDefaultVal(String qName, CommentInfo commentInfo) {
+        TypeInfo typeInfo = OTHER_INTERFACE_MAP.get(qName);
+        if (typeInfo != null) {
+            return typeInfo.getDefaultValGetFn().apply(commentInfo);
+        }
+        return null;
+    }
+
+
+    private static TypeInfo getTypeInfoByQname(String qName) {
         TypeInfo typeInfo = OTHER_BASE_TYPE_MAP.get(qName);
         if (typeInfo == null) {
             typeInfo = OTHER_INTERFACE_MAP.get(qName);
         }
         return typeInfo;
     }
-
 
     private static boolean typeIsObject(String typeName) {
         return "Object".equals(typeName);

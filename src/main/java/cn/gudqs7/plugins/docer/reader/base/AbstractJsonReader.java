@@ -148,7 +148,7 @@ public abstract class AbstractJsonReader<B> extends AbstractReader<Map<String, O
                 case LIST:
                 case SET:
                 case COLLECTION:
-                    ArrayList<Object> list = new ArrayList<>();
+                    List<Object> list = new ArrayList<>();
                     list.add(getJsonMapVal(structureAndCommentInfo, data, parentData));
                     list.add(getJsonMapVal(structureAndCommentInfo, data, parentData));
                     map.put(fieldName, list);
@@ -179,9 +179,15 @@ public abstract class AbstractJsonReader<B> extends AbstractReader<Map<String, O
 
     public Object getBaseExampleVal(StructureAndCommentInfo structureAndCommentInfo) {
         try {
+            Integer fieldTypeCode = structureAndCommentInfo.getOriginalFieldTypeCode();
             CommentInfo commentInfo = structureAndCommentInfo.getCommentInfo();
             PsiType psiType = structureAndCommentInfo.getPsiType();
-            return BaseTypeUtil.getDefaultVal(psiType, commentInfo);
+            if (FieldType.BASE.getType().equals(fieldTypeCode)) {
+                return BaseTypeUtil.getBaseDefaultVal(psiType, commentInfo);
+            } else {
+                String qName = psiType.getCanonicalText();
+                return BaseTypeUtil.getInterfaceDefaultVal(qName, commentInfo);
+            }
         } catch (Exception e) {
             ActionUtil.handleException(e);
             return null;

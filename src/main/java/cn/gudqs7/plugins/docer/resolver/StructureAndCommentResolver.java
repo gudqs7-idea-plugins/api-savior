@@ -315,6 +315,7 @@ public class StructureAndCommentResolver extends BaseSavior implements IStructur
             // 判断是否为 File
             if (PsiUtil.isPsiTypeFromXxx(psiFieldType, project, AnnotationHolder.QNAME_OF_MULTIPART_FILE)) {
                 structureAndCommentInfo.setFieldTypeCode(FieldType.FILE.getType());
+                structureAndCommentInfo.setOriginalFieldTypeCode(FieldType.FILE.getType());
             }
 
             // Map

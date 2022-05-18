@@ -187,4 +187,23 @@ public class StructureAndCommentInfo {
         }
         return project;
     }
+
+    @Override
+    public String toString() {
+        return "StructureAndCommentInfo{" +
+                "children=" + children +
+                ", other=" + other +
+                ", returnType=" + returnType +
+                ", leaf=" + leaf +
+                ", level=" + level +
+                ", fieldName='" + fieldName + '\'' +
+                ", fieldType='" + fieldType + '\'' +
+                ", originalFieldType='" + originalFieldType + '\'' +
+                ", commentInfo=" + commentInfo +
+                ", type=" + type +
+                ", fieldTypeCode=" + fieldTypeCode +
+                ", originalFieldTypeCode=" + originalFieldTypeCode +
+                ", psiType=" + psiType +
+                '}';
+    }
 }
