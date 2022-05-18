@@ -1,7 +1,9 @@
 package cn.gudqs7.plugins.generate.util;
 
 import cn.gudqs7.plugins.docer.constant.CommentConst;
+import cn.gudqs7.plugins.docer.constant.CommentTag;
 import cn.gudqs7.plugins.docer.pojo.annotation.CommentInfo;
+import cn.gudqs7.plugins.docer.util.ConfigHolder;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiType;
 import lombok.Data;
@@ -30,6 +32,11 @@ public class BaseTypeUtil {
             boolean noExampleValue = StringUtils.isBlank(example);
             return noExampleValue ? randomString(commentInfo) : example;
         };
+        Function<CommentInfo, Object> dateGetFn = commentInfo -> {
+            String example = commentInfo.getExample("");
+            boolean noExampleValue = StringUtils.isBlank(example);
+            return noExampleValue ? randomDate(commentInfo) : example;
+        };
         // 此处处理不能直接 new 的类型, 也就是接口, 常用的接口目前只想到三大集合
         OTHER_INTERFACE_MAP.put("java.util.List", TypeInfo.of("java.util.ArrayList", "new ArrayList<>()", new ArrayList<>()));
         OTHER_INTERFACE_MAP.put("java.util.Map", TypeInfo.of("java.util.HashMap", "new HashMap<>(2)", new HashMap<>(2)));
@@ -42,12 +49,12 @@ public class BaseTypeUtil {
         OTHER_BASE_TYPE_MAP.put("java.math.BigDecimal", TypeInfo.of("java.math.BigDecimal", "new BigDecimal(0)", commentInfo -> {
             String example = commentInfo.getExample("");
             boolean noExampleValue = StringUtils.isBlank(example);
-            return noExampleValue ? BigDecimal.valueOf(RandomUtils.nextDouble(50, 1000)) : new BigDecimal(example);
+            return noExampleValue ? BigDecimal.valueOf(randomDouble()) : new BigDecimal(example);
         }));
-        OTHER_BASE_TYPE_MAP.put("java.util.Date", TypeInfo.of("java.util.Date", "new Date()", randomDate()));
-        OTHER_BASE_TYPE_MAP.put("java.sql.Date", TypeInfo.of("java.sql.Date", "new Date(System.currentTimeMillis())", randomDate()));
-        OTHER_BASE_TYPE_MAP.put("java.sql.Timestamp", TypeInfo.of("java.sql.Timestamp", "new Timestamp(System.currentTimeMillis())", randomDate()));
-        OTHER_BASE_TYPE_MAP.put("java.sql.Time", TypeInfo.of("java.sql.Time", "new Time(System.currentTimeMillis())", randomDate()));
+        OTHER_BASE_TYPE_MAP.put("java.util.Date", TypeInfo.of("java.util.Date", "new Date()", dateGetFn));
+        OTHER_BASE_TYPE_MAP.put("java.sql.Date", TypeInfo.of("java.sql.Date", "new Date(System.currentTimeMillis())", dateGetFn));
+        OTHER_BASE_TYPE_MAP.put("java.sql.Timestamp", TypeInfo.of("java.sql.Timestamp", "new Timestamp(System.currentTimeMillis())", dateGetFn));
+        OTHER_BASE_TYPE_MAP.put("java.sql.Time", TypeInfo.of("java.sql.Time", "new Time(System.currentTimeMillis())", dateGetFn));
 
         OTHER_BASE_TYPE_MAP.put("java.sql.Blob", TypeInfo.of("javax.sql.rowset.serial.SerialBlob", "new SerialBlob(new byte[]{})", stringGetFn));
         OTHER_BASE_TYPE_MAP.put("java.sql.Clob", TypeInfo.of("javax.sql.rowset.serial.SerialClob", "new SerialClob(new char[]{})", stringGetFn));
@@ -58,7 +65,7 @@ public class BaseTypeUtil {
         JAVA_BASE_TYPE_MAP.put("byte", TypeInfo.of("(byte) 0", commentInfo -> {
             String example = commentInfo.getExample("");
             boolean noExampleValue = StringUtils.isBlank(example);
-            return noExampleValue ? RandomUtils.nextBytes(1)[0] : Byte.parseByte(example);
+            return noExampleValue ? randomByte() : Byte.parseByte(example);
         }));
         JAVA_BASE_TYPE_MAP.put("short", TypeInfo.of("(short) 0", commentInfo -> {
             String example = commentInfo.getExample("");
@@ -68,7 +75,7 @@ public class BaseTypeUtil {
         TypeInfo typeInfoForInt = TypeInfo.of("0", commentInfo -> {
             String example = commentInfo.getExample("");
             boolean noExampleValue = StringUtils.isBlank(example);
-            return noExampleValue ? RandomUtils.nextInt(1, 128) : Integer.parseInt(example);
+            return noExampleValue ? randomInt() : Integer.parseInt(example);
         });
         JAVA_BASE_TYPE_MAP.put("int", typeInfoForInt);
         JAVA_BASE_TYPE_MAP.put("integer", typeInfoForInt);
@@ -82,22 +89,22 @@ public class BaseTypeUtil {
         JAVA_BASE_TYPE_MAP.put("boolean", TypeInfo.of("false", commentInfo -> {
             String example = commentInfo.getExample("");
             boolean noExampleValue = StringUtils.isBlank(example);
-            return noExampleValue ? RandomUtils.nextBoolean() : Boolean.parseBoolean(example);
+            return noExampleValue ? randomBoolean() : Boolean.parseBoolean(example);
         }));
         JAVA_BASE_TYPE_MAP.put("double", TypeInfo.of("0D", commentInfo -> {
             String example = commentInfo.getExample("");
             boolean noExampleValue = StringUtils.isBlank(example);
-            return noExampleValue ? RandomUtils.nextDouble(50, 1000) : Double.parseDouble(example);
+            return noExampleValue ? randomDouble() : Double.parseDouble(example);
         }));
         JAVA_BASE_TYPE_MAP.put("float", TypeInfo.of("0f", commentInfo -> {
             String example = commentInfo.getExample("");
             boolean noExampleValue = StringUtils.isBlank(example);
-            return noExampleValue ? RandomUtils.nextFloat(10, 100) : Float.parseFloat(example);
+            return noExampleValue ? randomFloat() : Float.parseFloat(example);
         }));
         JAVA_BASE_TYPE_MAP.put("long", TypeInfo.of("0L", commentInfo -> {
             String example = commentInfo.getExample("");
             boolean noExampleValue = StringUtils.isBlank(example);
-            return noExampleValue ? RandomUtils.nextLong(10, 1000) : Long.parseLong(example);
+            return noExampleValue ? randomLong() : Long.parseLong(example);
         }));
         JAVA_BASE_TYPE_MAP.put("string", TypeInfo.of("\"\"", stringGetFn));
     }
@@ -275,10 +282,26 @@ public class BaseTypeUtil {
         return "Object".equals(typeName);
     }
 
-    private static String randomDate() {
+    private static boolean notUsingRandom() {
+        Map<String, String> config = ConfigHolder.getConfig();
+        if (config != null) {
+            String notUsingRandom = config.get("default.notUsingRandom");
+            if ("true".equals(notUsingRandom)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static String randomDate(CommentInfo commentInfo) {
         Date now = new Date();
+        String pattern = commentInfo.getSingleStr(CommentTag.JSON_FORMAT, "yyyy-MM-dd'T'HH:mm:ss.SSS+0000");
+        pattern = commentInfo.getSingleStr(CommentTag.DATE_FORMAT, pattern);
         now.setTime(System.currentTimeMillis() + RandomUtils.nextLong(0, 86400000));
-        return DateFormatUtils.formatUTC(now, "yyyy-MM-dd'T'HH:mm:ss.SSS+0000");
+        if (notUsingRandom()) {
+            now.setTime(1338182040520L);
+        }
+        return DateFormatUtils.format(now, pattern);
     }
 
     private static String randomString(CommentInfo commentInfo) {
@@ -286,6 +309,9 @@ public class BaseTypeUtil {
         Boolean random = commentInfo.getSingleBool("random", false);
         Boolean guid = commentInfo.getSingleBool("guid", false);
         if (guid) {
+            if (notUsingRandom()) {
+                return "98100F81-C8D8-45F8-9658-F31F5DC693C2";
+            }
             return UUID.randomUUID().toString().toUpperCase();
         }
         if (random || StringUtils.isBlank(fieldDesc)) {
@@ -294,20 +320,74 @@ public class BaseTypeUtil {
             for (int i = 0; i < length; i++) {
                 stringBuilder.append(randomChar(false));
             }
+            if (notUsingRandom()) {
+                return "HelloWorld";
+            }
             return stringBuilder.toString();
         } else {
             if (fieldDesc.contains(CommentConst.BREAK_LINE)) {
                 fieldDesc = fieldDesc.substring(0, fieldDesc.indexOf(CommentConst.BREAK_LINE));
             }
+            if (notUsingRandom()) {
+                return fieldDesc;
+            }
             return fieldDesc + RandomUtils.nextInt(1, 128);
         }
     }
 
+    private static long randomLong() {
+        if (notUsingRandom()) {
+            return 10L;
+        }
+        return RandomUtils.nextLong(10, 1000);
+    }
+
+    private static float randomFloat() {
+        if (notUsingRandom()) {
+            return 10f;
+        }
+        return RandomUtils.nextFloat(10, 100);
+    }
+
+    private static int randomInt() {
+        if (notUsingRandom()) {
+            return 1;
+        }
+        return RandomUtils.nextInt(1, 1024);
+    }
+
     private static short randomShort() {
+        if (notUsingRandom()) {
+            return (short) 1;
+        }
         return (short) RandomUtils.nextInt(1, 100);
     }
 
+    private static byte randomByte() {
+        if (notUsingRandom()) {
+            return (byte) 1;
+        }
+        return RandomUtils.nextBytes(1)[0];
+    }
+
+    private static boolean randomBoolean() {
+        if (notUsingRandom()) {
+            return false;
+        }
+        return RandomUtils.nextBoolean();
+    }
+
+    private static double randomDouble() {
+        if (notUsingRandom()) {
+            return 50d;
+        }
+        return RandomUtils.nextDouble(50, 1000);
+    }
+
     private static char randomChar() {
+        if (notUsingRandom()) {
+            return 'Q';
+        }
         boolean en = RandomUtils.nextBoolean();
         return randomChar(en);
     }

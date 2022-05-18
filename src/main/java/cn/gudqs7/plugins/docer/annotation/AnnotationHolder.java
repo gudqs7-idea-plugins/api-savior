@@ -32,6 +32,8 @@ public interface AnnotationHolder {
     String QNAME_OF_REQ_PARAM = "org.springframework.web.bind.annotation.RequestParam";
     String QNAME_OF_REQUEST_BODY = "org.springframework.web.bind.annotation.RequestBody";
     String QNAME_OF_MULTIPART_FILE = "org.springframework.web.multipart.MultipartFile";
+    String QNAME_OF_JSON_FORMAT = "com.fasterxml.jackson.annotation.JsonFormat";
+    String QNAME_OF_DATE_TIME_FORMAT = "org.springframework.format.annotation.DateTimeFormat";
 
 
     /**

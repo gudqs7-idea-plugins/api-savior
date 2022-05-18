@@ -31,7 +31,7 @@ public class PsiFieldAnnotationHolderImpl implements AnnotationHolder {
 
     @Override
     public CommentInfoTag getCommentInfoByComment() {
-        CommentInfoTag apiModelPropertyTag = new CommentInfoTag();
+        CommentInfoTag commentInfo = new CommentInfoTag();
         for (PsiElement child : psiField.getChildren()) {
             if (child instanceof PsiComment) {
                 PsiComment psiComment = (PsiComment) child;
@@ -59,36 +59,36 @@ public class PsiFieldAnnotationHolderImpl implements AnnotationHolder {
                             tag = tag.substring(1);
                             switch (tag) {
                                 case CommentTag.REQUIRED:
-                                    apiModelPropertyTag.setRequired(getBooleanVal(tagVal));
+                                    commentInfo.setRequired(getBooleanVal(tagVal));
                                     break;
                                 case CommentTag.HIDDEN:
-                                    apiModelPropertyTag.setHidden(getBooleanVal(tagVal));
+                                    commentInfo.setHidden(getBooleanVal(tagVal));
                                     break;
                                 case CommentTag.IMPORTANT:
-                                    apiModelPropertyTag.setImportant(getBooleanVal(tagVal));
+                                    commentInfo.setImportant(getBooleanVal(tagVal));
                                     break;
                                 case CommentTag.EXAMPLE:
-                                    apiModelPropertyTag.setExample(tagVal);
+                                    commentInfo.setExample(tagVal);
                                     break;
                                 case CommentTag.NOTES:
-                                    String notes = apiModelPropertyTag.getNotes(null);
+                                    String notes = commentInfo.getNotes(null);
                                     if (notes != null) {
-                                        apiModelPropertyTag.setNotes(notes + CommentConst.BREAK_LINE + tagVal);
+                                        commentInfo.setNotes(notes + CommentConst.BREAK_LINE + tagVal);
                                     } else {
-                                        apiModelPropertyTag.setNotes(tagVal);
+                                        commentInfo.setNotes(tagVal);
                                     }
                                     break;
                                 default:
-                                    List<String> list = apiModelPropertyTag.getOtherTagMap().computeIfAbsent(tag, k -> new ArrayList<>());
+                                    List<String> list = commentInfo.getOtherTagMap().computeIfAbsent(tag, k -> new ArrayList<>());
                                     list.add(tagVal);
                                     break;
                             }
                         } else {
-                            String oldValue = apiModelPropertyTag.getValue(null);
+                            String oldValue = commentInfo.getValue(null);
                             if (oldValue != null) {
-                                apiModelPropertyTag.setValue(oldValue + CommentConst.BREAK_LINE + line);
+                                commentInfo.setValue(oldValue + CommentConst.BREAK_LINE + line);
                             } else {
-                                apiModelPropertyTag.setValue(line);
+                                commentInfo.setValue(line);
                             }
                         }
                     }
@@ -96,7 +96,8 @@ public class PsiFieldAnnotationHolderImpl implements AnnotationHolder {
                 break;
             }
         }
-        return apiModelPropertyTag;
+        dealOtherAnnotation(commentInfo);
+        return commentInfo;
     }
 
     @Override
@@ -118,7 +119,27 @@ public class PsiFieldAnnotationHolderImpl implements AnnotationHolder {
             commentInfo.setNotes(notes);
             commentInfo.setExample(getAnnotationValueByProperty("example"));
         }
+        dealOtherAnnotation(commentInfo);
         return commentInfo;
+    }
+
+    private void dealOtherAnnotation(CommentInfo commentInfo) {
+        boolean hasJsonFormatAnnotation = hasAnnotation(QNAME_OF_JSON_FORMAT);
+        if (hasJsonFormatAnnotation) {
+            String pattern = getAnnotationValueByQname(QNAME_OF_JSON_FORMAT, "pattern");
+            if (StringUtils.isNotBlank(pattern)) {
+                List<String> list = commentInfo.getOtherTagMap().computeIfAbsent(CommentTag.JSON_FORMAT, k -> new ArrayList<>());
+                list.add(pattern);
+            }
+        }
+        boolean hasDateFormatAnnotation = hasAnnotation(QNAME_OF_DATE_TIME_FORMAT);
+        if (hasDateFormatAnnotation) {
+            String pattern = getAnnotationValueByQname(QNAME_OF_DATE_TIME_FORMAT, "pattern");
+            if (StringUtils.isNotBlank(pattern)) {
+                List<String> list = commentInfo.getOtherTagMap().computeIfAbsent(CommentTag.DATE_FORMAT, k -> new ArrayList<>());
+                list.add(pattern);
+            }
+        }
     }
 
     @Override

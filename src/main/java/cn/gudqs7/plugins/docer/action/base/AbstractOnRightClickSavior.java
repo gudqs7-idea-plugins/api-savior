@@ -3,13 +3,18 @@ package cn.gudqs7.plugins.docer.action.base;
 import cn.gudqs7.plugins.docer.annotation.AnnotationHolder;
 import cn.gudqs7.plugins.docer.util.ActionUtil;
 import cn.gudqs7.plugins.docer.util.ClipboardUtil;
+import cn.gudqs7.plugins.docer.util.ConfigHolder;
+import cn.gudqs7.plugins.docer.util.ConfigUtil;
 import cn.gudqs7.plugins.util.PsiUtil;
 import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiMethod;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Map;
 
 /**
  * @author wq
@@ -62,13 +67,27 @@ public abstract class AbstractOnRightClickSavior extends AnAction implements Upd
 
             PsiMethod psiMethod = ActionUtil.getPsiMethod(psiElement);
             boolean isRightClickOnMethod = psiMethod != null;
+            PsiClass psiClass = ActionUtil.getPsiClass(psiElement);
+            boolean isRightClickOnClass = psiClass != null;
+
+            VirtualFile virtualFile = null;
+            if (isRightClickOnClass) {
+                virtualFile = psiClass.getContainingFile().getVirtualFile();
+            }
+            if (isRightClickOnMethod) {
+                virtualFile = psiMethod.getContainingFile().getVirtualFile();
+            }
+
+            if (virtualFile != null) {
+                Map<String, String> config = ConfigUtil.getConfig("docer-config.properties", project, virtualFile);
+                ConfigHolder.putConfig(config);
+            }
+
             if (isRightClickOnMethod) {
                 handlePsiMethod(project, psiMethod);
                 return;
             }
 
-            PsiClass psiClass = ActionUtil.getPsiClass(psiElement);
-            boolean isRightClickOnClass = psiClass != null;
             if (isRightClickOnClass) {
                 handlePsiClass(project, psiClass);
             }

@@ -12,5 +12,7 @@ public interface CommentTag {
     String TAGS = "tags";
     String IMPORTANT = "important";
     String DESCRIPTION = "description";
+    String JSON_FORMAT = "json";
+    String DATE_FORMAT = "date";
 
 }

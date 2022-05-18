@@ -11,6 +11,7 @@ import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.Enumeration;
+import java.util.Map;
 
 /**
  * @author wq
@@ -100,6 +101,14 @@ public class ActionUtil {
             return ip;
         }
         try {
+            Map<String, String> config = ConfigHolder.getConfig();
+            if (config != null) {
+                String defaultIp = config.get("default.ip");
+                if (defaultIp != null) {
+                    ip = defaultIp;
+                    return ip;
+                }
+            }
             String hostAddress = InetAddress.getLocalHost().getHostAddress();
             Enumeration<NetworkInterface> networkInterfaces = NetworkInterface.getNetworkInterfaces();
             while (networkInterfaces.hasMoreElements()) {
