@@ -8,7 +8,6 @@ import com.intellij.openapi.diagnostic.ErrorReportSubmitter;
 import com.intellij.openapi.diagnostic.IdeaLoggingEvent;
 import com.intellij.openapi.diagnostic.SubmittedReportInfo;
 import com.intellij.openapi.extensions.PluginDescriptor;
-import com.intellij.openapi.util.NlsActions;
 import com.intellij.openapi.util.SystemInfo;
 import com.intellij.util.Consumer;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -32,7 +31,7 @@ public class ReportSubmitter extends ErrorReportSubmitter {
     private static final String ISSUE_URL = "https://github.com/docer-savior/docer-savior-idea-plugin/issues";
 
     @Override
-    public @NlsActions.ActionText @NotNull String getReportActionText() {
+    public @NotNull String getReportActionText() {
         return "Report To Gudqs7";
     }
 
