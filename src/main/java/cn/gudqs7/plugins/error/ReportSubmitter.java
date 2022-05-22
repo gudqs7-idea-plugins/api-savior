@@ -27,7 +27,6 @@ import java.util.Properties;
  */
 public class ReportSubmitter extends ErrorReportSubmitter {
 
-    private static final String GITHUB_REPOSITORY = "docer-savior/docer-savior-idea-plugin";
     private static final String ISSUE_URL = "https://github.com/docer-savior/docer-savior-idea-plugin/issues";
 
     @Override
@@ -36,7 +35,7 @@ public class ReportSubmitter extends ErrorReportSubmitter {
     }
 
     @Override
-    public boolean submit(IdeaLoggingEvent @NotNull [] events, @Nullable String additionalInfo, @NotNull Component parentComponent, @NotNull Consumer<? super SubmittedReportInfo> consumer) {
+    public boolean submit(IdeaLoggingEvent @NotNull [] events, @Nullable String additionalInfo, @NotNull Component parentComponent, @NotNull Consumer<SubmittedReportInfo> consumer) {
         try {
             IdeaLoggingEvent event = events[0];
             String throwableText = event.getThrowableText();

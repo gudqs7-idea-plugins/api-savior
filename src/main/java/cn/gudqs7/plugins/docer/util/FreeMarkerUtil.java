@@ -7,7 +7,6 @@ import freemarker.template.TemplateExceptionHandler;
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 /**
@@ -30,7 +29,7 @@ public class FreeMarkerUtil {
             temp.process(root, out);
             byte[] bytes = arrayOutputStream.toByteArray();
             //noinspection StringOperationCanBeSimplified
-            return new String(bytes, StandardCharsets.UTF_8);
+            return new String(bytes);
         } catch (Exception e) {
             ActionUtil.handleException(e);
         }

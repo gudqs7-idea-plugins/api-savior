@@ -3,6 +3,7 @@ package com.zhaow.restful.common;
 
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.util.IconLoader;
+import com.intellij.util.ReflectionUtil;
 import com.zhaow.restful.method.HttpMethod;
 
 import javax.swing.*;
@@ -26,13 +27,13 @@ public class ToolkitIcons {
             return null;
         }
 
-        public static  Icon GET = IconLoader.getIcon("/icons/method/g.png"); // 16x16 GREEN
+        public static  Icon GET = IconLoader.getIcon("/icons/method/g.png", ReflectionUtil.getGrandCallerClass()); // 16x16 GREEN
         // post put patch
-        public static  Icon PUT = IconLoader.getIcon("/icons/method/p2.png"); // 16x16 ORANGE
-        public static  Icon POST = IconLoader.getIcon("/icons/method/p.png"); // 16x16 BLUE
-        public static  Icon PATCH = IconLoader.getIcon("/icons/method/p3.png"); // 16x16 GRAY
-        public static  Icon DELETE = IconLoader.getIcon("/icons/method/d.png"); // 16x16 RED
-        public static  Icon UNDEFINED = IconLoader.getIcon("/icons/method/undefined.png"); // 16x16 GRAY
+        public static  Icon PUT = IconLoader.getIcon("/icons/method/p2.png", ReflectionUtil.getGrandCallerClass()); // 16x16 ORANGE
+        public static  Icon POST = IconLoader.getIcon("/icons/method/p.png", ReflectionUtil.getGrandCallerClass()); // 16x16 BLUE
+        public static  Icon PATCH = IconLoader.getIcon("/icons/method/p3.png", ReflectionUtil.getGrandCallerClass()); // 16x16 GRAY
+        public static  Icon DELETE = IconLoader.getIcon("/icons/method/d.png", ReflectionUtil.getGrandCallerClass()); // 16x16 RED
+        public static  Icon UNDEFINED = IconLoader.getIcon("/icons/method/undefined.png", ReflectionUtil.getGrandCallerClass()); // 16x16 GRAY
 
         public static Icon get0() {
             return AllIcons.Nodes.Method;
@@ -47,7 +48,7 @@ public class ToolkitIcons {
 //    public static final Icon SERVICE = IconLoader.getIcon("/icons/s1.png"); // 16x16
 //    public static final Icon SERVICE = IconLoader.getIcon("/icons/s2.png"); // 16x16
 //    public static final Icon SERVICE = IconLoader.getIcon("/icons/s3.png"); // 16x16
-    public static final Icon SERVICE = IconLoader.getIcon("/icons/service.png"); // 16x16
+    public static final Icon SERVICE = IconLoader.getIcon("/icons/service.png", ReflectionUtil.getGrandCallerClass()); // 16x16
 
 
 }
