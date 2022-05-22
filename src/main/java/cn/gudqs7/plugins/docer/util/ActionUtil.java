@@ -4,8 +4,9 @@ import com.intellij.notification.*;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.psi.*;
-import org.apache.commons.lang3.StringUtils;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
@@ -138,12 +139,12 @@ public class ActionUtil {
     }
 
     public static void handleException(Throwable e1) {
-        e1.printStackTrace();
-        String message = e1.getMessage();
-        if (StringUtils.isBlank(message)) {
-            message = e1.toString();
-        }
-        ActionUtil.showNotification("插件运行失败: " + message, NotificationDisplayType.BALLOON, NotificationType.ERROR);
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream(40960);
+        e1.printStackTrace(new PrintStream(byteArrayOutputStream));
+        //noinspection StringOperationCanBeSimplified
+        String stackTrace = new String(byteArrayOutputStream.toByteArray());
+        ActionUtil.showNotification("插件运行失败: " + stackTrace, NotificationDisplayType.BALLOON, NotificationType.ERROR);
+        throw new RuntimeException(e1.getMessage(), e1);
     }
 
 }
