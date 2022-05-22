@@ -17,6 +17,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
+import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -62,7 +63,7 @@ public class ReportSubmitter extends ErrorReportSubmitter {
             }
             consumer.consume(reportInfo);
         } catch (Exception e) {
-            consumer.consume(new SubmittedReportInfo(SubmittedReportInfo.SubmissionStatus.FAILED));
+            consumer.consume(new SubmittedReportInfo("", "error: " + e.getMessage(), SubmittedReportInfo.SubmissionStatus.FAILED));
         }
         return true;
     }
@@ -89,6 +90,7 @@ public class ReportSubmitter extends ErrorReportSubmitter {
         root.put("vmName", systemProperties.getProperty("java.vm.name", "unknown"));
         root.put("vmVendor", systemProperties.getProperty("java.vendor", "unknown"));
         root.put("osInfo", SystemInfo.getOsNameAndVersion());
+        root.put("encoding", Charset.defaultCharset().displayName());
 
         // plugin info
         root.put("pluginName", pluginDescriptor.getName());

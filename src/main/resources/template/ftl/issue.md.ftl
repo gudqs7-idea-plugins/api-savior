@@ -16,6 +16,7 @@ Build ${build}, built on ${buildDate}
 Runtime version: ${javaRuntimeVersion} ${osArch}
 VM: ${vmName} by ${vmVendor}
 Operating system: ${osInfo}
+JVM `file.encodeng` : ${encoding}
 
 
 **附加上下文**
