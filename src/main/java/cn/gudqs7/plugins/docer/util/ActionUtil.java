@@ -143,8 +143,8 @@ public class ActionUtil {
         e1.printStackTrace(new PrintStream(byteArrayOutputStream));
         //noinspection StringOperationCanBeSimplified
         String stackTrace = new String(byteArrayOutputStream.toByteArray());
-        ActionUtil.showNotification("插件运行失败: " + stackTrace, NotificationDisplayType.BALLOON, NotificationType.ERROR);
-        throw new RuntimeException(e1.getMessage(), e1);
+        ActionUtil.showNotification("插件运行失败, 可通过 IDEA 右下角感叹号, 点击 Report To Gudqs7 一键上报到 GitHub; 错误信息如下: " + stackTrace, NotificationDisplayType.BALLOON, NotificationType.ERROR);
+        throw new RuntimeException(e1.getMessage(), e1.getCause());
     }
 
 }

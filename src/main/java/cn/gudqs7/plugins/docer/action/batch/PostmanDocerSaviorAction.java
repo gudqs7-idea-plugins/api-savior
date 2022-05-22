@@ -125,7 +125,13 @@ public class PostmanDocerSaviorAction extends AbstractBatchDocerSavior {
             postmanName = projectName + "-" + lastPostmanItem.getOrDefault("name", postmanName).toString();
             // 去除模块
             itemList.clear();
-            itemList.addAll((List<Map<String, Object>>) lastPostmanItem.get("item"));
+
+            // 含有则说明单个 Controller 但多个接口
+            if (lastPostmanItem.containsKey("item")) {
+                itemList.addAll((List<Map<String, Object>>) lastPostmanItem.get("item"));
+            } else {
+                itemList.add(lastPostmanItem);
+            }
         }
 
         Map<String, Object> postmanObj = new LinkedHashMap<>(8);
