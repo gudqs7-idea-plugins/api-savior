@@ -17,6 +17,12 @@
 
 # Docer Savior 是什么？
 
+- 是一个 IDEA 插件，仅支持 Java 。
+- 生成 HTTP 接口文档，格式上支持 markdown、html，目的是取代 Swagger。
+- 理论上支持所有 Spring MVC 注解开发的 HTTP 接口，同理也支持 `Feign` 的微服务，另外 `Dobbo` 这种纯接口写法也是支持的。
+- 同时附带一些相关小能力，如支持导出到 Postman，支持生成 cURL 命令，支持单个数据传输类生成说明文档表格、json 示例。
+
+
 # 为什么开发这个项目？
 
 # 我该如何开始？
