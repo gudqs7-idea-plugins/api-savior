@@ -6,24 +6,16 @@
 [jet]: http://localhost:63342/api/installPlugin?action=install&pluginId=gudqs7.github.io.doc-savior
 
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](CODE_OF_CONDUCT.md)
-[![license](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![GitHub release][release-img]][latest-release] [![Jetbrains Plugins][plugin-img]][plugin]
 [![Version](http://phpstorm.espend.de/badge/16860/version)][plugin]  
 [![Downloads](http://phpstorm.espend.de/badge/16860/downloads)][plugin]
-[![Install Plugins][jet-img]][jet]  
+[![Install Plugins][jet-img]][jet]
 
----
-[中文 🇨🇳](./README_CN.md)  
+# Generate Api documents and more based on the controller or interface
 
-# Docer Savior 是什么？
-
-# 为什么开发这个项目？
-
-# 我该如何开始？
-
-# 如果需要，我改从哪里获取更多帮助？
-
-
+[Issues](https://github.com/docer-savior/docer-savior-idea-plugin/issues) |
+[Website](https://www.yuque.com/gudqs7/docer/ygtgmz) |
+[LICENSE](https://github.com/docer-savior/docer-savior-idea-plugin/blob/master/LICENSE)
 
 ### English introduction
 

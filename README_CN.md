@@ -12,8 +12,7 @@
 [![Downloads](http://phpstorm.espend.de/badge/16860/downloads)][plugin]
 [![Install Plugins][jet-img]][jet]  
 
----
-[中文 🇨🇳](./README_CN.md)  
+[English 🇺🇸](./README.md)  
 
 # Docer Savior 是什么？
 
