@@ -19,68 +19,76 @@
 
 - 是一个 IDEA 插件，仅支持 Java 。
 - 生成 HTTP 接口文档，格式上支持 markdown、html，目的是取代 Swagger。
-- 理论上支持所有 Spring MVC 注解开发的 HTTP 接口，同理也支持 `Feign` 的微服务，另外 `Dobbo` 这种纯接口写法也是支持的。
+- 理论上支持所有 Spring MVC 注解开发的 HTTP 接口，同理也支持 `Feign` 的微服务，另外 `Dubbo` 这种纯接口写法也是支持的。
 - 同时附带一些相关小能力，如支持导出到 Postman，支持生成 cURL 命令，支持单个数据传输类生成说明文档表格、json 示例。
 - 移植并完善了两个插件的功能：[Github GenerateAllSetter Pull#66](https://github.com/gejun123456/intellij-generateAllSetMethod/pull/66) | [Github genSets](https://github.com/yoke233/genSets)
 
+## 与 Swagger 的区别
+
+- 随时修改，随时生成，无需启动项目
+- 支持 java doc 注释
+- 支持 RPC 接口（即 Dubbo/Feign）
+- 生成的文档带有入参/出参示例，更直观
+- 多种载体，不局限于网页或文档；比如目前就支持导出到 Postman，后续可以很轻松的实现导出到 Yapi，亦或是类似的平台；我们的目的是，写一次注释，一辈子管用！
 
 # 为什么这个项目有用？
 
+1. 代码总是需要点注释，好记性不如烂笔头；而现在，又多了一个写好注释的好理由！
+2. 每次写接口文档都觉得在做苦力活，尤其是管理后台的业务，动辄就是好几个表的增删改查，也就意味着起码十几个接口，这完全是可避免的！
+3. 这个插件并不是是只能生成接口文档，还可以实现更多的偷懒的方式（只要和接口相关的），还有很多等待着我们去发掘！
+
 # 我该如何开始？
+
+## 1.安装插件
+### zip 包安装
+从最新的 [Release][latest-release] 页下载 zip 包，然后打开 IDEA，进入 Settings --> Plugins --> 小齿轮 --> Install Plugin from Disk  
+![zip](parts/imgs/install-plugin-from-disk.png)
+
+### Marketplace 安装
+打开 IDEA，进入 Settings --> Plugins，选中 Marketplace，输入 docer savior 点击 Install  
+![Marketplace](parts/imgs/install-from-marketplace.png)
+
+## 2.打开一个 Spring MVC 或 Dubbo 项目
+建议直接打开我专门准备的示例项目：[docer-savior-plugin-usage-examples](https://github.com/docer-savior/docer-savior-plugin-usage-examples)    
+
+```shell
+git clone https://github.com/docer-savior/docer-savior-plugin-usage-examples
+```
+
+## 3.生成文档
+找到一个 Controller 或 RPC 接口类，  
+如 `cn.gudqs.example.docer.restful.user.controller.UserController`  
+在类名上右键，然后点击 Generate Api Interface Doc 即可  
+![img.png](parts/imgs/gen-doc-by-class.png)  
+文档如下图  
+![img.png](parts/imgs/markdown-doc-user.png)
+
+
+## 4.批量生成文档及更多
+直接在项目上右键（或某个目录/某个类/任意多选亦可），然后点击相应的按钮，如下图  
+![img.png](parts/imgs/gen-doc-batch.png)
+假设我点击了 Batch Generate Api Interface Doc，则我会得到一个文件夹，按模块（可自定义，默认是最后两级报名）分子文件夹的 Markdown 接口文档，如下图    
+![img.png](parts/imgs/markdown-doc-batch.png)  
+
 
 # 如果需要，我可以从哪里获得更多帮助？
 
+## 通过提交 Issue 来获取帮助
+ [点击访问 Github Issue](https://github.com/docer-savior/docer-savior-idea-plugin/issues)  
+> 欢迎大家提问，欢迎大家一起完善它！
 
+**另外，我接入了 IDEA 的错误处理组件，因此当发现插件报错提示时，按照 IDEA 提示，可查看错误信息，并一键上报给我（即自动生成一个 Issue）**
 
-### English introduction
+## 通过查看 Wiki 来获取更多说明
 
-    This plugin generates a markdown format interface document based on Swagger annotations with one click, and pastes it directly into any markdown editor, and then you can share it with others without being restricted by Swagger having to start the project!
+[点击访问 Wiki](https://github.com/docer-savior/docer-savior-idea-plugin/wiki/Get-Started)
 
-#### Usage
+## 通过查看 demo 示例来了解项目实际使用效果
 
-    Right-click when editing the code, we provide three entrances: on the Java interface, on the Java method, on the ordinary class,
+- [点击查看示例项目的 HTML 格式文档效果](https://docer-savior.github.io/docer-savior-plugin-usage-examples/)
+- [点击访问示例项目 Github](https://github.com/docer-savior/docer-savior-plugin-usage-examples)
 
-    However, it should be noted that on ordinary classes, only parameter description documents in Markdown format will be generated based on the parameters.
+# 致谢名单
 
-    Right-click on the method to generate a complete interface document in Markdown format according to this method.
-
-    Finally, on the Java interface, a complete interface document in Markdown format is generated according to all methods!
-
-### 中文描述
-
-#### 支持功能如下
-
-* 支持 controller 和普通接口
-* 支持导出成 markdown 文档, 或HTML格式文档
-* 完美支持Postman, 导出即可立即运行
-* 支持单个请求/响应Pojo 生成文档及示例
-* 支持导出成cURL, 一键粘贴即可运行(自动获取ip及端口, 仅SpringBoot)
-
-#### 搬迁功能如下
-
-* GenerateAllSetter(改进后添加生成 getter及支持 postfix: xxx.allset) [Github](https://github.com/gejun123456/intellij-generateAllSetMethod)
-* RestfulToolkit 没啥改进, 仅保留根据URL跳转代码的搜索框
-
-#### 其他
-
-- **使用文档 [https://www.yuque.com/gudqs7/docer/ygtgmz](https://www.yuque.com/gudqs7/docer/ygtgmz)**
-- **文档示例 [https://github.com/docer-savior/docer-savior-plugin-usage-examples](https://github.com/docer-savior/docer-savior-plugin-usage-examples)**
-
-##### 文档示例 - HTML 文档
-
-> 相关文件位于 docs 下, 已使用 github pages 部署, 可通过 [文档首页](https://docer-savior.github.io/docer-savior-plugin-usage-examples/) 直接访问
-
-##### 文档示例 - Markdown 文档
-
-- [用户接口.md](https://github.com/docer-savior/docer-savior-plugin-usage-examples/blob/master/doc-example/restful/%E7%94%A8%E6%88%B7%E6%A8%A1%E5%9D%97/%E7%94%A8%E6%88%B7%E6%8E%A5%E5%8F%A3.md)
-- [用户VIP接口.md](https://github.com/docer-savior/docer-savior-plugin-usage-examples/blob/master/doc-example/restful/%E7%94%A8%E6%88%B7%E6%A8%A1%E5%9D%97/%E7%94%A8%E6%88%B7VIP%E6%8E%A5%E5%8F%A3.md)
-- [下单接口.md](https://github.com/docer-savior/docer-savior-plugin-usage-examples/blob/master/doc-example/restful/%E8%AE%A2%E5%8D%95%E6%A8%A1%E5%9D%97/%E4%B8%8B%E5%8D%95%E6%8E%A5%E5%8F%A3.md)
-- [订单接口.md](https://github.com/docer-savior/docer-savior-plugin-usage-examples/blob/master/doc-example/restful/%E8%AE%A2%E5%8D%95%E6%A8%A1%E5%9D%97/%E8%AE%A2%E5%8D%95%E6%8E%A5%E5%8F%A3.md)
-
-
-#### 效果图
-
-![gen-api](https://github.com/docer-savior/docer-savior-idea-plugin/raw/master/parts/usage/gen-api.gif)  
-![export-to-postman](https://github.com/docer-savior/docer-savior-idea-plugin/raw/master/parts/usage/export-to-postman.gif)  
-![all-get](https://github.com/docer-savior/docer-savior-idea-plugin/raw/master/parts/usage/allget.gif)  
-![all-get-by-intention-action](https://github.com/docer-savior/docer-savior-idea-plugin/raw/master/parts/usage/allget-by-intention-action.gif)
+- [Github intellij-generateAllSetMethod](https://github.com/gejun123456/intellij-generateAllSetMethod)
+- [Github genSets](https://github.com/yoke233/genSets)

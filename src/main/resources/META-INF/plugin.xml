@@ -39,22 +39,22 @@
             <add-to-group group-id="EditorPopupMenu" anchor="after" relative-to-action="ShowIntentionsGroup"/>
 
             <action id="cn.gudqs.docer.savior.req.rpc" class="cn.gudqs7.plugins.docer.action.rpc.RpcReqDocSaviorAction"
-                    text="生成RPC请求参数文档" description="生成RPC请求参数文档">
+                    text="Generate RPC Param Doc" description="Generate RPC request parameter documentation">
             </action>
             <action id="cn.gudqs.docer.savior.req.restful" class="cn.gudqs7.plugins.docer.action.restful.RestfulReqDocSaviorAction"
-                    text="生成Api请求参数文档" description="生成Api请求参数文档">
+                    text="Generate Api Param Doc" description="Generate API request parameter documentation">
             </action>
             <action id="cn.gudqs.docer.savior.rpc" class="cn.gudqs7.plugins.docer.action.rpc.RpcDocSaviorAction"
-                    text="生成RPC接口文档" description="生成RPC接口文档">
+                    text="Generate RPC Interface Doc" description="Generate RPC interface documentation">
             </action>
             <action id="cn.gudqs.docer.savior.restful" class="cn.gudqs7.plugins.docer.action.restful.RestfulDocSaviorAction"
-                    text="生成Api接口文档" description="生成Api接口文档">
+                    text="Generate Api Interface Doc" description="Generate API interface documentation">
             </action>
             <action id="cn.gudqs.docer.savior.curl" class="cn.gudqs7.plugins.docer.action.restful.RestfulCurlSaviorAction"
-                    text="生成cURL" description="生成cURL">
+                    text="Generate cURL" description="Generate cURL">
             </action>
             <action id="cn.gudqs.docer.savior.curlRequire" class="cn.gudqs7.plugins.docer.action.restful.RestfulCurlRequireSaviorAction"
-                    text="生成cURL(纯净版)" description="生成cURL(纯净版)">
+                    text="Generate cURL(Only required parameters)" description="Generate cURL(Only required parameters)">
             </action>
         </group>
 
@@ -62,22 +62,22 @@
             <add-to-group group-id="ProjectViewPopupMenu" anchor="after" relative-to-action="CutCopyPasteGroup"/>
 
             <action id="cn.gudqs.docer.savior.project.rpc" class="cn.gudqs7.plugins.docer.action.rpc.RpcProjectDocSaviorAction"
-                    text="批量生成RPC接口文档" description="批量生成RPC接口文档">
+                    text="Batch Generate RPC Interface Doc" description="Generate RPC interface documents in batches">
             </action>
             <action id="cn.gudqs.docer.savior.project.restful" class="cn.gudqs7.plugins.docer.action.restful.RestfulProjectDocSaviorAction"
-                    text="批量生成Api接口文档" description="批量生成Api接口文档">
+                    text="Batch Generate Api Interface Doc" description="Generate API interface documents in batches">
             </action>
             <action id="cn.gudqs.docer.savior.project.html" class="cn.gudqs7.plugins.docer.action.batch.HtmlDocerSaviorAction"
-                    text="批量生成Api接口文档(Html)" description="批量生成Api接口文档(Html)">
+                    text="Batch Generate Api Interface Doc(HTML)" description="Batch generate Api interface documents in HTML format">
             </action>
             <action id="cn.gudqs.docer.savior.project.postman" class="cn.gudqs7.plugins.docer.action.batch.PostmanDocerSaviorAction"
-                    text="导出Api接口到Postman" description="导出Api接口到Postman">
+                    text="Export Api Interface to Postman" description="Export Api interface to Postman">
             </action>
             <action id="cn.gudqs.docer.savior.project.amp" class="cn.gudqs7.plugins.docer.action.batch.AmpDocerSaviorAction"
-                    text="导出Api到Amp" description="导出Api到Amp">
+                    text="Export Api to Amp" description="Export Api to amp">
             </action>
             <action id="cn.gudqs.docer.savior.project.oneapi" class="cn.gudqs7.plugins.docer.action.batch.OneApiDocerSaviorAction"
-                    text="导出Api到OneApi" description="导出Api到OneApi">
+                    text="Export Api to OneApi" description="Export Api to oneApi">
             </action>
         </group>
 
