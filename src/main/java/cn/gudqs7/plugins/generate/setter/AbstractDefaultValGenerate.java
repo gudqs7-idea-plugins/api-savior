@@ -42,11 +42,11 @@ public abstract class AbstractDefaultValGenerate extends AbstractMethodListGener
                     if (psiClass == null) {
                         PsiUtil.handleSyntaxError(psiClassReferenceType.getCanonicalText());
                     }
-                    String typeName0 = psiClass.getQualifiedName();
-                    String commonDefaultVal = BaseTypeUtil.getDefaultValStrByQname(typeName0);
+                    String qualifiedName = psiClass.getQualifiedName();
+                    String commonDefaultVal = BaseTypeUtil.getDefaultValStrByQname(qualifiedName);
                     if (commonDefaultVal != null) {
                         defaultVal = commonDefaultVal;
-                        String commonDefaultValImport = BaseTypeUtil.getDefaultValImportByQname(typeName0);
+                        String commonDefaultValImport = BaseTypeUtil.getDefaultValImportByQname(qualifiedName);
                         if (commonDefaultValImport != null) {
                             newImportList.add(commonDefaultValImport);
                         }

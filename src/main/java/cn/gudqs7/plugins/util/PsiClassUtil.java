@@ -21,11 +21,19 @@ public class PsiClassUtil {
 
     // =================     PsiClass相关工具     ====================
 
-    public static PsiClassReferenceType getPsiClassByPsiType(PsiType psiType) {
+    public static PsiClassReferenceType getPsiClassReferenceTypeByPsiType(PsiType psiType) {
         if (psiType != null) {
             if (psiType instanceof PsiClassReferenceType) {
                 return (PsiClassReferenceType) psiType;
             }
+        }
+        return null;
+    }
+
+    public static PsiClass getPsiClassByPsiType(PsiType psiType) {
+        PsiClassReferenceType classReferenceType = getPsiClassReferenceTypeByPsiType(psiType);
+        if (classReferenceType != null) {
+            return classReferenceType.resolve();
         }
         return null;
     }

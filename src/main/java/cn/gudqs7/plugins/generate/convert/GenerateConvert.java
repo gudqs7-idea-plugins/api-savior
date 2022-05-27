@@ -21,7 +21,7 @@ import java.util.Set;
  */
 public class GenerateConvert extends AbstractMethodListGenerate {
 
-    private final BaseVar varForGet;
+    protected final BaseVar varForGet;
 
     public GenerateConvert(BaseVar varForSet, BaseVar varForGet) {
         super(varForSet);
@@ -63,7 +63,7 @@ public class GenerateConvert extends AbstractMethodListGenerate {
         List<PsiMethod> methodList = PsiClassUtil.getGetterMethod(psiClassForGet);
         Map<String, PsiMethod> methodMap = PsiClassUtil.getMethodMap(methodList);
         PsiMethod psiMethod = methodMap.get(getMethodName);
-        String defaultVal = "";
+        String defaultVal = "null/* 源对象无此字段 */";
         if (psiMethod != null) {
             defaultVal = getGetterCode(psiMethod);
         }

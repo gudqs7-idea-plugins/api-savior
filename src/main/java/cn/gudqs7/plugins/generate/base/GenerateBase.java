@@ -180,12 +180,10 @@ public interface GenerateBase {
      * @param document           文档
      * @param psiDocumentManager 文档管理器
      * @param containingFile     当前文件
-     * @param psiType            psiType
-     * @param generateName       变量名称
      * @param splitText          每行分隔符
      * @param insertOffset       插入的位置
      */
-    default void insertCodeByPsiType(Document document, PsiDocumentManager psiDocumentManager, PsiFile containingFile, PsiType psiType, String generateName, String splitText, int insertOffset) {
+    default void insertCodeByPsiType(Document document, PsiDocumentManager psiDocumentManager, PsiFile containingFile, String splitText, int insertOffset) {
         HashSet<String> newImportList = new HashSet<>();
         String insertCode = generateCode(splitText, newImportList);
         document.insertString(insertOffset, insertCode);

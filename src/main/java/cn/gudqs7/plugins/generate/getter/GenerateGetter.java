@@ -2,6 +2,7 @@ package cn.gudqs7.plugins.generate.getter;
 
 import cn.gudqs7.plugins.generate.base.AbstractMethodListGenerate;
 import cn.gudqs7.plugins.generate.base.BaseVar;
+import cn.gudqs7.plugins.generate.util.BaseTypeUtil;
 import cn.gudqs7.plugins.util.PsiClassUtil;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiClass;
@@ -37,16 +38,23 @@ public class GenerateGetter extends AbstractMethodListGenerate {
         String methodName = method.getName();
         String recvVarName = methodName.replaceFirst("get", "");
         recvVarName = recvVarName.substring(0, 1).toLowerCase() + recvVarName.substring(1);
-        PsiType returnType = method.getReturnType();
+        PsiType psiType = method.getReturnType();
         String sourceVarName = baseVar.getVarName();
-        if (returnType == null) {
+        if (psiType == null) {
             return sourceVarName + "." + methodName + "();";
         }
         Project project = method.getProject();
-        String typeName = returnType.getPresentableText();
-        Pair<String, String> pair = handlerByPsiType(newImportList, project, returnType, "%s", typeName);
+        String typeName = psiType.getPresentableText();
+        String qName = psiType.getCanonicalText();
+        String defaultValStrByQname = BaseTypeUtil.getDefaultValStrByQname(qName);
+        if (defaultValStrByQname != null) {
+            String commonDefaultValImport = BaseTypeUtil.getDefaultValImportByQname(qName);
+            if (commonDefaultValImport != null) {
+                newImportList.add(qName);
+            }
+        }
+        Pair<String, String> pair = handlerByPsiType(newImportList, project, psiType, "%s", typeName);
         String fieldType = pair.getLeft();
-        String right = pair.getRight();
         return fieldType + " " + recvVarName + " = " + sourceVarName + "." + methodName + "();";
     }
 

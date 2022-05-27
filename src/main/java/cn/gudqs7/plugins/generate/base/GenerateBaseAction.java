@@ -102,7 +102,7 @@ public abstract class GenerateBaseAction extends PsiElementBaseIntentionAction {
             PsiElement parent = psiLocal.getParent();
             String splitText = PsiDocumentUtil.calculateSplitText(document, parent.getTextOffset(), "");
             int textOffset = parent.getTextOffset() + parent.getText().length();
-            generateBase.insertCodeByPsiType(document, psiDocumentManager, containingFile, psiLocal.getType(), psiLocal.getName(), splitText, textOffset);
+            generateBase.insertCodeByPsiType(document, psiDocumentManager, containingFile, splitText, textOffset);
         }
         PsiParameter psiParameter = PsiTreeUtil.getParentOfType(element, PsiParameter.class);
         if (psiParameter != null) {
@@ -112,13 +112,13 @@ public abstract class GenerateBaseAction extends PsiElementBaseIntentionAction {
                 PsiMethod psiMethod = (PsiMethod) parent0;
                 String splitText = PsiDocumentUtil.calculateSplitText(document, psiMethod.getTextRange().getStartOffset(), "    ");
                 int insertOffset = psiMethod.getBody().getTextOffset() + 1;
-                generateBase.insertCodeByPsiType(document, psiDocumentManager, containingFile, psiParameter.getType(), psiParameter.getName(), splitText, insertOffset);
+                generateBase.insertCodeByPsiType(document, psiDocumentManager, containingFile, splitText, insertOffset);
             }
             if (parent instanceof PsiForeachStatement) {
                 PsiForeachStatement psiForeachStatement = (PsiForeachStatement) parent;
                 String splitText = PsiDocumentUtil.calculateSplitText(document, psiForeachStatement.getTextOffset(), "    ");
                 int insertOffset = psiForeachStatement.getBody().getTextOffset() + 1;
-                generateBase.insertCodeByPsiType(document, psiDocumentManager, containingFile, psiParameter.getType(), psiParameter.getName(), splitText, insertOffset);
+                generateBase.insertCodeByPsiType(document, psiDocumentManager, containingFile, splitText, insertOffset);
             }
         }
         PsiUtil.clearGeneric();
