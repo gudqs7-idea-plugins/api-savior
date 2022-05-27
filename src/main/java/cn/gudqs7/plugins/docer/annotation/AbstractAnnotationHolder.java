@@ -1,5 +1,6 @@
 package cn.gudqs7.plugins.docer.annotation;
 
+import cn.gudqs7.plugins.docer.constant.CommentConst;
 import cn.gudqs7.plugins.docer.constant.CommentTag;
 import cn.gudqs7.plugins.docer.pojo.annotation.CommentInfo;
 import cn.gudqs7.plugins.docer.pojo.annotation.CommentInfoTag;
@@ -119,17 +120,17 @@ public abstract class AbstractAnnotationHolder implements AnnotationHolder {
         String notes = commentInfo.getNotes("");
         String example = commentInfo.getExample("");
         if (StringUtils.isNotBlank(example)) {
-            notes += "默认值为 " + example + "\n";
+            notes += "默认值为 " + example + CommentConst.BREAK_LINE;
         }
         boolean hasLengthAnnotation = hasAnnotation(QNAME_OF_VALID_LENGTH);
         if (hasLengthAnnotation) {
             Integer min = getAnnotationValueByQname(QNAME_OF_VALID_LENGTH, "min");
             Integer max = getAnnotationValueByQname(QNAME_OF_VALID_LENGTH, "max");
             if (min != null) {
-                notes += "最小长度为 " + min + "\n";
+                notes += "最小长度为 " + min + CommentConst.BREAK_LINE;
             }
             if (max != null) {
-                notes += "最大长度为 " + max + "\n";
+                notes += "最大长度为 " + max + CommentConst.BREAK_LINE;
             }
         }
         Long min = null;
@@ -145,10 +146,13 @@ public abstract class AbstractAnnotationHolder implements AnnotationHolder {
             max = getAnnotationValueByQname(QNAME_OF_VALID_MAX, "value");
         }
         if (min != null) {
-            notes += "最小值为 " + min + "\n";
+            notes += "最小值为 " + min + CommentConst.BREAK_LINE;
         }
         if (max != null) {
-            notes += "最大值为 " + max + "\n";
+            notes += "最大值为 " + max + CommentConst.BREAK_LINE;
+        }
+        if (notes.endsWith(CommentConst.BREAK_LINE)) {
+            notes = notes.substring(0, notes.length() - CommentConst.BREAK_LINE.length());
         }
         commentInfo.setNotes(notes);
     }

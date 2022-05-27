@@ -53,6 +53,7 @@
             </ul>
         </dd>
     </#list>
+    </dl>
 </#list>
 
 </div>

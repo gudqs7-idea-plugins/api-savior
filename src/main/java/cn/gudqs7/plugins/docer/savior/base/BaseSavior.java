@@ -93,6 +93,9 @@ public abstract class BaseSavior {
     // ===============  markdown util ===============
 
     public static String replaceMd(String source) {
+        if (source == null) {
+            return null;
+        }
         source = source.replaceAll("\\$", "\\\\\\$");
         source = source.replaceAll("\\{", "\\\\{");
         source = source.replaceAll("\\}", "\\\\}");
