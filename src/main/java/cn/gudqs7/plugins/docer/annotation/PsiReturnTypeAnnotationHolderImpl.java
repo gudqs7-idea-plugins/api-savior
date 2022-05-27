@@ -12,27 +12,27 @@ import org.apache.commons.lang3.StringUtils;
 /**
  * @author wq
  */
-public class PsiReturnTypeAnnotationHolderImpl implements AnnotationHolder {
+public class PsiReturnTypeAnnotationHolderImpl extends AbstractAnnotationHolder {
 
-    private PsiTypeElement returnTypeElement;
+    private final PsiTypeElement returnTypeElement;
 
     public PsiReturnTypeAnnotationHolderImpl(PsiTypeElement returnTypeElement) {
         this.returnTypeElement = returnTypeElement;
     }
 
     @Override
-    public PsiAnnotation getAnnotation(String qname) {
+    public PsiAnnotation getAnnotationByQname(String qName) {
         PsiElement parent = returnTypeElement.getParent();
         if (parent instanceof PsiMethod) {
             PsiMethod psiMethod = (PsiMethod) parent;
-            psiMethod.getAnnotation(qname);
+            psiMethod.getAnnotation(qName);
         }
         return null;
     }
 
     @Override
     public CommentInfoTag getCommentInfoByComment() {
-        CommentInfoTag apiModelPropertyTag = new CommentInfoTag();
+        CommentInfoTag commentInfoTag = new CommentInfoTag();
         PsiElement parent = returnTypeElement.getParent();
         if (parent instanceof PsiMethod) {
             for (PsiElement child : parent.getChildren()) {
@@ -53,7 +53,7 @@ public class PsiReturnTypeAnnotationHolderImpl implements AnnotationHolder {
                                 String atParam = "@return";
                                 if (line.startsWith(atParam)) {
                                     line = line.substring(atParam.length()).trim();
-                                    apiModelPropertyTag.setValue(line);
+                                    commentInfoTag.setValue(line);
                                     break;
                                 }
                             }
@@ -64,19 +64,17 @@ public class PsiReturnTypeAnnotationHolderImpl implements AnnotationHolder {
                 }
             }
         }
-        apiModelPropertyTag.setParent(this);
-        return apiModelPropertyTag;
+        return commentInfoTag;
     }
 
     @Override
     public CommentInfo getCommentInfoByAnnotation() {
-        CommentInfo commentInfo = new CommentInfo();
-        return commentInfo;
+        return new CommentInfo();
     }
-
 
     @Override
-    public CommentInfo getCommentInfo() {
-        return getCommentInfoByComment();
+    protected boolean usingAnnotation() {
+        return false;
     }
+
 }

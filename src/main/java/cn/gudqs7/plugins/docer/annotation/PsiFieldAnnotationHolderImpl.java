@@ -16,17 +16,17 @@ import java.util.List;
 /**
  * @author wq
  */
-public class PsiFieldAnnotationHolderImpl implements AnnotationHolder {
+public class PsiFieldAnnotationHolderImpl extends AbstractAnnotationHolder {
 
-    private PsiField psiField;
+    private final PsiField psiField;
 
     public PsiFieldAnnotationHolderImpl(PsiField psiField) {
         this.psiField = psiField;
     }
 
     @Override
-    public PsiAnnotation getAnnotation(String qname) {
-        return psiField.getAnnotation(qname);
+    public PsiAnnotation getAnnotationByQname(String qName) {
+        return psiField.getAnnotation(qName);
     }
 
     @Override
@@ -124,42 +124,27 @@ public class PsiFieldAnnotationHolderImpl implements AnnotationHolder {
     }
 
     private void dealOtherAnnotation(CommentInfo commentInfo) {
-        boolean hasJsonFormatAnnotation = hasAnnotation(QNAME_OF_JSON_FORMAT);
-        if (hasJsonFormatAnnotation) {
-            String pattern = getAnnotationValueByQname(QNAME_OF_JSON_FORMAT, "pattern");
-            if (StringUtils.isNotBlank(pattern)) {
-                List<String> list = commentInfo.getOtherTagMap().computeIfAbsent(CommentTag.JSON_FORMAT, k -> new ArrayList<>());
-                list.add(pattern);
-            }
-        }
-        boolean hasDateFormatAnnotation = hasAnnotation(QNAME_OF_DATE_TIME_FORMAT);
-        if (hasDateFormatAnnotation) {
-            String pattern = getAnnotationValueByQname(QNAME_OF_DATE_TIME_FORMAT, "pattern");
-            if (StringUtils.isNotBlank(pattern)) {
-                List<String> list = commentInfo.getOtherTagMap().computeIfAbsent(CommentTag.DATE_FORMAT, k -> new ArrayList<>());
-                list.add(pattern);
-            }
-        }
+        // 处理日期注解
+        handleDateFormatAnnotation(commentInfo);
+        // 根据 @Valid 配置信息覆盖是否必填字段
+        overrideRequiredByValid(commentInfo);
+        // 往更多说明填充一些信息
+        addInfoToNotes(commentInfo);
+    }
+
+    /**
+     * 获取注解中的信息
+     *
+     * @param attr 注解字段
+     * @return 信息
+     */
+    private  <T> T getAnnotationValueByProperty(String attr) {
+        return getAnnotationValueByQname(QNAME_OF_PROPERTY, attr);
     }
 
     @Override
-    public CommentInfo getCommentInfo() {
-        CommentInfo commentInfo = new CommentInfo();
-        boolean hasAnnotatation = hasAnnotation(QNAME_OF_PROPERTY);
-        CommentInfoTag apiModelPropertyByComment = getCommentInfoByComment();
-        if (hasAnnotatation) {
-            if (apiModelPropertyByComment.isImportant()) {
-                commentInfo = apiModelPropertyByComment;
-            } else {
-                commentInfo = getCommentInfoByAnnotation();
-                // 即使使用注解, 附加注释也会生效
-                commentInfo.setOtherTagMap(apiModelPropertyByComment.getOtherTagMap());
-            }
-        } else {
-            commentInfo = apiModelPropertyByComment;
-        }
-        commentInfo.setParent(this);
-        return commentInfo;
+    protected boolean usingAnnotation() {
+        return hasAnnotation(QNAME_OF_PROPERTY);
     }
 
 }

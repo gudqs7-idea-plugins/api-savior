@@ -2,13 +2,7 @@ package cn.gudqs7.plugins.docer.annotation;
 
 import cn.gudqs7.plugins.docer.pojo.annotation.CommentInfo;
 import cn.gudqs7.plugins.docer.pojo.annotation.CommentInfoTag;
-import cn.gudqs7.plugins.docer.savior.base.BaseSavior;
-import cn.gudqs7.plugins.docer.util.BaseTypeParseUtil;
 import com.intellij.psi.*;
-import org.apache.commons.lang3.StringUtils;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * 注解/注释获取类
@@ -34,134 +28,13 @@ public interface AnnotationHolder {
     String QNAME_OF_MULTIPART_FILE = "org.springframework.web.multipart.MultipartFile";
     String QNAME_OF_JSON_FORMAT = "com.fasterxml.jackson.annotation.JsonFormat";
     String QNAME_OF_DATE_TIME_FORMAT = "org.springframework.format.annotation.DateTimeFormat";
-
-
-    /**
-     * 获取注解
-     *
-     * @param qname
-     * @return
-     */
-    PsiAnnotation getAnnotation(String qname);
-
-    /**
-     * 是否带有某注解
-     *
-     * @param qname
-     * @return
-     */
-    default boolean hasAnnotation(String qname) {
-        return getAnnotation(qname) != null;
-    }
-
-    /**
-     * 是否带有某些注解其中任意一个
-     *
-     * @param qnames
-     * @return
-     */
-    default boolean hasAnyOneAnnotation(String... qnames) {
-        for (String qname : qnames) {
-            boolean hasAnnotation = getAnnotation(qname) != null;
-            if (hasAnnotation) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * 获取注解中的信息
-     *
-     * @param attr       注解字段
-     * @return 信息
-     */
-    default <T> T getAnnotationValueByProperty(String attr) {
-        return getAnnotationValueByQname(QNAME_OF_PROPERTY, attr);
-    }
-
-    /**
-     * 获取注解中的信息
-     *
-     * @param attr       注解字段
-     * @return 信息
-     */
-    default <T> T getAnnotationValueByParam(String attr) {
-        return getAnnotationValueByQname(QNAME_OF_PARAM, attr);
-    }
-
-    /**
-     * 获取注解中的信息
-     *
-     * @param attr       注解字段
-     * @return 信息
-     */
-    default <T> T getAnnotationValueByReqParam(String attr) {
-        return getAnnotationValueByQname(QNAME_OF_REQ_PARAM, attr);
-    }
-
-    /**
-     * 获取注解中的信息
-     *
-     * @param attr       注解字段
-     * @return 信息
-     */
-    default <T> T getAnnotationValueByModel(String attr) {
-        return getAnnotationValueByQname(QNAME_OF_MODEL, attr);
-    }
-
-    /**
-     * 获取注解中的信息
-     *
-     * @param attr       注解字段
-     * @return 信息
-     */
-    default <T> T getAnnotationValueByOperation(String attr) {
-        return getAnnotationValueByQname(QNAME_OF_OPERATION, attr);
-    }
-
-    /**
-     * 获取注解中的信息
-     *
-     * @param qname      指定注解
-     * @param attr       注解字段
-     * @return 信息
-     */
-    default <T> T getAnnotationValueByQname(String qname, String attr) {
-        PsiAnnotation psiAnnotation = getAnnotation(qname);
-        return BaseSavior.getAnnotationValue(psiAnnotation, attr, null);
-    }
-
-    default <T> List<T> getAnnotationListValueByQname(String qname, String attr) {
-        Object annotationValueByQname = getAnnotationValueByQname(qname, attr);
-        if (annotationValueByQname == null) {
-            return null;
-        }
-        if (annotationValueByQname instanceof List) {
-            return (List<T>) annotationValueByQname;
-        } else {
-            List<T> list = new ArrayList<>();
-            list.add((T) annotationValueByQname);
-            return list;
-        }
-    }
-
-    /**
-     * 获取 flag, 不指定 false 则认为是 true
-     *
-     * @param tagVal
-     * @return flag
-     */
-    default boolean getBooleanVal(String tagVal) {
-        boolean flag;
-        if (StringUtils.isBlank(tagVal)) {
-            flag = true;
-        } else {
-            flag = BaseTypeParseUtil.parseBoolean(tagVal, true);
-        }
-        return flag;
-    }
-
+    String QNAME_OF_VALID_NOT_NULL = "javax.validation.constraints.NotNull";
+    String QNAME_OF_VALID_NOT_EMPTY = "org.hibernate.validator.constraints.NotEmpty";
+    String QNAME_OF_VALID_NOT_BLANK = "org.hibernate.validator.constraints.NotBlank";
+    String QNAME_OF_VALID_LENGTH = "org.hibernate.validator.constraints.Length";
+    String QNAME_OF_VALID_MIN = "javax.validation.constraints.Min";
+    String QNAME_OF_VALID_MAX = "javax.validation.constraints.Max";
+    String QNAME_OF_VALID_RANGE = "org.hibernate.validator.constraints.Range";
 
     /**
      * 获取字段的 holder
@@ -203,12 +76,36 @@ public interface AnnotationHolder {
 
     /**
      * 获取方法相关的 holder
+     *
      * @param psiMethod
      * @return
      */
     static AnnotationHolder getPsiMethodHolder(PsiMethod psiMethod) {
         return new PsiMethodAnnotationHolderImpl(psiMethod);
     }
+
+    /**
+     * 根据 注解全限定名 获取注解
+     *
+     * @param qName 注解全限定名
+     * @return 注解信息
+     */
+    PsiAnnotation getAnnotationByQname(String qName);
+
+    /**
+     * 根据注解全限定名判断是否带有此注解
+     *
+     * @param qName 注解全限定名
+     * @return 是否带有此注解
+     */
+    boolean hasAnnotation(String qName);
+
+    /**
+     * 根据注解全限定名判断是否带有此任一一个注解
+     * @param qNames 注解全限定名数组
+     * @return 是否带有此任一一个注解
+     */
+    boolean hasAnyOneAnnotation(String... qNames);
 
     /**
      * 根据注释获取所需信息
@@ -230,4 +127,5 @@ public interface AnnotationHolder {
      * @return 所需信息
      */
     CommentInfo getCommentInfo();
+
 }

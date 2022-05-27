@@ -13,22 +13,22 @@ import org.apache.commons.lang3.StringUtils;
 /**
  * @author wq
  */
-public class PsiParameterAnnotationHolderImpl implements AnnotationHolder {
+public class PsiParameterAnnotationHolderImpl extends AbstractAnnotationHolder {
 
-    private PsiParameter psiParameter;
+    private final PsiParameter psiParameter;
 
     public PsiParameterAnnotationHolderImpl(PsiParameter psiParameter) {
         this.psiParameter = psiParameter;
     }
 
     @Override
-    public PsiAnnotation getAnnotation(String qname) {
-        return psiParameter.getAnnotation(qname);
+    public PsiAnnotation getAnnotationByQname(String qName) {
+        return psiParameter.getAnnotation(qName);
     }
 
     @Override
     public CommentInfoTag getCommentInfoByComment() {
-        CommentInfoTag apiModelPropertyTag = new CommentInfoTag();
+        CommentInfoTag commentInfo = new CommentInfoTag();
         PsiElement parent = psiParameter.getParent().getParent();
         String parameterName = psiParameter.getName();
         if (parent instanceof PsiMethod) {
@@ -72,22 +72,27 @@ public class PsiParameterAnnotationHolderImpl implements AnnotationHolder {
                                         }
                                         switch (tagName) {
                                             case CommentTag.REQUIRED:
-                                                apiModelPropertyTag.setRequired(getBooleanVal(tagVal));
+                                                commentInfo.setRequired(getBooleanVal(tagVal));
                                                 break;
                                             case CommentTag.HIDDEN:
-                                                apiModelPropertyTag.setHidden(getBooleanVal(tagVal));
+                                                commentInfo.setHidden(getBooleanVal(tagVal));
                                                 break;
                                             case CommentTag.IMPORTANT:
-                                                apiModelPropertyTag.setImportant(getBooleanVal(tagVal));
+                                                commentInfo.setImportant(getBooleanVal(tagVal));
                                                 break;
                                             case CommentTag.EXAMPLE:
-                                                apiModelPropertyTag.setExample(tagVal);
+                                                commentInfo.setExample(tagVal);
                                                 break;
                                             case CommentTag.NOTES:
-                                                apiModelPropertyTag.setNotes(tagVal);
+                                                commentInfo.setNotes(tagVal);
                                                 break;
                                             default:
-                                                apiModelPropertyTag.setValue(t);
+                                                String oldValue = commentInfo.getValue(null);
+                                                if (oldValue != null) {
+                                                    commentInfo.setValue(oldValue + t);
+                                                } else {
+                                                    commentInfo.setValue(t);
+                                                }
                                                 break;
                                         }
                                     }
@@ -101,8 +106,8 @@ public class PsiParameterAnnotationHolderImpl implements AnnotationHolder {
             }
         }
 
-        dealRequestParam(apiModelPropertyTag);
-        return apiModelPropertyTag;
+        dealOtherAnnotation(commentInfo);
+        return commentInfo;
     }
 
     @Override
@@ -115,11 +120,12 @@ public class PsiParameterAnnotationHolderImpl implements AnnotationHolder {
             commentInfo.setValue(getAnnotationValueByParam("value"));
             commentInfo.setExample(getAnnotationValueByParam("example"));
         }
-        dealRequestParam(commentInfo);
+        dealOtherAnnotation(commentInfo);
         return commentInfo;
     }
 
-    private void dealRequestParam(CommentInfo commentInfo) {
+
+    private void dealOtherAnnotation(CommentInfo commentInfo) {
         boolean hasReqParamAnnotation = hasAnnotation(QNAME_OF_REQ_PARAM);
         if (hasReqParamAnnotation) {
             String name = getAnnotationValueByReqParam("name");
@@ -132,23 +138,37 @@ public class PsiParameterAnnotationHolderImpl implements AnnotationHolder {
                 commentInfo.setRequired(true);
             }
         }
+        // 处理日期注解
+        handleDateFormatAnnotation(commentInfo);
+        // 根据 @Valid 配置信息覆盖是否必填字段
+        overrideRequiredByValid(commentInfo);
+        // 往更多说明填充一些信息
+        addInfoToNotes(commentInfo);
     }
 
+    /**
+     * 获取注解中的信息
+     *
+     * @param attr 注解字段
+     * @return 信息
+     */
+    private  <T> T getAnnotationValueByReqParam(String attr) {
+        return getAnnotationValueByQname(QNAME_OF_REQ_PARAM, attr);
+    }
+
+    /**
+     * 获取注解中的信息
+     *
+     * @param attr 注解字段
+     * @return 信息
+     */
+    protected <T> T getAnnotationValueByParam(String attr) {
+        return getAnnotationValueByQname(QNAME_OF_PARAM, attr);
+    }
+
+
     @Override
-    public CommentInfo getCommentInfo() {
-        CommentInfo commentInfo = new CommentInfo();
-        boolean hasAnnotatation = hasAnyOneAnnotation(QNAME_OF_PARAM);
-        CommentInfoTag apiModelPropertyByComment = getCommentInfoByComment();
-        if (hasAnnotatation) {
-            if (apiModelPropertyByComment.isImportant()) {
-                commentInfo = apiModelPropertyByComment;
-            } else {
-                commentInfo = getCommentInfoByAnnotation();
-            }
-        } else {
-            commentInfo = apiModelPropertyByComment;
-        }
-        commentInfo.setParent(this);
-        return commentInfo;
+    protected boolean usingAnnotation() {
+        return hasAnyOneAnnotation(QNAME_OF_PARAM);
     }
 }

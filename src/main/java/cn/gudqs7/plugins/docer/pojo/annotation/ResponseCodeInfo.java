@@ -10,15 +10,13 @@ public class ResponseCodeInfo {
 
     private String code;
     private String message;
-    private String reason;
 
     public ResponseCodeInfo() {
     }
 
-    public ResponseCodeInfo(String code, String message, String reason) {
+    public ResponseCodeInfo(String code, String message) {
         this.code = code;
         this.message = message;
-        this.reason = reason;
     }
 
 }

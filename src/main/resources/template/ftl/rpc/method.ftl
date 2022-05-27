@@ -67,4 +67,13 @@ ${((levelInfo.clazzDesc)?? && levelInfo.clazzDesc != '')?string('> '+ levelInfo.
     </#list>
 </#if>
 
-${codeMemo}
+<#if responseCodeInfoList?? && (responseCodeInfoList?size > 0)>
+## 更多信息
+### Code 更多含义
+
+| Code | 含义 |
+| -------- | -------- |
+    <#list responseCodeInfoList as responseCode>
+| **${responseCode.code}** | ${responseCode.message} |
+    </#list>
+</#if>

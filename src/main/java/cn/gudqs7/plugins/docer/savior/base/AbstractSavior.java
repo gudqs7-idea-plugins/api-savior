@@ -4,22 +4,15 @@ import cn.gudqs7.plugins.docer.annotation.AnnotationHolder;
 import cn.gudqs7.plugins.docer.constant.MapKeyConstant;
 import cn.gudqs7.plugins.docer.pojo.StructureAndCommentInfo;
 import cn.gudqs7.plugins.docer.pojo.annotation.CommentInfo;
-import cn.gudqs7.plugins.docer.pojo.annotation.ResponseCodeInfo;
 import cn.gudqs7.plugins.docer.reader.Java2ApiReader;
 import cn.gudqs7.plugins.docer.reader.Java2JsonReader;
 import cn.gudqs7.plugins.docer.resolver.StructureAndCommentResolver;
 import cn.gudqs7.plugins.docer.theme.Theme;
 import cn.gudqs7.plugins.docer.util.DataHolder;
 import cn.gudqs7.plugins.util.PsiUtil;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -167,68 +160,5 @@ public abstract class AbstractSavior<T> extends BaseSavior {
             StructureAndCommentInfo paramStructureAndCommentInfo,
             StructureAndCommentInfo returnStructureAndCommentInfo,
             Map<String, Object> param);
-
-    protected String getCodeMemo(Project project, CommentInfo commentInfo) {
-        String codeMemo = "";
-        List<ResponseCodeInfo> defaultCodeInfoList = new ArrayList<>();
-        boolean showCodeInfo = false;
-        try {
-            String projectName = project.getName();
-            String codeInfos = System.getenv("DOCER_CODE_INFOS_" + projectName);
-            if ("true".equals(codeInfos)) {
-                showCodeInfo = true;
-            }
-            GsonBuilder gsonBuilder = new GsonBuilder().setPrettyPrinting();
-            Gson gson = gsonBuilder.create();
-            defaultCodeInfoList = gson.fromJson(codeInfos, new TypeToken<List<ResponseCodeInfo>>() {
-            }.getType());
-        } catch (Exception ignored) {
-        }
-        List<ResponseCodeInfo> responseCodeInfoList = commentInfo.getResponseCodeInfoList();
-        if (CollectionUtils.isNotEmpty(defaultCodeInfoList)) {
-            responseCodeInfoList.addAll(0, defaultCodeInfoList);
-        }
-        if (CollectionUtils.isNotEmpty(responseCodeInfoList)) {
-            StringBuilder codeMemoSbf = new StringBuilder("\n" +
-                    "## 更多信息\n" +
-                    "### code 更多含义\n" +
-                    "\n" +
-                    "| Code | 含义 | 出现原因 |\n" +
-                    "| -------- | -------- | -------- |\n");
-            for (ResponseCodeInfo responseCodeInfo : responseCodeInfoList) {
-                String code = responseCodeInfo.getCode();
-                if (!StringUtils.isBlank(code)) {
-                    code = replaceMd(code);
-                }
-                String message = responseCodeInfo.getMessage();
-                if (!StringUtils.isBlank(message)) {
-                    message = replaceMd(message);
-                }
-                String reason = responseCodeInfo.getReason();
-                if (!StringUtils.isBlank(reason)) {
-                    reason = replaceMd(reason);
-                } else {
-                    reason = "";
-                }
-                codeMemoSbf.append(String.format("| **%s** | %s | %s |\n", code, message, reason));
-            }
-            codeMemo = codeMemoSbf.toString();
-        } else {
-            // 若不限制出现, 则显示默认
-            if (showCodeInfo) {
-                codeMemo = "\n" +
-                        "## 更多信息\n" +
-                        "### code 更多含义\n" +
-                        "\n" +
-                        "> 待补充\n" +
-                        "\n" +
-                        "| Code | 含义 | 出现原因 |\n" +
-                        "| -------- | -------- | -------- |\n" +
-                        "| 1     | xxx     | xxx     |\n" +
-                        "| 2     | xxx     | xxx     |";
-            }
-        }
-        return codeMemo;
-    }
 
 }

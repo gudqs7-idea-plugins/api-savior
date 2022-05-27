@@ -9,6 +9,7 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class CommentInfoTag extends CommentInfo {
+    
     /**
      * 是否优先级更高
      */

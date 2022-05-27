@@ -16,17 +16,17 @@ import java.util.List;
 /**
  * @author wq
  */
-public class PsiClassAnnotationHolderImpl implements AnnotationHolder {
+public class PsiClassAnnotationHolderImpl extends AbstractAnnotationHolder {
 
-    private PsiClass psiClass;
+    private final PsiClass psiClass;
 
     public PsiClassAnnotationHolderImpl(PsiClass psiClass) {
         this.psiClass = psiClass;
     }
 
     @Override
-    public PsiAnnotation getAnnotation(String qname) {
-        return psiClass.getAnnotation(qname);
+    public PsiAnnotation getAnnotationByQname(String qName) {
+        return psiClass.getAnnotation(qName);
     }
 
     @Override
@@ -98,12 +98,10 @@ public class PsiClassAnnotationHolderImpl implements AnnotationHolder {
     @Override
     public CommentInfo getCommentInfoByAnnotation() {
         CommentInfo commentInfo = new CommentInfo();
-        boolean hasAnnotatation = hasAnnotation(QNAME_OF_MODEL);
-        if (hasAnnotatation) {
-            commentInfo.setValue(getAnnotationValueByModel("value"));
+        if (hasAnnotation(QNAME_OF_MODEL)) {
+            commentInfo.setValue(getAnnotationValueByQname(QNAME_OF_MODEL, "value"));
         }
-        hasAnnotatation = hasAnnotation(QNAME_OF_API);
-        if (hasAnnotatation) {
+        if (hasAnnotation(QNAME_OF_API)) {
             commentInfo.setValue(getAnnotationValueByQname(QNAME_OF_API, "description"));
             commentInfo.setNotes(getAnnotationValueByQname(QNAME_OF_API, "description"));
             List<String> tagsList = getAnnotationListValueByQname(QNAME_OF_API, "tags");
@@ -118,24 +116,8 @@ public class PsiClassAnnotationHolderImpl implements AnnotationHolder {
     }
 
     @Override
-    public CommentInfo getCommentInfo() {
-        CommentInfo commentInfo = new CommentInfo();
-        boolean hasAnnotatation = hasAnnotation(QNAME_OF_MODEL);
-        boolean hasApiAnnotatation = hasAnnotation(QNAME_OF_API);
-        CommentInfoTag apiModelPropertyByComment = getCommentInfoByComment();
-        if (hasAnnotatation || hasApiAnnotatation) {
-            if (apiModelPropertyByComment.isImportant()) {
-                commentInfo = apiModelPropertyByComment;
-            } else {
-                commentInfo = getCommentInfoByAnnotation();
-                // 即使使用注解, 附加注释也会生效
-                commentInfo.setOtherTagMap(apiModelPropertyByComment.getOtherTagMap());
-            }
-        } else {
-            commentInfo = apiModelPropertyByComment;
-        }
-        commentInfo.setParent(this);
-        return commentInfo;
+    protected boolean usingAnnotation() {
+        return hasAnyOneAnnotation(QNAME_OF_MODEL, QNAME_OF_API);
     }
 
 }

@@ -4,6 +4,7 @@ import cn.gudqs7.plugins.docer.constant.MapKeyConstant;
 import cn.gudqs7.plugins.docer.pojo.FieldLevelInfo;
 import cn.gudqs7.plugins.docer.pojo.StructureAndCommentInfo;
 import cn.gudqs7.plugins.docer.pojo.annotation.CommentInfo;
+import cn.gudqs7.plugins.docer.pojo.annotation.ResponseCodeInfo;
 import cn.gudqs7.plugins.docer.savior.base.AbstractSavior;
 import cn.gudqs7.plugins.docer.theme.Theme;
 import cn.gudqs7.plugins.docer.util.FreeMarkerUtil;
@@ -101,7 +102,7 @@ public class JavaToDocSavior extends AbstractSavior<Map<String, Object>> {
         String methodName = publicMethod.getName();
         String interfaceName = commentInfo.getValue(methodName);
         String notes = commentInfo.getNotes("");
-        String codeMemo = getCodeMemo(project, commentInfo);
+        List<ResponseCodeInfo> responseCodeInfoList = commentInfo.getResponseCodeInfoList();
 
         Map<String, Object> data = new HashMap<>(16);
         data.put("interfaceName", interfaceName);
@@ -114,7 +115,7 @@ public class JavaToDocSavior extends AbstractSavior<Map<String, Object>> {
         data.put("returnLevelMap", returnLevelMap);
         data.put("jsonExample", java2jsonStr);
         data.put("returnJsonExample", returnJava2jsonStr);
-        data.put("codeMemo", codeMemo);
+        data.put("responseCodeInfoList", responseCodeInfoList);
         return data;
     }
 

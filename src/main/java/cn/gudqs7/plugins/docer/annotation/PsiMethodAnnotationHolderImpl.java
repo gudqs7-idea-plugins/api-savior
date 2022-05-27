@@ -23,17 +23,17 @@ import java.util.*;
 /**
  * @author wq
  */
-public class PsiMethodAnnotationHolderImpl implements AnnotationHolder {
+public class PsiMethodAnnotationHolderImpl extends AbstractAnnotationHolder {
 
-    private PsiMethod psiMethod;
+    private final PsiMethod psiMethod;
 
     public PsiMethodAnnotationHolderImpl(PsiMethod psiMethod) {
         this.psiMethod = psiMethod;
     }
 
     @Override
-    public PsiAnnotation getAnnotation(String qname) {
-        return psiMethod.getAnnotation(qname);
+    public PsiAnnotation getAnnotationByQname(String qName) {
+        return psiMethod.getAnnotation(qName);
     }
 
     @Override
@@ -58,14 +58,13 @@ public class PsiMethodAnnotationHolderImpl implements AnnotationHolder {
                                 // remove @code itself
                                 line = line.substring(5).trim();
                                 String[] codeInfoArray = line.split(" ");
-                                if (codeInfoArray.length > 1) {
+                                if (codeInfoArray.length > 0) {
                                     String code = codeInfoArray[0];
-                                    String message = codeInfoArray[1];
-                                    String reason = "";
-                                    if (codeInfoArray.length > 2) {
-                                        reason = codeInfoArray[2];
+                                    String message = "";
+                                    if (codeInfoArray.length > 1) {
+                                        message = line.substring(code.length()).trim();
                                     }
-                                    ResponseCodeInfo codeInfo = new ResponseCodeInfo(code, message, reason);
+                                    ResponseCodeInfo codeInfo = new ResponseCodeInfo(code, message);
                                     apiModelPropertyTag.getResponseCodeInfoList().add(codeInfo);
                                 }
                                 continue;
@@ -123,9 +122,9 @@ public class PsiMethodAnnotationHolderImpl implements AnnotationHolder {
         CommentInfo commentInfo = new CommentInfo();
         boolean hasOperationAnnotation = hasAnnotation(QNAME_OF_OPERATION);
         if (hasOperationAnnotation) {
-            commentInfo.setHidden(getAnnotationValueByOperation("hidden"));
-            String value = getAnnotationValueByOperation("value");
-            String notes = getAnnotationValueByOperation("notes");
+            commentInfo.setHidden(getAnnotationValueByApiOperation("hidden"));
+            String value = getAnnotationValueByApiOperation("value");
+            String notes = getAnnotationValueByApiOperation("notes");
             if (StringUtils.isNotBlank(value)) {
                 value = value.replaceAll("\\n", CommentConst.BREAK_LINE);
             }
@@ -150,7 +149,7 @@ public class PsiMethodAnnotationHolderImpl implements AnnotationHolder {
                 for (PsiAnnotation psiAnnotation : psiAnnotationList) {
                     Integer code = BaseSavior.getAnnotationValue(psiAnnotation, "code", null);
                     String message = BaseSavior.getAnnotationValue(psiAnnotation, "message", null);
-                    ResponseCodeInfo codeInfo = new ResponseCodeInfo(String.valueOf(code), message, "");
+                    ResponseCodeInfo codeInfo = new ResponseCodeInfo(String.valueOf(code), message);
                     commentInfo.getResponseCodeInfoList().add(codeInfo);
                 }
             }
@@ -158,11 +157,21 @@ public class PsiMethodAnnotationHolderImpl implements AnnotationHolder {
             // 存在单个 code
             Integer code = getAnnotationValueByQname(QNAME_OF_RESPONSE, "code");
             String message = getAnnotationValueByQname(QNAME_OF_RESPONSE, "message");
-            ResponseCodeInfo codeInfo = new ResponseCodeInfo(String.valueOf(code), message, "");
+            ResponseCodeInfo codeInfo = new ResponseCodeInfo(String.valueOf(code), message);
             commentInfo.getResponseCodeInfoList().add(codeInfo);
         }
         dealRequestMapping(commentInfo);
         return commentInfo;
+    }
+
+    /**
+     * 获取注解中的信息
+     *
+     * @param attr 注解字段
+     * @return 信息
+     */
+    private <T> T getAnnotationValueByApiOperation(String attr) {
+        return getAnnotationValueByQname(QNAME_OF_OPERATION, attr);
     }
 
     private void addRequestTagInfo(CommentInfo commentInfo, List<String> requestParameters, String tagKey) {
@@ -395,24 +404,8 @@ public class PsiMethodAnnotationHolderImpl implements AnnotationHolder {
     }
 
     @Override
-    public CommentInfo getCommentInfo() {
-        CommentInfo commentInfo = new CommentInfo();
-        boolean hasMappingAnnotation = hasAnnotation(QNAME_OF_OPERATION);
-        CommentInfoTag apiModelPropertyByComment = getCommentInfoByComment();
-        if (hasMappingAnnotation) {
-            if (apiModelPropertyByComment.isImportant()) {
-                commentInfo = apiModelPropertyByComment;
-            } else {
-                commentInfo = getCommentInfoByAnnotation();
-                // 即使使用注解, 附加注释也会生效
-                apiModelPropertyByComment.getOtherTagMap().putAll(commentInfo.getOtherTagMap());
-                commentInfo.setOtherTagMap(apiModelPropertyByComment.getOtherTagMap());
-            }
-        } else {
-            commentInfo = apiModelPropertyByComment;
-        }
-        commentInfo.setParent(this);
-        return commentInfo;
+    protected boolean usingAnnotation() {
+        return hasAnnotation(QNAME_OF_OPERATION);
     }
 
 }

@@ -87,5 +87,13 @@ ${returnJsonExample}
 </#list>
 </#if>
 
+<#if responseCodeInfoList?? && (responseCodeInfoList?size > 0)>
+## 更多信息
+### Code 更多含义
 
-${codeMemo}
+| Code | 含义 |
+| -------- | -------- |
+    <#list responseCodeInfoList as responseCode>
+| **${responseCode.code}** | ${responseCode.message} |
+    </#list>
+</#if>
