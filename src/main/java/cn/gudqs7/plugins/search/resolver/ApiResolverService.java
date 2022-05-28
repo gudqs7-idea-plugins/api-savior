@@ -1,7 +1,9 @@
 package cn.gudqs7.plugins.search.resolver;
 
 import cn.gudqs7.plugins.docer.annotation.AnnotationHolder;
+import cn.gudqs7.plugins.docer.pojo.annotation.CommentInfo;
 import cn.gudqs7.plugins.docer.savior.base.BaseSavior;
+import cn.gudqs7.plugins.docer.util.ActionUtil;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
 import com.intellij.psi.impl.java.stubs.index.JavaAnnotationIndex;
@@ -43,7 +45,11 @@ public class ApiResolverService {
             }
         }
         for (PsiClass psiClass : psiClassMap.values()) {
-            navigationItemList.addAll(getServiceItemList(psiClass));
+            try {
+                navigationItemList.addAll(getServiceItemList(psiClass));
+            } catch (Exception e) {
+                ActionUtil.handleException(e);
+            }
         }
         return navigationItemList;
     }
@@ -58,11 +64,15 @@ public class ApiResolverService {
 
         PsiMethod[] psiMethods = psiClass.getMethods();
         for (PsiMethod psiMethod : psiMethods) {
-            methodPathList.addAll(getMethodList0(psiMethod, AnnotationHolder.QNAME_OF_MAPPING, null));
-            methodPathList.addAll(getMethodList0(psiMethod, AnnotationHolder.QNAME_OF_GET_MAPPING, HttpMethod.GET));
-            methodPathList.addAll(getMethodList0(psiMethod, AnnotationHolder.QNAME_OF_POST_MAPPING, HttpMethod.POST));
-            methodPathList.addAll(getMethodList0(psiMethod, AnnotationHolder.QNAME_OF_PUT_MAPPING, HttpMethod.PUT));
-            methodPathList.addAll(getMethodList0(psiMethod, AnnotationHolder.QNAME_OF_DELETE_MAPPING, HttpMethod.DELETE));
+            try {
+                methodPathList.addAll(getMethodList0(psiMethod, AnnotationHolder.QNAME_OF_MAPPING, null));
+                methodPathList.addAll(getMethodList0(psiMethod, AnnotationHolder.QNAME_OF_GET_MAPPING, HttpMethod.GET));
+                methodPathList.addAll(getMethodList0(psiMethod, AnnotationHolder.QNAME_OF_POST_MAPPING, HttpMethod.POST));
+                methodPathList.addAll(getMethodList0(psiMethod, AnnotationHolder.QNAME_OF_PUT_MAPPING, HttpMethod.PUT));
+                methodPathList.addAll(getMethodList0(psiMethod, AnnotationHolder.QNAME_OF_DELETE_MAPPING, HttpMethod.DELETE));
+            } catch (Exception e) {
+                ActionUtil.handleException(e);
+            }
         }
 
         for (String classPath : classPathSet) {
@@ -81,7 +91,7 @@ public class ApiResolverService {
                     methodPath = methodPath.substring(1);
                 }
                 String fullPath = classPath + methodPath;
-                navigationItemList.add(new ApiNavigationItem(psiMethod, httpMethod, fullPath));
+                navigationItemList.add(new ApiNavigationItem(psiMethod, httpMethod, fullPath, methodPathInfo));
             }
         }
         return navigationItemList;
@@ -97,11 +107,23 @@ public class ApiResolverService {
                 List<String> methodList = BaseSavior.getAnnotationListValue(methodMappingAnnotation, "method", null);
                 if (CollectionUtils.isNotEmpty(methodList)) {
                     httpMethod = HttpMethod.of(methodList.get(0));
+                } else {
+                    httpMethod = HttpMethod.GET;
                 }
             }
             if (CollectionUtils.isNotEmpty(pathList)) {
                 for (String methodPath : pathList) {
-                    methodPathList.add(new MethodPathInfo(psiMethod, httpMethod, methodPath));
+                    String psiMethodName = psiMethod.getName();
+                    String location = psiMethodName;
+                    PsiClass psiClass = psiMethod.getContainingClass();
+                    if (psiClass != null) {
+                        String psiClassName = psiClass.getName();
+                        location = psiClassName + "#" + psiMethodName;
+                    }
+                    AnnotationHolder psiMethodHolder = AnnotationHolder.getPsiMethodHolder(psiMethod);
+                    CommentInfo commentInfo = psiMethodHolder.getCommentInfo();
+                    String description = commentInfo.getValue("");
+                    methodPathList.add(new MethodPathInfo(psiMethod, httpMethod, methodPath, location, description));
                 }
             }
         }

@@ -16,9 +16,15 @@ public class MethodPathInfo {
 
     private String methodPath;
 
-    public MethodPathInfo(PsiMethod psiMethod, HttpMethod httpMethod, String methodPath) {
+    private String location;
+
+    private String methodDesc;
+
+    public MethodPathInfo(PsiMethod psiMethod, HttpMethod httpMethod, String methodPath, String location, String methodDesc) {
         this.psiMethod = psiMethod;
         this.httpMethod = httpMethod;
         this.methodPath = methodPath;
+        this.location = location;
+        this.methodDesc = methodDesc;
     }
 }

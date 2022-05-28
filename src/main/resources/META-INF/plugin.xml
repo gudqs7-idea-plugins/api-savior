@@ -17,6 +17,7 @@
     <extensions defaultExtensionNs="com.intellij">
 <!--        <notificationGroup id="Docer Savior Notification Group" displayType="BALLOON" key="notification.group.name" />-->
         <projectService serviceImplementation="com.zhaow.restful.navigation.action.GotoRequestMappingConfiguration"/>
+        <projectService serviceImplementation="cn.gudqs7.plugins.search.MethodFilterConfiguration"/>
 
         <intentionAction>
             <className>cn.gudqs7.plugins.generate.getter.action.GenerateAllGetterAction</className>

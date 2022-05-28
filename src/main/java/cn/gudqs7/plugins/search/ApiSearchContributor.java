@@ -1,48 +1,141 @@
 package cn.gudqs7.plugins.search;
 
-import com.intellij.ide.actions.searcheverywhere.AbstractGotoSEContributor;
-import com.intellij.ide.util.gotoByName.FilteringGotoByModel;
-import com.intellij.navigation.ChooseByNameContributor;
+import cn.gudqs7.plugins.search.resolver.ApiNavigationItem;
+import cn.gudqs7.plugins.search.resolver.ApiResolverService;
+import cn.gudqs7.plugins.search.resolver.HttpMethod;
+import cn.gudqs7.plugins.util.IconUtil;
+import com.intellij.ide.actions.SearchEverywherePsiRenderer;
+import com.intellij.ide.actions.searcheverywhere.FoundItemDescriptor;
+import com.intellij.ide.actions.searcheverywhere.PersistentSearchEverywhereContributorFilter;
+import com.intellij.ide.actions.searcheverywhere.SearchEverywhereManager;
+import com.intellij.ide.actions.searcheverywhere.WeightedSearchEverywhereContributor;
+import com.intellij.idea.ActionsBundle;
 import com.intellij.openapi.actionSystem.AnActionEvent;
+import com.intellij.openapi.actionSystem.CommonDataKeys;
+import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.project.DumbService;
 import com.intellij.openapi.project.Project;
-import org.jetbrains.annotations.Nls;
+import com.intellij.openapi.util.text.StringUtil;
+import com.intellij.psi.codeStyle.MinusculeMatcher;
+import com.intellij.psi.codeStyle.NameUtil;
+import com.intellij.ui.ColoredListCellRenderer;
+import com.intellij.ui.SimpleTextAttributes;
+import com.intellij.ui.speedSearch.SpeedSearchUtil;
+import com.intellij.util.Processor;
+import com.intellij.util.PsiNavigateUtil;
+import com.intellij.util.ui.UIUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import javax.swing.*;
+import java.awt.*;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * @author wq
  * @date 2022/5/28
  */
-public class ApiSearchContributor extends AbstractGotoSEContributor {
+public class ApiSearchContributor implements WeightedSearchEverywhereContributor<ApiNavigationItem> {
 
-    private final ApiGotoByModel apiGotoByModel;
+    private final AnActionEvent actionEvent;
+    private final Project myProject;
+    private final PersistentSearchEverywhereContributorFilter<HttpMethod> myFilter;
+    private List<ApiNavigationItem> navItemList;
 
-    public ApiSearchContributor(@NotNull AnActionEvent initEvent) {
-        super(initEvent);
-        this.apiGotoByModel = new ApiGotoByModel(initEvent.getProject(), new ChooseByNameContributor[]{
-                new ApiChooseByNameContributor()
-        });
+    public ApiSearchContributor(@NotNull AnActionEvent event) {
+        this.actionEvent = event;
+        myProject = event.getRequiredData(CommonDataKeys.PROJECT);
+        myFilter = new PersistentSearchEverywhereContributorFilter<>(
+                Arrays.asList(HttpMethod.values()), MethodFilterConfiguration.getInstance(myProject),
+                Enum::name, httpMethod -> null
+        );
     }
 
+    @NotNull
     @Override
-    protected @NotNull FilteringGotoByModel<?> createModel(@NotNull Project project) {
-        return apiGotoByModel;
+    public String getSearchProviderId() {
+        return getClass().getSimpleName();
     }
 
+    @NotNull
     @Override
-    public @Nullable String getAdvertisement() {
-        return DumbService.isDumb(myProject) ? "Results might be incomplete. The project is being indexed." : "type url or to search";
-    }
-
-    @Override
-    public @NotNull @Nls String getGroupName() {
-        return "Api Search";
+    public String getGroupName() {
+        return "Api";
     }
 
     @Override
     public int getSortWeight() {
-        return 1000;
+        return 800;
+    }
+
+    @Nullable
+    @Override
+    public String getAdvertisement() {
+        return DumbService.isDumb(myProject) ? "Results might be incomplete. The project is being indexed." : "type url or to search";
+    }
+
+    @Override
+    public boolean processSelectedItem(@NotNull ApiNavigationItem selected, int modifiers, @NotNull String searchText) {
+        PsiNavigateUtil.navigate((selected).getPsiElement());
+        return true;
+    }
+
+    @NotNull
+    @Override
+    public ListCellRenderer<ApiNavigationItem> getElementsRenderer() {
+        return new SearchEverywherePsiRenderer() {
+
+            @Override
+            protected boolean customizeNonPsiElementLeftRenderer(ColoredListCellRenderer renderer, JList list, Object value, int index, boolean selected, boolean hasFocus) {
+                Color fgColor = list.getForeground();
+                Color bgColor = UIUtil.getListBackground();
+                SimpleTextAttributes nameAttributes = new SimpleTextAttributes(SimpleTextAttributes.STYLE_PLAIN, fgColor);
+
+                ItemMatchers itemMatchers = getItemMatchers(list, value);
+                ApiNavigationItem apiNavigationItem = (ApiNavigationItem) value;
+                String name = apiNavigationItem.getUrl();
+                String locationString = apiNavigationItem.getRightText();
+
+                SpeedSearchUtil.appendColoredFragmentForMatcher(name, renderer, nameAttributes, itemMatchers.nameMatcher, bgColor, selected);
+                renderer.setIcon(IconUtil.getHttpMethodIcon(apiNavigationItem.getHttpMethod()));
+
+                if (StringUtils.isNotEmpty(locationString)) {
+                    locationString = " [" + locationString + "]";
+                    FontMetrics fm = list.getFontMetrics(list.getFont());
+                    int maxWidth = list.getWidth() - fm.stringWidth(name) - myRightComponentWidth - 36;
+                    int fullWidth = fm.stringWidth(locationString);
+                    if (fullWidth < maxWidth) {
+                        SpeedSearchUtil.appendColoredFragmentForMatcher(locationString, renderer, SimpleTextAttributes.GRAYED_ATTRIBUTES, itemMatchers.nameMatcher, bgColor, selected);
+                    } else {
+                        int adjustedWidth = Math.max(locationString.length() * maxWidth / fullWidth - 1, 3);
+                        locationString = StringUtil.trimMiddle(locationString, adjustedWidth);
+                        SpeedSearchUtil.appendColoredFragmentForMatcher(locationString, renderer, SimpleTextAttributes.GRAYED_ATTRIBUTES, itemMatchers.nameMatcher, bgColor, selected);
+                    }
+                }
+                return true;
+            }
+        };
+    }
+
+    @Nullable
+    @Override
+    public Object getDataForItem(@NotNull ApiNavigationItem element, @NotNull String dataId) {
+        return null;
+    }
+
+    @Override
+    public boolean isEmptyPatternSupported() {
+        return true;
+    }
+
+    @Override
+    public boolean isShownInSeparateTab() {
+        return true;
     }
 
     @Override
@@ -51,7 +144,57 @@ public class ApiSearchContributor extends AbstractGotoSEContributor {
     }
 
     @Override
-    public boolean isEmptyPatternSupported() {
-        return true;
+    public boolean isDumbAware() {
+        return DumbService.isDumb(myProject);
     }
+
+    @Override
+    public void fetchWeightedElements(@NotNull String pattern, @NotNull ProgressIndicator progressIndicator, @NotNull Processor<? super FoundItemDescriptor<ApiNavigationItem>> consumer) {
+        if (isDumbAware() || !shouldProvideElements(pattern)) {
+            return;
+        }
+
+        MinusculeMatcher matcher = NameUtil.buildMatcher("*" + pattern + "*", NameUtil.MatchingCaseSensitivity.NONE);
+        Set<HttpMethod> httpMethodSet = new HashSet<>(myFilter.getSelectedElements());
+        boolean selectAll = httpMethodSet.size() == HttpMethod.values().length;
+
+        // 从ALL -> URL Tab或快捷键进入时列表为空
+        if (navItemList == null) {
+            // 必须从read线程访问，耗时不能过长
+            ApplicationManager.getApplication().runReadAction(() -> {
+                navItemList = ApiResolverService.getInstance(myProject).getApiNavigationItemList();
+            });
+        }
+        if (navItemList != null) {
+            for (ApiNavigationItem restItem : navItemList) {
+                if (selectAll || httpMethodSet.contains(restItem.getHttpMethod())) {
+                    if (matcher.matches(restItem.getUrl()) || matcher.matches(restItem.getMethodPathInfo().getMethodDesc())) {
+                        if (!consumer.process(new FoundItemDescriptor<>(restItem, 0))) {
+                            return;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * 判断是否应该返回列表元素
+     *
+     * @param pattern 搜索词
+     */
+    private boolean shouldProvideElements(String pattern) {
+        if (StringUtils.isNotBlank(pattern)) {
+            return true;
+        }
+        SearchEverywhereManager seManager = SearchEverywhereManager.getInstance(myProject);
+        if (seManager.isShown()) {
+            // 非 All Tab
+            return getSearchProviderId().equals(seManager.getSelectedContributorID());
+        } else {
+            // ALL Tab
+            return !ActionsBundle.message("action.SearchEverywhere.text").equals(actionEvent.getPresentation().getText());
+        }
+    }
+
 }
