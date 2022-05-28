@@ -5,11 +5,14 @@ import cn.gudqs7.plugins.search.resolver.ApiResolverService;
 import cn.gudqs7.plugins.search.resolver.HttpMethod;
 import cn.gudqs7.plugins.util.IconUtil;
 import com.intellij.ide.actions.SearchEverywherePsiRenderer;
+import com.intellij.ide.actions.bigPopup.ShowFilterAction;
 import com.intellij.ide.actions.searcheverywhere.FoundItemDescriptor;
 import com.intellij.ide.actions.searcheverywhere.PersistentSearchEverywhereContributorFilter;
 import com.intellij.ide.actions.searcheverywhere.SearchEverywhereManager;
 import com.intellij.ide.actions.searcheverywhere.WeightedSearchEverywhereContributor;
+import com.intellij.ide.util.ElementsChooser;
 import com.intellij.idea.ActionsBundle;
+import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.openapi.application.ApplicationManager;
@@ -31,10 +34,8 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author wq
@@ -178,6 +179,16 @@ public class ApiSearchContributor implements WeightedSearchEverywhereContributor
         }
     }
 
+    @Override
+    public @NotNull List<AnAction> getActions(@NotNull Runnable onChanged) {
+        if (myProject == null || myFilter == null){
+            return Collections.emptyList();
+        }
+        ArrayList<AnAction> result = new ArrayList<>();
+        result.add(new FiltersAction(myFilter, onChanged));
+        return result;
+    }
+
     /**
      * 判断是否应该返回列表元素
      *
@@ -190,6 +201,7 @@ public class ApiSearchContributor implements WeightedSearchEverywhereContributor
         SearchEverywhereManager seManager = SearchEverywhereManager.getInstance(myProject);
         if (seManager.isShown()) {
             // 非 All Tab
+            //noinspection UnstableApiUsage
             return getSearchProviderId().equals(seManager.getSelectedContributorID());
         } else {
             // ALL Tab
@@ -197,4 +209,52 @@ public class ApiSearchContributor implements WeightedSearchEverywhereContributor
         }
     }
 
+    static class FiltersAction extends ShowFilterAction {
+
+        final PersistentSearchEverywhereContributorFilter<?> filter;
+        final Runnable rebuildRunnable;
+
+        FiltersAction(@NotNull PersistentSearchEverywhereContributorFilter<?> filter, @NotNull Runnable rebuildRunnable) {
+            this.filter = filter;
+            this.rebuildRunnable = rebuildRunnable;
+        }
+
+        @Override
+        public boolean isEnabled() {
+            return true;
+        }
+
+        @Override
+        protected boolean isActive() {
+            return filter.getAllElements().size() != filter.getSelectedElements().size();
+        }
+
+        @Override
+        protected ElementsChooser<?> createChooser() {
+            return createChooser(filter, rebuildRunnable);
+        }
+
+        private static <T> ElementsChooser<T> createChooser(@NotNull PersistentSearchEverywhereContributorFilter<T> filter, @NotNull Runnable rebuildRunnable) {
+            ElementsChooser<T> res = new ElementsChooser<T>(filter.getAllElements(), false) {
+                @Override
+                protected String getItemText(@NotNull T value) {
+                    return filter.getElementText(value);
+                }
+
+                @Nullable
+                @Override
+                protected Icon getItemIcon(@NotNull T value) {
+                    return filter.getElementIcon(value);
+                }
+            };
+            res.markElements(filter.getSelectedElements());
+            ElementsChooser.ElementsMarkListener<T> listener = (element, isMarked) -> {
+                filter.setSelected(element, isMarked);
+                rebuildRunnable.run();
+            };
+            res.addElementsMarkListener(listener);
+            return res;
+        }
+
+    }
 }

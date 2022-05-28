@@ -28,7 +28,7 @@ public class GotoApiAction extends GotoActionBase implements DumbAware {
     public void actionPerformed(@NotNull AnActionEvent e) {
         Project project = e.getProject();
         if (project == null) {
-          return;
+            return;
         }
 
         boolean dumb = DumbService.isDumb(project);
