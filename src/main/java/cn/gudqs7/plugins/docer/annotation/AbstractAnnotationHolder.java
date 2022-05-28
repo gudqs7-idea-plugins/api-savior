@@ -82,17 +82,8 @@ public abstract class AbstractAnnotationHolder implements AnnotationHolder {
      * @return 信息
      */
     protected <T> List<T> getAnnotationListValueByQname(String qname, String attr) {
-        Object annotationValueByQname = getAnnotationValueByQname(qname, attr);
-        if (annotationValueByQname == null) {
-            return null;
-        }
-        if (annotationValueByQname instanceof List) {
-            return (List<T>) annotationValueByQname;
-        } else {
-            List<T> list = new ArrayList<>();
-            list.add((T) annotationValueByQname);
-            return list;
-        }
+        PsiAnnotation psiAnnotation = getAnnotationByQname(qname);
+        return BaseSavior.getAnnotationListValue(psiAnnotation, attr, null);
     }
 
     /**

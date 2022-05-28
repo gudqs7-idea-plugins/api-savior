@@ -35,6 +35,20 @@ public abstract class BaseSavior {
 
     // =============== annotation util ===============
 
+    public static <T> List<T> getAnnotationListValue(PsiAnnotation fieldAnnotation, String attr, T defaultVal) {
+        Object annotationValueByQname = getAnnotationValue(fieldAnnotation, attr, defaultVal);
+        if (annotationValueByQname == null) {
+            return null;
+        }
+        if (annotationValueByQname instanceof List) {
+            return (List<T>) annotationValueByQname;
+        } else {
+            List<T> list = new ArrayList<>();
+            list.add((T) annotationValueByQname);
+            return list;
+        }
+    }
+
     public static <T> T getAnnotationValue(PsiAnnotation fieldAnnotation, String attr, T defaultVal) {
         PsiAnnotationMemberValue value = fieldAnnotation.findAttributeValue(attr);
         if (value == null) {
