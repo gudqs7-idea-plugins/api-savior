@@ -66,9 +66,17 @@ git clone https://github.com/docer-savior/docer-savior-plugin-usage-examples
 
 ## 4.批量生成文档及更多
 直接在项目上右键（或某个目录/某个类/任意多选亦可），然后点击相应的按钮，如下图  
-![img.png](parts/imgs/gen-doc-batch.png)
-假设我点击了 Batch Generate Api Interface Doc，则我会得到一个文件夹，按模块（可自定义，默认是最后两级报名）分子文件夹的 Markdown 接口文档，如下图    
-![img.png](parts/imgs/markdown-doc-batch.png)  
+![img.png](parts/imgs/gen-doc-batch.png)  
+
+假设我点击了 Batch Generate Api Interface Doc，则我会得到一个文件夹，按模块（可自定义，默认是最后两级报名）分子文件夹的 Markdown 接口文档，如下图  
+![img.png](parts/imgs/markdown-doc-batch.png)    
+
+## 5.通过 Search Everywhere 搜索 Api
+双击 `Shift` 进入 `Search Everywhere` 后切换到 Api，或使用快捷键 `Ctrl + \ ` 或 `Ctrl + Alt + N` 进入如下图界面。  
+此时您可通过 url 或接口描述来搜索并跳转到该接口。
+> 为此我单独开了一个项目 [search-everywhere-api-idea-plugin](https://github.com/docer-savior/search-everywhere-api-idea-plugin)，欢迎来 Star！    
+
+![img.png](parts/imgs/search-everywhere-api.png)
 
 
 # 如果需要，我可以从哪里获得更多帮助？

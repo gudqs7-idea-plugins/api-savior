@@ -13,7 +13,7 @@
 [![Install Plugins][jet-img]][jet]
 
 ---
-[Chinese 🇨🇳](./README_CN.md)
+[Chinese 🇨🇳](./README.md)
 
 # What does Docer Savior do?
 
@@ -45,7 +45,7 @@ Download the zip package from the latest [Release][latest-release] page, then op
 ![zip](parts/imgs/install-plugin-from-disk.png)
 
 ### Marketplace Installation
-Open IDEA, go to Settings --> Plugins, select Marketplace, enter docer savior and click Install
+Open IDEA, go to Settings --> Plugins, select Marketplace, enter docer savior and click Install  
 ![Marketplace](parts/imgs/install-from-marketplace.png)
 
 ## 2. Open a Spring MVC or Dubbo project
@@ -56,19 +56,27 @@ git clone https://github.com/docer-savior/docer-savior-plugin-usage-examples
 ````
 
 ## 3. Generate documentation
-Find a Controller or RPC interface class,
-Such as `cn.gudqs.example.docer.restful.user.controller.UserController`
-Right-click on the class name and click Generate Api Interface Doc
-![img.png](parts/imgs/gen-doc-by-class.png)
-The document is as follows
-![img.png](parts/imgs/markdown-doc-user.png)
+Find a Controller or RPC interface class,  
+Such as `cn.gudqs.example.docer.restful.user.controller.UserController`  
+Right-click on the class name and click Generate Api Interface Doc  
+![img.png](parts/imgs/gen-doc-by-class.png)  
+The document is as follows  
+![img.png](parts/imgs/markdown-doc-user.png)  
 
 
 ## 4. Batch document generation and more
-Right-click directly on the project (or a directory/a class/any multi-selection), and then click the corresponding button, as shown below
-![img.png](parts/imgs/gen-doc-batch.png)
-Suppose I click Batch Generate Api Interface Doc, I will get a folder, the Markdown interface document of the molecule folder by module (can be customized, the default is the last two levels of registration), as shown below
+Right-click directly on the project (or a directory/a class/any multi-selection), and then click the corresponding button, as shown below  
+![img.png](parts/imgs/gen-doc-batch.png)  
+
+Suppose I click Batch Generate Api Interface Doc, I will get a folder, the Markdown interface document of the molecule folder by module (can be customized, the default is the last two levels of registration), as shown below  
 ![img.png](parts/imgs/markdown-doc-batch.png)
+
+## 5. Search APIs through Search Everywhere
+Double-click `Shift` to enter `Search Everywhere` and switch to Api, or use the shortcut keys `Ctrl + \ ` or `Ctrl + Alt + N` to enter the interface as shown below.
+At this point you can search and jump to the interface by url or interface description.
+> For this purpose, I opened a separate project [search-everywhere-api-idea-plugin](https://github.com/docer-savior/search-everywhere-api-idea-plugin), welcome to Star!  
+
+![img.png](parts/imgs/search-everywhere-api.png)
 
 
 # Where can I get more help if needed?
