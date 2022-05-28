@@ -13,7 +13,7 @@
 [![Install Plugins][jet-img]][jet]  
 
 ---
-[中文 🇨🇳](./README_CN.md)  
+[English 🇺🇸](./README_EN.md)
 
 # Docer Savior 是做什么的？
 
@@ -88,7 +88,11 @@ git clone https://github.com/docer-savior/docer-savior-plugin-usage-examples
 - [点击查看示例项目的 HTML 格式文档效果](https://docer-savior.github.io/docer-savior-plugin-usage-examples/)
 - [点击访问示例项目 Github](https://github.com/docer-savior/docer-savior-plugin-usage-examples)
 
+## 贡献指南
+ [贡献指南](CONTRIBUTING_CN.md)
+
 # 致谢名单
 
 - [Github intellij-generateAllSetMethod](https://github.com/gejun123456/intellij-generateAllSetMethod)
 - [Github genSets](https://github.com/yoke233/genSets)
+- [Github RESTKit](https://github.com/newhoo/RESTKit)

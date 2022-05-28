@@ -1,195 +1,54 @@
-## Contributing
+# 贡献指南
+> 首先，感谢您考虑为这个项目做出贡献。像您这样的人使这个插件成为如此出色的工具。
 
-First off, thank you for considering contributing to Active Admin. It's people
-like you that make Active Admin such a great tool.
+## 提问题
+> 目前，我们使用 Github Issues 管理缺陷，请您在 [Issues 页面](https://github.com/docer-savior/docer-savior-idea-plugin/issues) 提交 `错误报告`
 
-### Where do I go from here?
+## 提建议
+> 目前，我们使用 Github Issues 收集建议，请您在 [Issues 页面](https://github.com/docer-savior/docer-savior-idea-plugin/issues) 提交 `功能建议`  
 
-If you've noticed a bug or have a feature request, [make one][new issue]! It's
-generally best if you get confirmation of your bug or approval for your feature
-request this way before starting to code.
+另外，当您对某些功能需要讨论时，也欢迎在 [Github 论坛](https://github.com/docer-savior/docer-savior-idea-plugin/discussions) 发帖！
 
-If you have a general question about activeadmin, you can post it on [Stack
-Overflow], the issue tracker is only for bugs and feature requests.
+## 提 PR
 
-### Fork & create a branch
+> 当您打算这么做时，请先接受感谢！然后，我会告诉您具体该怎么做！  
 
-If this is something you think you can fix, then [fork Active Admin] and create
-a branch with a descriptive name.
+- 首先，请一定记得 Fork 这个仓库到您自己的账号，在进行代码的修改！  
 
-A good branch name would be (where issue #325 is the ticket you're working on):
+### 确定分支
+- 一般的，使用最新的 `master` 分支即可。
+- 当您需要在某个版本上做修改时，您可通过 `version/x.x.x` 来确定分支，如 2.0.9 版本则为 `version/2.0.9`；另外，这种情况下提交 PR 时请合并到 `version/x.x.x` 分支。
 
-```sh
-git checkout -b 325-add-japanese-translations
-```
+### 开发调试
+> 本项目使用的是较新的插件开发方式（即采用 Gradle)，您只需要用 IDEA 打开这个项目即可！
+> 以下是一些注意事项：
 
-### Get the test suite running
+- 目前 IDEA 本身的 Java 运行时基本要求 Java 11，因此您必须确保拥有这个版本的 JDK。
+- 打开项目后，若您平时开发项目常用的是 Java 8，可能您需要做一些设置，如：
 
-Make sure you're using a recent ruby and have the `bundler` gem installed, at
-least version `1.14.3`.
+#### 项目 SDK 设置
 
-You'll also need chrome installed in order to run cucumber scenarios.
+![img.png](parts/imgs/project-setup-jdk11.png)
 
-Now install the development dependencies:
+#### Gradle JVM 设置为 11
+![img.png](parts/imgs/gradle-setup-jdk11.png)
 
-```sh
-bundle install
-```
+> 剩下的就看网络了，此过程或下载一个 IDEA 社区版（一般600多M），一个 JBR （运行时，About 时可见），还有依赖 jar 等  
 
-Then install javascript dependencies with [Yarn] (requires a current version of [Node.js]):
+### 运行和打包
 
-```sh
-bin/yarn install
-```
+#### 运行
+![img.png](parts/imgs/gradle-run-ide.png)
 
-JS assets are located in `app/javascript/active_admin`. The config will take care of compiling a complete bundle with [Rollup] using the `build` script and exported to `app/assets/javascripts/active_admin/base.js` ready to be used by Sprockets.
+#### 打包
+![img.png](parts/imgs/gradle-build-plugin.png)
 
-To update javascript bundle run (add `-w` flag for watch mode):
+#### 代码结构说明
 
-```sh
-bin/yarn build
-```
+cn.gudqs7.plugins 下有 4 个主要的包，即 `docer / error / generate / search`，作用如下：
+- docer：Api 文档相关的一切
+- error：接入 IDEA 异常处理组件
+- generate：实体类快速 get / set 方法生成
+- search：Search Everywhere 中 Api 这个 Tab 的接入及实现
 
-Now you should be able to run the entire suite using:
-
-```sh
-bin/rake
-```
-
-The test run will generate a sample Rails application in `tmp/test_apps` to run the
-tests against.
-
-If you want to test against a Rails version different from the latest, make sure
-you use the correct Gemfile, for example:
-
-```sh
-export BUNDLE_GEMFILE=gemfiles/rails_61/Gemfile
-```
-
-**Warning** SCSS assets are aimed to be used indifferently with Sprockets **and** webpacker.
-As such, make sure not to use any sass-rails directives such as `asset-url` or `image-url`.
-
-### Implement your fix or feature
-
-At this point, you're ready to make your changes! Feel free to ask for help;
-everyone is a beginner at first :smile_cat:
-
-### View your changes in a Rails application
-
-Active Admin is meant to be used by humans, not cucumbers. So make sure to take
-a look at your changes in a browser.
-
-To boot up a test Rails app:
-
-```sh
-bin/rake local server
-```
-
-This will automatically create a Rails app if none already exists, and store it
-in the `tmp/development_apps` folder.
-
-You should now be able to open <http://localhost:3000/admin> in your browser.
-You can log in using:
-
-*User*: admin@example.com
-*Password*: password
-
-If you need to perform any other commands on the test application, just pass
-them to the `local` rake task. For example, to boot the rails console:
-
-```sh
-bin/rake local console
-```
-
-Or to migrate the database, if you create a new migration or just play around
-with the db:
-
-```sh
-bin/rake local db:migrate
-```
-
-### Get the style right
-
-Your patch should follow the same conventions & pass the same code quality
-checks as the rest of the project. `bin/rake lint` will give you feedback in
-this regard. You can check & fix style issues by running each linter
-individually. Run `bin/rake -T lint` to see the available linters.
-
-### Make a Pull Request
-
-At this point, you should switch back to your master branch and make sure it's
-up to date with Active Admin's master branch:
-
-```sh
-git remote add upstream git@github.com:activeadmin/activeadmin.git
-git checkout master
-git pull upstream master
-```
-
-Then update your feature branch from your local copy of master, and push it!
-
-```sh
-git checkout 325-add-japanese-translations
-git rebase master
-git push --set-upstream origin 325-add-japanese-translations
-```
-
-Finally, go to GitHub and [make a Pull Request][] :D
-
-Github Actions will run our test suite against all supported Rails versions. We
-care about quality, so your PR won't be merged until all tests pass. It's
-unlikely, but it's possible that your changes pass tests in one Rails version
-but fail in another. In that case, you'll have to setup your development
-environment (as explained in step 3) to use the problematic Rails version, and
-investigate what's going on!
-
-### Keeping your Pull Request updated
-
-If a maintainer asks you to "rebase" your PR, they're saying that a lot of code
-has changed, and that you need to update your branch so it's easier to merge.
-
-To learn more about rebasing in Git, there are a lot of [good][git rebasing]
-[resources][interactive rebase] but here's the suggested workflow:
-
-```sh
-git checkout 325-add-japanese-translations
-git pull --rebase upstream master
-git push --force-with-lease 325-add-japanese-translations
-```
-
-### Merging a PR (maintainers only)
-
-A PR can only be merged into master by a maintainer if:
-
-* It is passing CI.
-* It has been approved by at least two maintainers. If it was a maintainer who
-  opened the PR, only one extra approval is needed.
-* It has no requested changes.
-* It is up to date with current master.
-
-Any maintainer is allowed to merge a PR if all of these conditions are
-met.
-
-### Shipping a release (maintainers only)
-
-Maintainers need to do the following to push out a release:
-
-* Switch to the master branch and make sure it's up to date.
-* Make sure you have [chandler] properly configured. Chandler is used to
-  automatically submit github release notes from the changelog right after
-  pushing the gem to rubygems.
-* Run one of `bin/rake release:prepare_{prerelease,prepatch,patch,preminor,minor,premajor,major}`, push the result and create a PR.
-* Review and merge the PR. The generated changelog in the PR should include all user visible changes you intend to ship.
-* Run `bin/rake release` from the target branch once the PR is merged.
-
-[chandler]: https://github.com/mattbrictson/chandler#2-configure-credentials
-[Stack Overflow]: http://stackoverflow.com/questions/tagged/activeadmin
-[new issue]: https://github.com/activeadmin/activeadmin/issues/new
-[fork Active Admin]: https://help.github.com/articles/fork-a-repo
-[make a pull request]: https://help.github.com/articles/creating-a-pull-request
-[git rebasing]: http://git-scm.com/book/en/Git-Branching-Rebasing
-[interactive rebase]: https://help.github.com/en/github/using-git/about-git-rebase
-[shortcut reference links]: https://github.github.com/gfm/#shortcut-reference-link
-[Rollup]: https://rollupjs.org/guide/en/#quick-start
-[Yarn]: https://yarnpkg.com/en/docs/install
-[Node.js]: https://nodejs.org/en/
+> 更多代码上的疑问或是建议欢迎通过邮件或提 Issue 来咨询我！

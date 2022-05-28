@@ -1,7 +1,7 @@
 ---
 name: 错误报告
 about: 创建报告以帮助我们改进
-title: "[BUG] 版本xxx有xxx问题"
+title: "[BUG] 当我执行 xxx 时，程序抛出 xxx 异常"
 labels: bug
 assignees: gudqs7
 
