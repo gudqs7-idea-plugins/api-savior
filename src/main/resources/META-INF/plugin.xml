@@ -15,8 +15,7 @@
     <depends>com.intellij.modules.java</depends>
 
     <extensions defaultExtensionNs="com.intellij">
-<!--        <notificationGroup id="Docer Savior Notification Group" displayType="BALLOON" key="notification.group.name" />-->
-        <projectService serviceImplementation="com.zhaow.restful.navigation.action.GotoRequestMappingConfiguration"/>
+        <!-- <notificationGroup id="Docer Savior Notification Group" displayType="BALLOON" key="notification.group.name" /> -->
         <projectService serviceImplementation="cn.gudqs7.plugins.search.MethodFilterConfiguration"/>
 
         <intentionAction>
@@ -88,8 +87,8 @@
 
 
         <!-- url 导航 -->
-        <action id="Toolkit.GotoService" class="com.zhaow.restful.navigation.action.GotoRequestMappingAction"
-                text="_Service" description="Go to Service"
+        <action id="cn.gudqs.search.goto" class="cn.gudqs7.plugins.search.GotoApiAction"
+                text="_Api" description="Go to Api"
                 icon="AllIcons.Actions.Search">
             <add-to-group group-id="GoToTargetEx" anchor="first"/>
             <keyboard-shortcut keymap="$default" first-keystroke="ctrl BACK_SLASH" />
