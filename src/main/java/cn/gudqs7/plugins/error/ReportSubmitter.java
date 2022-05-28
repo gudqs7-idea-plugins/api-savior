@@ -36,7 +36,12 @@ public class ReportSubmitter extends ErrorReportSubmitter {
     }
 
     @Override
-    public boolean submit(IdeaLoggingEvent[] events, @Nullable String additionalInfo, @NotNull Component parentComponent, @NotNull Consumer<SubmittedReportInfo> consumer) {
+    public boolean submit(
+            IdeaLoggingEvent[] events,
+            @Nullable String additionalInfo,
+            @NotNull Component parentComponent,
+            @NotNull Consumer<? super SubmittedReportInfo> consumer
+    ) {
         try {
             IdeaLoggingEvent event = events[0];
             String throwableText = event.getThrowableText();

@@ -88,8 +88,8 @@ public class ApiSearchContributor implements WeightedSearchEverywhereContributor
 
     @NotNull
     @Override
-    public ListCellRenderer<ApiNavigationItem> getElementsRenderer() {
-        return new SearchEverywherePsiRenderer() {
+    public ListCellRenderer<Object> getElementsRenderer() {
+        return new SearchEverywherePsiRenderer(this) {
 
             @Override
             protected boolean customizeNonPsiElementLeftRenderer(ColoredListCellRenderer renderer, JList list, Object value, int index, boolean selected, boolean hasFocus) {
@@ -181,7 +181,7 @@ public class ApiSearchContributor implements WeightedSearchEverywhereContributor
 
     @Override
     public @NotNull List<AnAction> getActions(@NotNull Runnable onChanged) {
-        if (myProject == null || myFilter == null){
+        if (myProject == null || myFilter == null) {
             return Collections.emptyList();
         }
         ArrayList<AnAction> result = new ArrayList<>();
@@ -201,8 +201,7 @@ public class ApiSearchContributor implements WeightedSearchEverywhereContributor
         SearchEverywhereManager seManager = SearchEverywhereManager.getInstance(myProject);
         if (seManager.isShown()) {
             // 非 All Tab
-            //noinspection UnstableApiUsage
-            return getSearchProviderId().equals(seManager.getSelectedContributorID());
+            return getSearchProviderId().equals(seManager.getSelectedTabID());
         } else {
             // ALL Tab
             return !ActionsBundle.message("action.SearchEverywhere.text").equals(actionEvent.getPresentation().getText());

@@ -27,9 +27,9 @@ dependencies {
 // See https://github.com/JetBrains/gradle-intellij-plugin/
 intellij {
 //    version '2021.3.3'
-    version '2020.1.1'
+    version '2021.1.1'
     updateSinceUntilBuild false
-    plugins = ['java', 'Lombook Plugin:0.33-2020.1', 'org.nik.presentation-assistant:1.0.8']
+    plugins = ['java', 'org.nik.presentation-assistant:1.0.8']
 }
 
 // study from https://github.com/liuzhihang/doc-view/blob/master/build.gradle

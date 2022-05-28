@@ -6,7 +6,7 @@
     <description><![CDATA[ Description will be added by gradle build]]></description>
 
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
-    <idea-version since-build="201.7223.91" until-build="202.8194.7"/>
+    <idea-version since-build="211.6693.111"/>
 
     <!-- please see https://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
          on how to target different products -->
