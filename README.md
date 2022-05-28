@@ -5,7 +5,7 @@
 [jet-img]: https://img.shields.io/badge/plugin-Install%20Plugin-4597ff.svg
 [jet]: http://localhost:63342/api/installPlugin?action=install&pluginId=gudqs7.github.io.doc-savior
 
-[![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](CODE_OF_CONDUCT.md)
+[![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](CODE_OF_CONDUCT_CN.md)
 [![license](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![GitHub release][release-img]][latest-release] [![Jetbrains Plugins][plugin-img]][plugin]
 [![Version](http://phpstorm.espend.de/badge/16860/version)][plugin]  
