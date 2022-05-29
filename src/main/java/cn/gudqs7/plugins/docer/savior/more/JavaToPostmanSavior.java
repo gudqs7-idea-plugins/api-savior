@@ -52,7 +52,7 @@ public class JavaToPostmanSavior extends AbstractSavior<Map<String, Object>> {
         Arrays.sort(methods, this::orderByMethod);
 
         String hostAndPort = "";
-        boolean noResponse = commentInfo.getSingleBool(MoreCommentTag.POSTMAN_NO_RESPONSE, false);
+        boolean noResponse = commentInfo.getSingleBool(MoreCommentTag.POSTMAN_NO_RESPONSE.getTag(), false);
         List<Map<String, Object>> itemList = new ArrayList<>();
 
         for (PsiMethod method : methods) {
@@ -103,7 +103,7 @@ public class JavaToPostmanSavior extends AbstractSavior<Map<String, Object>> {
         String contentType = commentInfo.getContentType(theme.getDefaultContentType());
         String methodName = publicMethod.getName();
         String interfaceName = commentInfo.getValue(methodName);
-        Boolean noResponse = commentInfo.getSingleBool(MoreCommentTag.POSTMAN_NO_RESPONSE, false);
+        Boolean noResponse = commentInfo.getSingleBool(MoreCommentTag.POSTMAN_NO_RESPONSE.getTag(), false);
         String method = commentInfo.getMethod("");
         String method0 = RestfulUtil.getFirstMethod(method);
         boolean firstMethodIsGet = RequestMapping.Method.GET.equals(method0);

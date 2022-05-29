@@ -1,6 +1,7 @@
 package cn.gudqs7.plugins.docer.annotation;
 
 import cn.gudqs7.plugins.docer.constant.CommentTag;
+import cn.gudqs7.plugins.docer.constant.MoreCommentTag;
 import cn.gudqs7.plugins.docer.pojo.annotation.CommentInfo;
 import cn.gudqs7.plugins.docer.pojo.annotation.CommentInfoTag;
 import com.intellij.psi.PsiAnnotation;
@@ -9,6 +10,8 @@ import com.intellij.psi.PsiMethod;
 import com.intellij.psi.PsiParameter;
 import com.intellij.psi.javadoc.PsiDocComment;
 import org.apache.commons.lang3.StringUtils;
+
+import java.util.Map;
 
 /**
  * @author wq
@@ -28,12 +31,14 @@ public class PsiParameterAnnotationHolderImpl extends AbstractAnnotationHolder {
 
     @Override
     public CommentInfoTag getCommentInfoByComment() {
-        CommentInfoTag commentInfo = new CommentInfoTag();
+        CommentInfoTag commentInfoTag = new CommentInfoTag();
         PsiElement parent = psiParameter.getParent().getParent();
         String parameterName = psiParameter.getName();
         if (parent instanceof PsiMethod) {
             for (PsiElement child : parent.getChildren()) {
                 if (child instanceof PsiDocComment) {
+                    Map<String, CommentTag> commentTagMap = CommentTag.allTagMap();
+                    Map<String, MoreCommentTag> moreCommentTagMap = MoreCommentTag.allTagMap();
                     PsiDocComment psiComment = (PsiDocComment) child;
                     String text = psiComment.getText();
                     if (text.startsWith("/**") && text.endsWith("*/")) {
@@ -70,44 +75,47 @@ public class PsiParameterAnnotationHolderImpl extends AbstractAnnotationHolder {
                                                 tagVal = tagKeyVal[1];
                                             }
                                         }
-                                        switch (tagName) {
-                                            case CommentTag.REQUIRED:
-                                                commentInfo.setRequired(getBooleanVal(tagVal));
-                                                break;
-                                            case CommentTag.HIDDEN:
-                                                commentInfo.setHidden(getBooleanVal(tagVal));
-                                                break;
-                                            case CommentTag.IMPORTANT:
-                                                commentInfo.setImportant(getBooleanVal(tagVal));
-                                                break;
-                                            case CommentTag.EXAMPLE:
-                                                commentInfo.setExample(tagVal);
-                                                break;
-                                            case CommentTag.NOTES:
-                                                commentInfo.setNotes(tagVal);
-                                                break;
-                                            default:
-                                                String oldValue = commentInfo.getValue(null);
-                                                if (oldValue != null) {
-                                                    commentInfo.setValue(oldValue + t);
-                                                } else {
-                                                    commentInfo.setValue(t);
-                                                }
-                                                break;
+                                        for (String moreTag : MoreCommentTag.allTagList()) {
+                                            if (moreTag.equals(tagName)) {
+                                                commentInfoTag.appendToTag(moreTag, tagVal);
+                                            }
+                                        }
+                                        if (commentTagMap.containsKey(tagName)) {
+                                            switch (CommentTag.of(tagName)) {
+                                                case REQUIRED:
+                                                    commentInfoTag.setRequired(getBooleanVal(tagVal));
+                                                    break;
+                                                case HIDDEN:
+                                                    commentInfoTag.setHidden(getBooleanVal(tagVal));
+                                                    break;
+                                                case IMPORTANT:
+                                                    commentInfoTag.setImportant(getBooleanVal(tagVal));
+                                                    break;
+                                                case EXAMPLE:
+                                                    commentInfoTag.setExample(tagVal);
+                                                    break;
+                                                case NOTES:
+                                                    commentInfoTag.appendNotes(tagVal);
+                                                    break;
+                                                default:
+                                                    break;
+                                            }
+                                        } else if (moreCommentTagMap.containsKey(tag)) {
+                                            commentInfoTag.appendToTag(tag, tagVal);
+                                        } else {
+                                            commentInfoTag.appendValue(t);
                                         }
                                     }
                                 }
                             }
-
                         }
                     }
                     break;
                 }
             }
         }
-
-        dealOtherAnnotation(commentInfo);
-        return commentInfo;
+        dealOtherAnnotation(commentInfoTag);
+        return commentInfoTag;
     }
 
     @Override
@@ -115,10 +123,10 @@ public class PsiParameterAnnotationHolderImpl extends AbstractAnnotationHolder {
         CommentInfo commentInfo = new CommentInfo();
         boolean hasParamAnnotatation = hasAnnotation(QNAME_OF_PARAM);
         if (hasParamAnnotatation) {
-            commentInfo.setHidden(getAnnotationValueByParam(CommentTag.HIDDEN));
-            commentInfo.setRequired(getAnnotationValueByParam(CommentTag.REQUIRED));
-            commentInfo.setValue(getAnnotationValueByParam(CommentTag.DEFAULT));
-            commentInfo.setExample(getAnnotationValueByParam(CommentTag.EXAMPLE));
+            commentInfo.setHidden(getAnnotationValueByParam(CommentTag.HIDDEN.getTag()));
+            commentInfo.setRequired(getAnnotationValueByParam(CommentTag.REQUIRED.getTag()));
+            commentInfo.setValue(getAnnotationValueByParam(CommentTag.DEFAULT.getTag()));
+            commentInfo.setExample(getAnnotationValueByParam(CommentTag.EXAMPLE.getTag()));
         }
         dealOtherAnnotation(commentInfo);
         return commentInfo;
@@ -130,10 +138,10 @@ public class PsiParameterAnnotationHolderImpl extends AbstractAnnotationHolder {
         if (hasReqParamAnnotation) {
             String name = getAnnotationValueByReqParam("name");
             if (name == null) {
-                name = getAnnotationValueByReqParam(CommentTag.DEFAULT);
+                name = getAnnotationValueByReqParam(CommentTag.DEFAULT.getTag());
             }
             commentInfo.setName(name);
-            Boolean required = getAnnotationValueByReqParam(CommentTag.REQUIRED);
+            Boolean required = getAnnotationValueByReqParam(CommentTag.REQUIRED.getTag());
             if (required == null || required) {
                 commentInfo.setRequired(true);
             }
@@ -152,7 +160,7 @@ public class PsiParameterAnnotationHolderImpl extends AbstractAnnotationHolder {
      * @param attr 注解字段
      * @return 信息
      */
-    private  <T> T getAnnotationValueByReqParam(String attr) {
+    private <T> T getAnnotationValueByReqParam(String attr) {
         return getAnnotationValueByQname(QNAME_OF_REQ_PARAM, attr);
     }
 

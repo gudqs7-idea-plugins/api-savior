@@ -169,14 +169,14 @@ public abstract class AbstractAnnotationHolder implements AnnotationHolder {
         if (hasJsonFormatAnnotation) {
             String pattern = getAnnotationValueByQname(QNAME_OF_JSON_FORMAT, "pattern");
             if (StringUtils.isNotBlank(pattern)) {
-                commentInfo.appendToTag(MoreCommentTag.JSON_FORMAT, pattern);
+                commentInfo.appendToTag(MoreCommentTag.JSON_FORMAT.getTag(), pattern);
             }
         }
         boolean hasDateFormatAnnotation = hasAnnotation(QNAME_OF_DATE_TIME_FORMAT);
         if (hasDateFormatAnnotation) {
             String pattern = getAnnotationValueByQname(QNAME_OF_DATE_TIME_FORMAT, "pattern");
             if (StringUtils.isNotBlank(pattern)) {
-                commentInfo.appendToTag(MoreCommentTag.DATE_FORMAT, pattern);
+                commentInfo.appendToTag(MoreCommentTag.DATE_FORMAT.getTag(), pattern);
             }
         }
     }

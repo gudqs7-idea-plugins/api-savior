@@ -109,19 +109,19 @@ public class CommentInfo extends RequestMapping {
     }
 
     public List<String> getHiddenRequest() {
-        return getSplitData(MoreCommentTag.HIDDEN_REQUEST, ",");
+        return getSplitData(MoreCommentTag.HIDDEN_REQUEST.getTag(), ",");
     }
 
     public List<String> getHiddenResponse() {
-        return getSplitData(MoreCommentTag.HIDDEN_RESPONSE, ",");
+        return getSplitData(MoreCommentTag.HIDDEN_RESPONSE.getTag(), ",");
     }
 
     public List<String> getOnlyRequest() {
-        return getSplitData(MoreCommentTag.ONLY_REQUEST, ",");
+        return getSplitData(MoreCommentTag.ONLY_REQUEST.getTag(), ",");
     }
 
     public List<String> getOnlyResponse() {
-        return getSplitData(MoreCommentTag.ONLY_RESPONSE, ",");
+        return getSplitData(MoreCommentTag.ONLY_RESPONSE.getTag(), ",");
     }
 
     @NotNull
@@ -190,6 +190,15 @@ public class CommentInfo extends RequestMapping {
             this.value = value;
         } else {
             this.value += CommentConst.BREAK_LINE + value;
+        }
+    }
+
+    public void appendNotes(String notes) {
+        String oldVal = this.notes;
+        if (StringUtils.isBlank(oldVal)) {
+            this.notes = notes;
+        } else {
+            this.notes += CommentConst.BREAK_LINE + notes;
         }
     }
 

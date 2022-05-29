@@ -42,6 +42,8 @@ public class PsiMethodAnnotationHolderImpl extends AbstractAnnotationHolder {
         CommentInfoTag commentInfoTag = new CommentInfoTag();
         for (PsiElement child : psiMethod.getChildren()) {
             if (child instanceof PsiComment) {
+                Map<String, CommentTag> commentTagMap = CommentTag.allTagMap();
+                Map<String, MoreCommentTag> moreCommentTagMap = MoreCommentTag.allTagMap();
                 PsiComment psiComment = (PsiComment) child;
                 String text = psiComment.getText();
                 if (text.startsWith("/**") && text.endsWith("*/")) {
@@ -81,24 +83,22 @@ public class PsiMethodAnnotationHolderImpl extends AbstractAnnotationHolder {
                                 tagVal = line.substring(tag.length()).trim();
                             }
                             tag = tag.substring(1);
-                            switch (tag) {
-                                case CommentTag.HIDDEN:
-                                    commentInfoTag.setHidden(getBooleanVal(tagVal));
-                                    break;
-                                case CommentTag.IMPORTANT:
-                                    commentInfoTag.setImportant(getBooleanVal(tagVal));
-                                    break;
-                                case CommentTag.NOTES:
-                                    String notes = commentInfoTag.getNotes(null);
-                                    if (notes != null) {
-                                        commentInfoTag.setNotes(notes + CommentConst.BREAK_LINE + tagVal);
-                                    } else {
-                                        commentInfoTag.setNotes(tagVal);
-                                    }
-                                    break;
-                                default:
-                                    commentInfoTag.appendToTag(tag, tagVal);
-                                    break;
+                            if (commentTagMap.containsKey(tag)) {
+                                switch (CommentTag.of(tag)) {
+                                    case HIDDEN:
+                                        commentInfoTag.setHidden(getBooleanVal(tagVal));
+                                        break;
+                                    case IMPORTANT:
+                                        commentInfoTag.setImportant(getBooleanVal(tagVal));
+                                        break;
+                                    case NOTES:
+                                        commentInfoTag.appendNotes(tagVal);
+                                        break;
+                                    default:
+                                        break;
+                                }
+                            } else if (moreCommentTagMap.containsKey(tag)) {
+                                commentInfoTag.appendToTag(tag, tagVal);
                             }
                         } else {
                             commentInfoTag.appendValue(line);
@@ -117,9 +117,9 @@ public class PsiMethodAnnotationHolderImpl extends AbstractAnnotationHolder {
         CommentInfo commentInfo = new CommentInfo();
         boolean hasOperationAnnotation = hasAnnotation(QNAME_OF_OPERATION);
         if (hasOperationAnnotation) {
-            commentInfo.setHidden(getAnnotationValueByApiOperation(CommentTag.HIDDEN));
-            String value = getAnnotationValueByApiOperation(CommentTag.DEFAULT);
-            String notes = getAnnotationValueByApiOperation(CommentTag.NOTES);
+            commentInfo.setHidden(getAnnotationValueByApiOperation(CommentTag.HIDDEN.getTag()));
+            String value = getAnnotationValueByApiOperation(CommentTag.DEFAULT.getTag());
+            String notes = getAnnotationValueByApiOperation(CommentTag.NOTES.getTag());
             if (StringUtils.isNotBlank(value)) {
                 value = value.replaceAll("\\n", CommentConst.BREAK_LINE);
             }
@@ -133,9 +133,9 @@ public class PsiMethodAnnotationHolderImpl extends AbstractAnnotationHolder {
         // 优先级是有 ignoreParameters 则跳过 includeParameters 字段
         if (hasAnnotation(QNAME_OF_OPERATION_SUPPORT)) {
             List<String> includeParameters = getAnnotationValueByQname(QNAME_OF_OPERATION_SUPPORT, "includeParameters");
-            addRequestTagInfo(commentInfo, includeParameters, MoreCommentTag.ONLY_REQUEST);
+            addRequestTagInfo(commentInfo, includeParameters, MoreCommentTag.ONLY_REQUEST.getTag());
             List<String> ignoreParameters = getAnnotationValueByQname(QNAME_OF_OPERATION_SUPPORT, "ignoreParameters");
-            addRequestTagInfo(commentInfo, ignoreParameters, MoreCommentTag.HIDDEN_REQUEST);
+            addRequestTagInfo(commentInfo, ignoreParameters, MoreCommentTag.HIDDEN_REQUEST.getTag());
         }
         if (hasAnnotation(QNAME_OF_RESPONSES)) {
             // 存在多个 code

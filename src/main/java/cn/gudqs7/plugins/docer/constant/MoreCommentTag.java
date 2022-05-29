@@ -1,21 +1,59 @@
 package cn.gudqs7.plugins.docer.constant;
 
+import lombok.Getter;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 /**
  * 更多注释
+ *
  * @author wq
  * @date 2022/5/29
  */
-public interface MoreCommentTag {
+@Getter
+public enum MoreCommentTag {
 
-    String JSON_FORMAT = "json";
-    String DATE_FORMAT = "date";
+    /**
+     * 更多注释
+     */
+    JSON_FORMAT("json"),
+    DATE_FORMAT("date"),
+    HIDDEN_REQUEST("hiddenRequest"),
+    HIDDEN_RESPONSE("hiddenResponse"),
+    ONLY_REQUEST("onlyRequest"),
+    ONLY_RESPONSE("onlyResponse"),
+    POSTMAN_NO_RESPONSE("noResponse", true),
+    EXAMPLE_RANDOM("random", true),
+    EXAMPLE_GUID("guid", true),
+    ;
 
-    String HIDDEN_REQUEST = "hiddenRequest";
-    String HIDDEN_RESPONSE = "hiddenResponse";
-    String ONLY_REQUEST = "onlyRequest";
-    String ONLY_RESPONSE = "onlyResponse";
+    private final String tag;
+    private final boolean boolType;
 
-    String POSTMAN_NO_RESPONSE = "noResponse";
-    String EXAMPLE_RANDOM = "random";
-    String EXAMPLE_GUID = "guid";
+    MoreCommentTag(java.lang.String tag) {
+        this.tag = tag;
+        this.boolType = false;
+    }
+
+    MoreCommentTag(String tag, boolean boolType) {
+        this.tag = tag;
+        this.boolType = boolType;
+    }
+
+    public static List<String> allTagList() {
+        return Arrays.stream(values()).map(MoreCommentTag::getTag).collect(Collectors.toList());
+    }
+
+    public static Map<String, MoreCommentTag> allTagMap() {
+        Map<String, MoreCommentTag> allTagMap = new HashMap<>(32);
+        for (MoreCommentTag commentTag : values()) {
+            allTagMap.put(commentTag.getTag(), commentTag);
+        }
+        return allTagMap;
+    }
+
 }
