@@ -16,7 +16,7 @@ import java.util.Map;
 /**
  * @author wq
  */
-public class PsiFieldAnnotationHolderImpl extends AbstractAnnotationHolder {
+public class PsiFieldAnnotationHolderImpl extends AbstractFieldAnnotationHolder {
 
     private final PsiField psiField;
 
@@ -60,25 +60,7 @@ public class PsiFieldAnnotationHolderImpl extends AbstractAnnotationHolder {
                             }
                             tag = tag.substring(1);
                             if (commentTagMap.containsKey(tag)) {
-                                switch (CommentTagEnum.of(tag)) {
-                                    case REQUIRED:
-                                        commentInfoTag.setRequired(getBooleanVal(tagVal));
-                                        break;
-                                    case HIDDEN:
-                                        commentInfoTag.setHidden(getBooleanVal(tagVal));
-                                        break;
-                                    case IMPORTANT:
-                                        commentInfoTag.setImportant(getBooleanVal(tagVal));
-                                        break;
-                                    case EXAMPLE:
-                                        commentInfoTag.setExample(tagVal);
-                                        break;
-                                    case NOTES:
-                                        commentInfoTag.appendNotes(tagVal);
-                                        break;
-                                    default:
-                                        break;
-                                }
+                                setCommentInfoByTag(commentInfoTag, tag, tagVal);
                             } else if (moreCommentTagMap.containsKey(tag)) {
                                 commentInfoTag.appendToTag(tag, tagVal);
                             }

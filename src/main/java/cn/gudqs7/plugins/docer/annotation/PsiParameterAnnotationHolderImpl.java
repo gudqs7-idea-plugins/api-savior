@@ -17,7 +17,7 @@ import java.util.Map;
 /**
  * @author wq
  */
-public class PsiParameterAnnotationHolderImpl extends AbstractAnnotationHolder {
+public class PsiParameterAnnotationHolderImpl extends AbstractFieldAnnotationHolder {
 
     private final PsiParameter psiParameter;
 
@@ -76,33 +76,10 @@ public class PsiParameterAnnotationHolderImpl extends AbstractAnnotationHolder {
                                                 tagVal = tagKeyVal[1];
                                             }
                                         }
-                                        for (String moreTag : MoreCommentTagEnum.allTagList()) {
-                                            if (moreTag.equals(tagName)) {
-                                                commentInfoTag.appendToTag(moreTag, tagVal);
-                                            }
-                                        }
                                         if (commentTagMap.containsKey(tagName)) {
-                                            switch (CommentTagEnum.of(tagName)) {
-                                                case REQUIRED:
-                                                    commentInfoTag.setRequired(getBooleanVal(tagVal));
-                                                    break;
-                                                case HIDDEN:
-                                                    commentInfoTag.setHidden(getBooleanVal(tagVal));
-                                                    break;
-                                                case IMPORTANT:
-                                                    commentInfoTag.setImportant(getBooleanVal(tagVal));
-                                                    break;
-                                                case EXAMPLE:
-                                                    commentInfoTag.setExample(tagVal);
-                                                    break;
-                                                case NOTES:
-                                                    commentInfoTag.appendNotes(tagVal);
-                                                    break;
-                                                default:
-                                                    break;
-                                            }
-                                        } else if (moreCommentTagMap.containsKey(tag)) {
-                                            commentInfoTag.appendToTag(tag, tagVal);
+                                            setCommentInfoByTag(commentInfoTag, tagName, tagVal);
+                                        } else if (moreCommentTagMap.containsKey(tagName)) {
+                                            commentInfoTag.appendToTag(tagName, tagVal);
                                         } else {
                                             commentInfoTag.appendValue(t, CommentConst.SPACE);
                                         }
