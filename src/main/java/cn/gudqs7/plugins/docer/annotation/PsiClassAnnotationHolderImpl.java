@@ -10,7 +10,6 @@ import com.intellij.psi.PsiElement;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -31,7 +30,7 @@ public class PsiClassAnnotationHolderImpl extends AbstractAnnotationHolder {
 
     @Override
     public CommentInfoTag getCommentInfoByComment() {
-        CommentInfoTag apiModelPropertyTag = new CommentInfoTag();
+        CommentInfoTag commentInfoTag = new CommentInfoTag();
         for (PsiElement child : psiClass.getChildren()) {
             if (child instanceof PsiComment) {
                 PsiComment psiComment = (PsiComment) child;
@@ -59,58 +58,51 @@ public class PsiClassAnnotationHolderImpl extends AbstractAnnotationHolder {
                             tag = tag.substring(1);
                             switch (tag) {
                                 case CommentTag.IMPORTANT:
-                                    apiModelPropertyTag.setImportant(getBooleanVal(tagVal));
+                                    commentInfoTag.setImportant(getBooleanVal(tagVal));
                                     break;
                                 case CommentTag.NOTES:
-                                    apiModelPropertyTag.setNotes(tagVal);
+                                    commentInfoTag.setNotes(tagVal);
                                     break;
                                 case CommentTag.TAGS:
-                                    apiModelPropertyTag.setTags(tagVal);
+                                    commentInfoTag.setTags(tagVal);
                                     break;
                                 case CommentTag.DESCRIPTION:
-                                    String oldVal = apiModelPropertyTag.getValue("");
-                                    if (StringUtils.isBlank(oldVal)) {
-                                        apiModelPropertyTag.setValue(tagVal);
-                                    }
+                                    commentInfoTag.appendValue(tagVal);
                                     break;
                                 case CommentTag.HIDDEN:
-                                    apiModelPropertyTag.setHidden(getBooleanVal(tagVal));
+                                    commentInfoTag.setHidden(getBooleanVal(tagVal));
                                     break;
                                 default:
-                                    List<String> list = apiModelPropertyTag.getOtherTagMap().computeIfAbsent(tag, k -> new ArrayList<>());
-                                    list.add(tagVal);
+                                    commentInfoTag.appendToTag(tag, tagVal);
                                     break;
                             }
                         } else {
-                            String oldVal = apiModelPropertyTag.getValue("");
-                            if (StringUtils.isBlank(oldVal)) {
-                                apiModelPropertyTag.setValue(line);
-                            }
+                            commentInfoTag.appendValue(line);
                         }
                     }
                 }
                 break;
             }
         }
-        return apiModelPropertyTag;
+        return commentInfoTag;
     }
 
     @Override
     public CommentInfo getCommentInfoByAnnotation() {
         CommentInfo commentInfo = new CommentInfo();
         if (hasAnnotation(QNAME_OF_MODEL)) {
-            commentInfo.setValue(getAnnotationValueByQname(QNAME_OF_MODEL, "value"));
+            commentInfo.setValue(getAnnotationValueByQname(QNAME_OF_MODEL, CommentTag.DEFAULT));
         }
         if (hasAnnotation(QNAME_OF_API)) {
-            commentInfo.setValue(getAnnotationValueByQname(QNAME_OF_API, "description"));
-            commentInfo.setNotes(getAnnotationValueByQname(QNAME_OF_API, "description"));
-            List<String> tagsList = getAnnotationListValueByQname(QNAME_OF_API, "tags");
+            commentInfo.setValue(getAnnotationValueByQname(QNAME_OF_API, CommentTag.DESCRIPTION));
+            commentInfo.setNotes(getAnnotationValueByQname(QNAME_OF_API, CommentTag.DESCRIPTION));
+            List<String> tagsList = getAnnotationListValueByQname(QNAME_OF_API, CommentTag.TAGS);
             String tags = "";
             if (CollectionUtils.isNotEmpty(tagsList)) {
                 tags = tagsList.get(0);
             }
             commentInfo.setTags(tags);
-            commentInfo.setHidden(getAnnotationValueByQname(QNAME_OF_API, "hidden"));
+            commentInfo.setHidden(getAnnotationValueByQname(QNAME_OF_API, CommentTag.HIDDEN));
         }
         return commentInfo;
     }

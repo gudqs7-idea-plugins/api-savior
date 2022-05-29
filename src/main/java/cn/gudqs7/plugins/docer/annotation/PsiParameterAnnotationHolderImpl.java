@@ -115,10 +115,10 @@ public class PsiParameterAnnotationHolderImpl extends AbstractAnnotationHolder {
         CommentInfo commentInfo = new CommentInfo();
         boolean hasParamAnnotatation = hasAnnotation(QNAME_OF_PARAM);
         if (hasParamAnnotatation) {
-            commentInfo.setHidden(getAnnotationValueByParam("hidden"));
-            commentInfo.setRequired(getAnnotationValueByParam("required"));
-            commentInfo.setValue(getAnnotationValueByParam("value"));
-            commentInfo.setExample(getAnnotationValueByParam("example"));
+            commentInfo.setHidden(getAnnotationValueByParam(CommentTag.HIDDEN));
+            commentInfo.setRequired(getAnnotationValueByParam(CommentTag.REQUIRED));
+            commentInfo.setValue(getAnnotationValueByParam(CommentTag.DEFAULT));
+            commentInfo.setExample(getAnnotationValueByParam(CommentTag.EXAMPLE));
         }
         dealOtherAnnotation(commentInfo);
         return commentInfo;
@@ -130,11 +130,11 @@ public class PsiParameterAnnotationHolderImpl extends AbstractAnnotationHolder {
         if (hasReqParamAnnotation) {
             String name = getAnnotationValueByReqParam("name");
             if (name == null) {
-                name = getAnnotationValueByReqParam("value");
+                name = getAnnotationValueByReqParam(CommentTag.DEFAULT);
             }
             commentInfo.setName(name);
-            Boolean required = getAnnotationValueByReqParam("required");
-            if (required != null && required) {
+            Boolean required = getAnnotationValueByReqParam(CommentTag.REQUIRED);
+            if (required == null || required) {
                 commentInfo.setRequired(true);
             }
         }

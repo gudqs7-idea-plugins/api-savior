@@ -10,9 +10,6 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiField;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * @author wq
  */
@@ -79,17 +76,11 @@ public class PsiFieldAnnotationHolderImpl extends AbstractAnnotationHolder {
                                     }
                                     break;
                                 default:
-                                    List<String> list = commentInfo.getOtherTagMap().computeIfAbsent(tag, k -> new ArrayList<>());
-                                    list.add(tagVal);
+                                    commentInfo.appendToTag(tag, tagVal);
                                     break;
                             }
                         } else {
-                            String oldValue = commentInfo.getValue(null);
-                            if (oldValue != null) {
-                                commentInfo.setValue(oldValue + CommentConst.BREAK_LINE + line);
-                            } else {
-                                commentInfo.setValue(line);
-                            }
+                            commentInfo.appendValue(line);
                         }
                     }
                 }
@@ -105,10 +96,10 @@ public class PsiFieldAnnotationHolderImpl extends AbstractAnnotationHolder {
         CommentInfo commentInfo = new CommentInfo();
         boolean hasAnnotatation = hasAnnotation(QNAME_OF_PROPERTY);
         if (hasAnnotatation) {
-            commentInfo.setHidden(getAnnotationValueByProperty("hidden"));
-            commentInfo.setRequired(getAnnotationValueByProperty("required"));
-            String value = getAnnotationValueByProperty("value");
-            String notes = getAnnotationValueByProperty("notes");
+            commentInfo.setHidden(getAnnotationValueByProperty(CommentTag.HIDDEN));
+            commentInfo.setRequired(getAnnotationValueByProperty(CommentTag.REQUIRED));
+            String value = getAnnotationValueByProperty(CommentTag.DEFAULT);
+            String notes = getAnnotationValueByProperty(CommentTag.NOTES);
             if (StringUtils.isNotBlank(value)) {
                 value = value.replaceAll("\\n", CommentConst.BREAK_LINE);
             }
@@ -117,7 +108,7 @@ public class PsiFieldAnnotationHolderImpl extends AbstractAnnotationHolder {
             }
             commentInfo.setValue(value);
             commentInfo.setNotes(notes);
-            commentInfo.setExample(getAnnotationValueByProperty("example"));
+            commentInfo.setExample(getAnnotationValueByProperty(CommentTag.EXAMPLE));
         }
         dealOtherAnnotation(commentInfo);
         return commentInfo;

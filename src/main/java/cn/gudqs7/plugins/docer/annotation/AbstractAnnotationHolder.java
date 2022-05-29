@@ -1,15 +1,14 @@
 package cn.gudqs7.plugins.docer.annotation;
 
 import cn.gudqs7.plugins.docer.constant.CommentConst;
-import cn.gudqs7.plugins.docer.constant.CommentTag;
+import cn.gudqs7.plugins.docer.constant.MoreCommentTag;
 import cn.gudqs7.plugins.docer.pojo.annotation.CommentInfo;
 import cn.gudqs7.plugins.docer.pojo.annotation.CommentInfoTag;
-import cn.gudqs7.plugins.docer.savior.base.BaseSavior;
 import cn.gudqs7.plugins.docer.util.BaseTypeParseUtil;
+import cn.gudqs7.plugins.util.PsiAnnotationUtil;
 import com.intellij.psi.PsiAnnotation;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -71,7 +70,7 @@ public abstract class AbstractAnnotationHolder implements AnnotationHolder {
      */
     protected <T> T getAnnotationValueByQname(String qname, String attr) {
         PsiAnnotation psiAnnotation = getAnnotationByQname(qname);
-        return BaseSavior.getAnnotationValue(psiAnnotation, attr, null);
+        return PsiAnnotationUtil.getAnnotationValue(psiAnnotation, attr, null);
     }
 
     /**
@@ -83,7 +82,7 @@ public abstract class AbstractAnnotationHolder implements AnnotationHolder {
      */
     protected <T> List<T> getAnnotationListValueByQname(String qname, String attr) {
         PsiAnnotation psiAnnotation = getAnnotationByQname(qname);
-        return BaseSavior.getAnnotationListValue(psiAnnotation, attr, null);
+        return PsiAnnotationUtil.getAnnotationListValue(psiAnnotation, attr, null);
     }
 
     /**
@@ -170,16 +169,14 @@ public abstract class AbstractAnnotationHolder implements AnnotationHolder {
         if (hasJsonFormatAnnotation) {
             String pattern = getAnnotationValueByQname(QNAME_OF_JSON_FORMAT, "pattern");
             if (StringUtils.isNotBlank(pattern)) {
-                List<String> list = commentInfo.getOtherTagMap().computeIfAbsent(CommentTag.JSON_FORMAT, k -> new ArrayList<>());
-                list.add(pattern);
+                commentInfo.appendToTag(MoreCommentTag.JSON_FORMAT, pattern);
             }
         }
         boolean hasDateFormatAnnotation = hasAnnotation(QNAME_OF_DATE_TIME_FORMAT);
         if (hasDateFormatAnnotation) {
             String pattern = getAnnotationValueByQname(QNAME_OF_DATE_TIME_FORMAT, "pattern");
             if (StringUtils.isNotBlank(pattern)) {
-                List<String> list = commentInfo.getOtherTagMap().computeIfAbsent(CommentTag.DATE_FORMAT, k -> new ArrayList<>());
-                list.add(pattern);
+                commentInfo.appendToTag(MoreCommentTag.DATE_FORMAT, pattern);
             }
         }
     }

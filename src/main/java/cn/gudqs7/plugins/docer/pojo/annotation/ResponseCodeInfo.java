@@ -1,6 +1,6 @@
 package cn.gudqs7.plugins.docer.pojo.annotation;
 
-import cn.gudqs7.plugins.docer.savior.base.BaseSavior;
+import cn.gudqs7.plugins.util.StringUtil;
 import lombok.Data;
 
 /**
@@ -16,8 +16,8 @@ public class ResponseCodeInfo {
     }
 
     public ResponseCodeInfo(String code, String message) {
-        this.code = BaseSavior.replaceMd(code);
-        this.message = BaseSavior.replaceMd(message);
+        this.code = StringUtil.replaceMd(code);
+        this.message = StringUtil.replaceMd(message);
     }
 
 }

@@ -2,6 +2,7 @@ package cn.gudqs7.plugins.docer.savior.more;
 
 import cn.gudqs7.plugins.docer.annotation.AnnotationHolder;
 import cn.gudqs7.plugins.docer.constant.MapKeyConstant;
+import cn.gudqs7.plugins.docer.constant.MoreCommentTag;
 import cn.gudqs7.plugins.docer.pojo.PostmanKvInfo;
 import cn.gudqs7.plugins.docer.pojo.StructureAndCommentInfo;
 import cn.gudqs7.plugins.docer.pojo.annotation.CommentInfo;
@@ -51,7 +52,7 @@ public class JavaToPostmanSavior extends AbstractSavior<Map<String, Object>> {
         Arrays.sort(methods, this::orderByMethod);
 
         String hostAndPort = "";
-        boolean noResponse = commentInfo.getSingleBool("noResponse", false);
+        boolean noResponse = commentInfo.getSingleBool(MoreCommentTag.POSTMAN_NO_RESPONSE, false);
         List<Map<String, Object>> itemList = new ArrayList<>();
 
         for (PsiMethod method : methods) {
@@ -102,7 +103,7 @@ public class JavaToPostmanSavior extends AbstractSavior<Map<String, Object>> {
         String contentType = commentInfo.getContentType(theme.getDefaultContentType());
         String methodName = publicMethod.getName();
         String interfaceName = commentInfo.getValue(methodName);
-        Boolean noResponse = commentInfo.getSingleBool("noResponse", false);
+        Boolean noResponse = commentInfo.getSingleBool(MoreCommentTag.POSTMAN_NO_RESPONSE, false);
         String method = commentInfo.getMethod("");
         String method0 = RestfulUtil.getFirstMethod(method);
         boolean firstMethodIsGet = RequestMapping.Method.GET.equals(method0);

@@ -40,7 +40,7 @@ public class JavaToDocSavior extends AbstractSavior<Map<String, Object>> {
         List<String> apiNameList = new ArrayList<>();
         StringBuilder allDoc = new StringBuilder();
         for (PsiMethod method : methods) {
-            if (filterMethod(method)){
+            if (filterMethod(method)) {
                 continue;
             }
 
@@ -66,7 +66,7 @@ public class JavaToDocSavior extends AbstractSavior<Map<String, Object>> {
         }
         String apiName = data.getOrDefault("interfaceName", "").toString();
         String template = FreeMarkerUtil.renderTemplate(theme.getMethodPath(), data);
-        return Pair.of(template+"\n\n", apiName);
+        return Pair.of(template + "\n\n", apiName);
     }
 
     @Override
@@ -105,7 +105,7 @@ public class JavaToDocSavior extends AbstractSavior<Map<String, Object>> {
         List<ResponseCodeInfo> responseCodeInfoList = commentInfo.getResponseCodeInfoList();
 
         Map<String, Object> data = new HashMap<>(16);
-        data.put("interfaceName", interfaceName);
+        data.put("interfaceName", replaceMd(interfaceName));
         data.put("interfaceNotes", notes);
         data.put("qualifiedMethodName", interfaceClassName + "#" + methodName);
         data.put("url", url);

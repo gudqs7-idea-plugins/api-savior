@@ -1,5 +1,6 @@
 package cn.gudqs7.plugins.util;
 
+import cn.gudqs7.plugins.docer.constant.CommentConst;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -15,6 +16,20 @@ public class StringUtil {
             return str.toLowerCase();
         }
         return str.substring(0, 1).toLowerCase() + str.substring(1);
+    }
+
+    public static String replaceMd(String source) {
+        if (source == null) {
+            return null;
+        }
+        source = source.replaceAll("\\$", "\\\\\\$");
+        source = source.replaceAll("\\{", "\\\\{");
+        source = source.replaceAll("\\}", "\\\\}");
+        source = source.replaceAll("\\<", "\\\\<");
+        source = source.replaceAll("\\>", "\\\\>");
+        source = source.replaceAll("\\|", "\\\\|");
+        source = source.replaceAll(CommentConst.BREAK_LINE, "<br>");
+        return source;
     }
 
 }

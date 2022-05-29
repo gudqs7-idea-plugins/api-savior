@@ -2,12 +2,13 @@ package cn.gudqs7.plugins.docer.annotation;
 
 import cn.gudqs7.plugins.docer.constant.CommentConst;
 import cn.gudqs7.plugins.docer.constant.CommentTag;
+import cn.gudqs7.plugins.docer.constant.MoreCommentTag;
 import cn.gudqs7.plugins.docer.pojo.annotation.CommentInfo;
 import cn.gudqs7.plugins.docer.pojo.annotation.CommentInfoTag;
 import cn.gudqs7.plugins.docer.pojo.annotation.RequestMapping;
 import cn.gudqs7.plugins.docer.pojo.annotation.ResponseCodeInfo;
-import cn.gudqs7.plugins.docer.savior.base.BaseSavior;
 import cn.gudqs7.plugins.docer.util.ActionUtil;
+import cn.gudqs7.plugins.util.PsiAnnotationUtil;
 import cn.gudqs7.plugins.util.PsiUtil;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -38,7 +39,7 @@ public class PsiMethodAnnotationHolderImpl extends AbstractAnnotationHolder {
 
     @Override
     public CommentInfoTag getCommentInfoByComment() {
-        CommentInfoTag apiModelPropertyTag = new CommentInfoTag();
+        CommentInfoTag commentInfoTag = new CommentInfoTag();
         for (PsiElement child : psiMethod.getChildren()) {
             if (child instanceof PsiComment) {
                 PsiComment psiComment = (PsiComment) child;
@@ -65,7 +66,7 @@ public class PsiMethodAnnotationHolderImpl extends AbstractAnnotationHolder {
                                         message = line.substring(code.length()).trim();
                                     }
                                     ResponseCodeInfo codeInfo = new ResponseCodeInfo(code, message);
-                                    apiModelPropertyTag.getResponseCodeInfoList().add(codeInfo);
+                                    commentInfoTag.getResponseCodeInfoList().add(codeInfo);
                                 }
                                 continue;
                             }
@@ -82,39 +83,33 @@ public class PsiMethodAnnotationHolderImpl extends AbstractAnnotationHolder {
                             tag = tag.substring(1);
                             switch (tag) {
                                 case CommentTag.HIDDEN:
-                                    apiModelPropertyTag.setHidden(getBooleanVal(tagVal));
+                                    commentInfoTag.setHidden(getBooleanVal(tagVal));
                                     break;
                                 case CommentTag.IMPORTANT:
-                                    apiModelPropertyTag.setImportant(getBooleanVal(tagVal));
+                                    commentInfoTag.setImportant(getBooleanVal(tagVal));
                                     break;
                                 case CommentTag.NOTES:
-                                    String notes = apiModelPropertyTag.getNotes(null);
+                                    String notes = commentInfoTag.getNotes(null);
                                     if (notes != null) {
-                                        apiModelPropertyTag.setNotes(notes + CommentConst.BREAK_LINE + tagVal);
+                                        commentInfoTag.setNotes(notes + CommentConst.BREAK_LINE + tagVal);
                                     } else {
-                                        apiModelPropertyTag.setNotes(tagVal);
+                                        commentInfoTag.setNotes(tagVal);
                                     }
                                     break;
                                 default:
-                                    List<String> list = apiModelPropertyTag.getOtherTagMap().computeIfAbsent(tag, k -> new ArrayList<>());
-                                    list.add(tagVal);
+                                    commentInfoTag.appendToTag(tag, tagVal);
                                     break;
                             }
                         } else {
-                            String oldValue = apiModelPropertyTag.getValue(null);
-                            if (oldValue != null) {
-                                apiModelPropertyTag.setValue(oldValue + CommentConst.BREAK_LINE + line);
-                            } else {
-                                apiModelPropertyTag.setValue(line);
-                            }
+                            commentInfoTag.appendValue(line);
                         }
                     }
                 }
                 break;
             }
         }
-        dealRequestMapping(apiModelPropertyTag);
-        return apiModelPropertyTag;
+        dealRequestMapping(commentInfoTag);
+        return commentInfoTag;
     }
 
     @Override
@@ -122,9 +117,9 @@ public class PsiMethodAnnotationHolderImpl extends AbstractAnnotationHolder {
         CommentInfo commentInfo = new CommentInfo();
         boolean hasOperationAnnotation = hasAnnotation(QNAME_OF_OPERATION);
         if (hasOperationAnnotation) {
-            commentInfo.setHidden(getAnnotationValueByApiOperation("hidden"));
-            String value = getAnnotationValueByApiOperation("value");
-            String notes = getAnnotationValueByApiOperation("notes");
+            commentInfo.setHidden(getAnnotationValueByApiOperation(CommentTag.HIDDEN));
+            String value = getAnnotationValueByApiOperation(CommentTag.DEFAULT);
+            String notes = getAnnotationValueByApiOperation(CommentTag.NOTES);
             if (StringUtils.isNotBlank(value)) {
                 value = value.replaceAll("\\n", CommentConst.BREAK_LINE);
             }
@@ -138,17 +133,17 @@ public class PsiMethodAnnotationHolderImpl extends AbstractAnnotationHolder {
         // 优先级是有 ignoreParameters 则跳过 includeParameters 字段
         if (hasAnnotation(QNAME_OF_OPERATION_SUPPORT)) {
             List<String> includeParameters = getAnnotationValueByQname(QNAME_OF_OPERATION_SUPPORT, "includeParameters");
-            addRequestTagInfo(commentInfo, includeParameters, "onlyRequest");
+            addRequestTagInfo(commentInfo, includeParameters, MoreCommentTag.ONLY_REQUEST);
             List<String> ignoreParameters = getAnnotationValueByQname(QNAME_OF_OPERATION_SUPPORT, "ignoreParameters");
-            addRequestTagInfo(commentInfo, ignoreParameters, "hiddenRequest");
+            addRequestTagInfo(commentInfo, ignoreParameters, MoreCommentTag.HIDDEN_REQUEST);
         }
         if (hasAnnotation(QNAME_OF_RESPONSES)) {
             // 存在多个 code
             List<PsiAnnotation> psiAnnotationList = getAnnotationValueByQname(QNAME_OF_RESPONSES, "value");
             if (psiAnnotationList != null && psiAnnotationList.size() > 0) {
                 for (PsiAnnotation psiAnnotation : psiAnnotationList) {
-                    Integer code = BaseSavior.getAnnotationValue(psiAnnotation, "code", null);
-                    String message = BaseSavior.getAnnotationValue(psiAnnotation, "message", null);
+                    Integer code = PsiAnnotationUtil.getAnnotationValue(psiAnnotation, "code", null);
+                    String message = PsiAnnotationUtil.getAnnotationValue(psiAnnotation, "message", null);
                     ResponseCodeInfo codeInfo = new ResponseCodeInfo(String.valueOf(code), message);
                     commentInfo.getResponseCodeInfoList().add(codeInfo);
                 }
@@ -197,8 +192,7 @@ public class PsiMethodAnnotationHolderImpl extends AbstractAnnotationHolder {
                 }
             }
             String request = String.join(",", paramList);
-            List<String> tagList = commentInfo.getOtherTagMap().computeIfAbsent(tagKey, k -> new ArrayList<>());
-            tagList.add(request);
+            commentInfo.appendToTag(tagKey, request);
         }
     }
 
@@ -233,9 +227,9 @@ public class PsiMethodAnnotationHolderImpl extends AbstractAnnotationHolder {
             String controllerUrl = "/";
             PsiAnnotation psiAnnotation = psiMethod.getContainingClass().getAnnotation(QNAME_OF_MAPPING);
             if (psiAnnotation != null) {
-                controllerUrl = BaseSavior.getAnnotationValue(psiAnnotation, "value", controllerUrl);
+                controllerUrl = PsiAnnotationUtil.getAnnotationValue(psiAnnotation, "value", controllerUrl);
                 if (controllerUrl == null) {
-                    controllerUrl = BaseSavior.getAnnotationValue(psiAnnotation, "path", controllerUrl);
+                    controllerUrl = PsiAnnotationUtil.getAnnotationValue(psiAnnotation, "path", controllerUrl);
                 }
                 if (controllerUrl.startsWith("/")) {
                     controllerUrl = controllerUrl.substring(1);

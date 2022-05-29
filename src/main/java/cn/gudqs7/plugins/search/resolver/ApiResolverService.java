@@ -2,8 +2,8 @@ package cn.gudqs7.plugins.search.resolver;
 
 import cn.gudqs7.plugins.docer.annotation.AnnotationHolder;
 import cn.gudqs7.plugins.docer.pojo.annotation.CommentInfo;
-import cn.gudqs7.plugins.docer.savior.base.BaseSavior;
 import cn.gudqs7.plugins.docer.util.ActionUtil;
+import cn.gudqs7.plugins.util.PsiAnnotationUtil;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
 import com.intellij.psi.impl.java.stubs.index.JavaAnnotationIndex;
@@ -104,7 +104,7 @@ public class ApiResolverService {
         if (methodMappingAnnotation != null) {
             List<String> pathList = getRequestMappingPath(methodMappingAnnotation);
             if (httpMethod == null) {
-                List<String> methodList = BaseSavior.getAnnotationListValue(methodMappingAnnotation, "method", null);
+                List<String> methodList = PsiAnnotationUtil.getAnnotationListValue(methodMappingAnnotation, "method", null);
                 if (CollectionUtils.isNotEmpty(methodList)) {
                     httpMethod = HttpMethod.of(methodList.get(0));
                 } else {
@@ -150,9 +150,9 @@ public class ApiResolverService {
 
     @Nullable
     private List<String> getRequestMappingPath(PsiAnnotation requestMappingAnnotation) {
-        List<String> pathList = BaseSavior.getAnnotationListValue(requestMappingAnnotation, "path", null);
+        List<String> pathList = PsiAnnotationUtil.getAnnotationListValue(requestMappingAnnotation, "path", null);
         if (CollectionUtils.isEmpty(pathList)) {
-            pathList = BaseSavior.getAnnotationListValue(requestMappingAnnotation, "value", null);
+            pathList = PsiAnnotationUtil.getAnnotationListValue(requestMappingAnnotation, "value", null);
         }
         return pathList;
     }

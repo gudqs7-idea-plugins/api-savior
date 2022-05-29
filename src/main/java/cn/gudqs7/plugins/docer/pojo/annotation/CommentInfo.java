@@ -1,6 +1,8 @@
 package cn.gudqs7.plugins.docer.pojo.annotation;
 
 import cn.gudqs7.plugins.docer.annotation.AnnotationHolder;
+import cn.gudqs7.plugins.docer.constant.CommentConst;
+import cn.gudqs7.plugins.docer.constant.MoreCommentTag;
 import cn.gudqs7.plugins.docer.util.BaseTypeParseUtil;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -14,6 +16,7 @@ import java.util.*;
  * 字段注解/注释
  * 类上注释/注解
  * 方法上注释/注解
+ *
  * @author wq
  */
 @Data
@@ -106,19 +109,19 @@ public class CommentInfo extends RequestMapping {
     }
 
     public List<String> getHiddenRequest() {
-        return getSplitData("hiddenRequest", ",");
+        return getSplitData(MoreCommentTag.HIDDEN_REQUEST, ",");
     }
 
     public List<String> getHiddenResponse() {
-        return getSplitData("hiddenResponse", ",");
+        return getSplitData(MoreCommentTag.HIDDEN_RESPONSE, ",");
     }
 
     public List<String> getOnlyRequest() {
-        return getSplitData("onlyRequest", ",");
+        return getSplitData(MoreCommentTag.ONLY_REQUEST, ",");
     }
 
     public List<String> getOnlyResponse() {
-        return getSplitData("onlyResponse", ",");
+        return getSplitData(MoreCommentTag.ONLY_RESPONSE, ",");
     }
 
     @NotNull
@@ -153,6 +156,7 @@ public class CommentInfo extends RequestMapping {
 
     /**
      * 类的主名称, 可通过 #tags #description 等设置
+     *
      * @param defaultName 默认值
      * @return 名称
      */
@@ -178,6 +182,20 @@ public class CommentInfo extends RequestMapping {
             flag = BaseTypeParseUtil.parseBoolean(tagVal, true);
         }
         return flag;
+    }
+
+    public void appendValue(String value) {
+        String oldVal = this.value;
+        if (StringUtils.isBlank(oldVal)) {
+            this.value = value;
+        } else {
+            this.value += CommentConst.BREAK_LINE + value;
+        }
+    }
+
+    public void appendToTag(String tag, String tagVal) {
+        List<String> list = getOtherTagMap().computeIfAbsent(tag, k -> new ArrayList<>());
+        list.add(tagVal);
     }
 
 }

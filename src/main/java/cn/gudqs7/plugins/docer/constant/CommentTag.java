@@ -4,7 +4,8 @@ package cn.gudqs7.plugins.docer.constant;
  * @author wq
  */
 public interface CommentTag {
-
+    
+    String DEFAULT = "value";
     String HIDDEN = "hidden";
     String REQUIRED = "required";
     String EXAMPLE = "example";
@@ -12,7 +13,5 @@ public interface CommentTag {
     String TAGS = "tags";
     String IMPORTANT = "important";
     String DESCRIPTION = "description";
-    String JSON_FORMAT = "json";
-    String DATE_FORMAT = "date";
 
 }
