@@ -314,14 +314,16 @@ public class BaseTypeUtil {
             }
             return UUID.randomUUID().toString().toUpperCase();
         }
+        // 强指定随机或字段无任何描述时, 随机生成
+        //   否则使用描述加随机数字后缀组成示例值
         if (random || StringUtils.isBlank(fieldDesc)) {
+            if (notUsingRandom()) {
+                return "HelloWorld";
+            }
             int length = RandomUtils.nextInt(5, 20);
             StringBuilder stringBuilder = new StringBuilder();
             for (int i = 0; i < length; i++) {
                 stringBuilder.append(randomChar(false));
-            }
-            if (notUsingRandom()) {
-                return "HelloWorld";
             }
             return stringBuilder.toString();
         } else {

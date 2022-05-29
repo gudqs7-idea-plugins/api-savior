@@ -89,7 +89,8 @@ git clone https://github.com/docer-savior/docer-savior-plugin-usage-examples
 
 ## 通过查看 Wiki 来获取更多说明
 
-[点击访问 Wiki](https://github.com/docer-savior/docer-savior-idea-plugin/wiki/Get-Started)
+- [入门教程](https://github.com/docer-savior/docer-savior-idea-plugin/wiki/%E5%85%A5%E9%97%A8%E6%95%99%E7%A8%8B)
+- [进阶教程](https://github.com/docer-savior/docer-savior-idea-plugin/wiki/%E8%BF%9B%E9%98%B6%E6%95%99%E7%A8%8B)
 
 ## 通过查看 demo 示例来了解项目实际使用效果
 

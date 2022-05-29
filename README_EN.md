@@ -89,7 +89,8 @@ At this point you can search and jump to the interface by url or interface descr
 
 ## See the wiki for more instructions
 
-[Click to visit Wiki](https://github.com/docer-savior/docer-savior-idea-plugin/wiki/Get-Started)
+- [Getting Started Tutorial](https://github.com/docer-savior/docer-savior-idea-plugin/wiki/Get-Started)
+- [Advanced Tutorial](https://github.com/docer-savior/docer-savior-idea-plugin/wiki/More-Details)
 
 ## Understand the actual use of the project by viewing the demo example
 
