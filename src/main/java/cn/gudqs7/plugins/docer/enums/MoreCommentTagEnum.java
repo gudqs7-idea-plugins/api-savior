@@ -1,4 +1,4 @@
-package cn.gudqs7.plugins.docer.constant;
+package cn.gudqs7.plugins.docer.enums;
 
 import lombok.Getter;
 
@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
  * @date 2022/5/29
  */
 @Getter
-public enum MoreCommentTag {
+public enum MoreCommentTagEnum {
 
     /**
      * 更多注释
@@ -29,28 +29,36 @@ public enum MoreCommentTag {
     POSTMAN_NO_RESPONSE("noResponse", true),
     EXAMPLE_RANDOM("random", true),
     EXAMPLE_GUID("guid", true),
+    MODULE("module"),
+
+    AMP_ACTION_NAME("ActionName"),
+    AMP_RW("Rw"),
+    AMP_FIELD("AmpField"),
+    AMP_DATA_SIZE("DataSize"),
+    AMP_MOCK_VAL("mock-val"),
+    AMP_MOCK_KEY("mock-key"),
     ;
 
     private final String tag;
     private final boolean boolType;
 
-    MoreCommentTag(java.lang.String tag) {
+    MoreCommentTagEnum(java.lang.String tag) {
         this.tag = tag;
         this.boolType = false;
     }
 
-    MoreCommentTag(String tag, boolean boolType) {
+    MoreCommentTagEnum(String tag, boolean boolType) {
         this.tag = tag;
         this.boolType = boolType;
     }
 
     public static List<String> allTagList() {
-        return Arrays.stream(values()).map(MoreCommentTag::getTag).collect(Collectors.toList());
+        return Arrays.stream(values()).map(MoreCommentTagEnum::getTag).collect(Collectors.toList());
     }
 
-    public static Map<String, MoreCommentTag> allTagMap() {
-        Map<String, MoreCommentTag> allTagMap = new HashMap<>(32);
-        for (MoreCommentTag commentTag : values()) {
+    public static Map<String, MoreCommentTagEnum> allTagMap() {
+        Map<String, MoreCommentTagEnum> allTagMap = new HashMap<>(32);
+        for (MoreCommentTagEnum commentTag : values()) {
             allTagMap.put(commentTag.getTag(), commentTag);
         }
         return allTagMap;

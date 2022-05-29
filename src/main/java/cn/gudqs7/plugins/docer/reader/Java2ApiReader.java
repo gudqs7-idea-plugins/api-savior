@@ -1,6 +1,6 @@
 package cn.gudqs7.plugins.docer.reader;
 
-import cn.gudqs7.plugins.docer.constant.StructureType;
+import cn.gudqs7.plugins.docer.enums.StructureType;
 import cn.gudqs7.plugins.docer.pojo.FieldLevelInfo;
 import cn.gudqs7.plugins.docer.pojo.FieldMemoInfo;
 import cn.gudqs7.plugins.docer.pojo.ReadOnlyMap;

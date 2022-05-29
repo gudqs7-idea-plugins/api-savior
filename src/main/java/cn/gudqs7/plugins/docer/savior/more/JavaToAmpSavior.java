@@ -2,6 +2,7 @@ package cn.gudqs7.plugins.docer.savior.more;
 
 import cn.gudqs7.plugins.docer.annotation.AnnotationHolder;
 import cn.gudqs7.plugins.docer.constant.CommentConst;
+import cn.gudqs7.plugins.docer.enums.MoreCommentTagEnum;
 import cn.gudqs7.plugins.docer.pojo.ComplexInfo;
 import cn.gudqs7.plugins.docer.pojo.FieldCommentInfo;
 import cn.gudqs7.plugins.docer.pojo.StructureAndCommentInfo;
@@ -99,7 +100,7 @@ public class JavaToAmpSavior extends AbstractSavior<Map<String, Object>> {
         String method = commentInfo.getMethod("");
         String methodName = publicMethod.getName();
         String interfaceName = commentInfo.getValue(methodName);
-        String rwType = commentInfo.getSingleStr("Rw", "read");
+        String rwType = commentInfo.getSingleStr(MoreCommentTagEnum.AMP_RW.getTag(), "read");
 
         String noHostUrl = url.replace("http://", "");
         if (noHostUrl.contains("/")) {
@@ -226,7 +227,7 @@ public class JavaToAmpSavior extends AbstractSavior<Map<String, Object>> {
 
                 String upperKey = key.substring(0, 1).toUpperCase() + key.substring(1);
                 if (commentInfo != null) {
-                    upperKey = commentInfo.getSingleStr("AmpField", upperKey);
+                    upperKey = commentInfo.getSingleStr(MoreCommentTagEnum.AMP_FIELD.getTag(), upperKey);
                 }
 
                 String afterIgnoreCase = upperKey.toLowerCase();
@@ -331,7 +332,7 @@ public class JavaToAmpSavior extends AbstractSavior<Map<String, Object>> {
                     fieldDesc = fieldDesc.replaceAll(CommentConst.BREAK_LINE, "\n");
                 }
                 if (commentInfo != null) {
-                    upperKey = commentInfo.getSingleStr("AmpField", upperKey);
+                    upperKey = commentInfo.getSingleStr(MoreCommentTagEnum.AMP_FIELD.getTag(), upperKey);
                 }
 
                 Object realVal = complexInfo.getRealVal();

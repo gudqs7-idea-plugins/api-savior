@@ -1,4 +1,4 @@
-package cn.gudqs7.plugins.docer.constant;
+package cn.gudqs7.plugins.docer.enums;
 
 import lombok.Getter;
 
@@ -11,7 +11,7 @@ import java.util.Map;
  * @author wq
  */
 @Getter
-public enum CommentTag {
+public enum CommentTagEnum {
 
     /**
      * 常规注释
@@ -29,29 +29,29 @@ public enum CommentTag {
     private final String tag;
     private final boolean boolType;
 
-    CommentTag(String tag) {
+    CommentTagEnum(String tag) {
         this.tag = tag;
         this.boolType = false;
     }
 
-    CommentTag(String tag, Boolean boolType) {
+    CommentTagEnum(String tag, Boolean boolType) {
         this.tag = tag;
         this.boolType = boolType;
     }
 
-    public static CommentTag of(String tag) {
-        for (CommentTag commentTag : values()) {
-            if (commentTag.getTag().equals(tag)) {
-                return commentTag;
+    public static CommentTagEnum of(String tag) {
+        for (CommentTagEnum commentTagEnum : values()) {
+            if (commentTagEnum.getTag().equals(tag)) {
+                return commentTagEnum;
             }
         }
-        return CommentTag.DEFAULT;
+        return CommentTagEnum.DEFAULT;
     }
 
-    public static Map<String, CommentTag> allTagMap() {
-        Map<String, CommentTag> allTagMap = new HashMap<>(32);
-        for (CommentTag commentTag : values()) {
-            allTagMap.put(commentTag.getTag(), commentTag);
+    public static Map<String, CommentTagEnum> allTagMap() {
+        Map<String, CommentTagEnum> allTagMap = new HashMap<>(32);
+        for (CommentTagEnum commentTagEnum : values()) {
+            allTagMap.put(commentTagEnum.getTag(), commentTagEnum);
         }
         return allTagMap;
     }

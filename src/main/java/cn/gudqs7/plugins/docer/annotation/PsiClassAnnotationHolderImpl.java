@@ -1,7 +1,7 @@
 package cn.gudqs7.plugins.docer.annotation;
 
-import cn.gudqs7.plugins.docer.constant.CommentTag;
-import cn.gudqs7.plugins.docer.constant.MoreCommentTag;
+import cn.gudqs7.plugins.docer.enums.CommentTagEnum;
+import cn.gudqs7.plugins.docer.enums.MoreCommentTagEnum;
 import cn.gudqs7.plugins.docer.pojo.annotation.CommentInfo;
 import cn.gudqs7.plugins.docer.pojo.annotation.CommentInfoTag;
 import com.intellij.psi.PsiAnnotation;
@@ -35,8 +35,8 @@ public class PsiClassAnnotationHolderImpl extends AbstractAnnotationHolder {
         CommentInfoTag commentInfoTag = new CommentInfoTag();
         for (PsiElement child : psiClass.getChildren()) {
             if (child instanceof PsiComment) {
-                Map<String, CommentTag> commentTagMap = CommentTag.allTagMap();
-                Map<String, MoreCommentTag> moreCommentTagMap = MoreCommentTag.allTagMap();
+                Map<String, CommentTagEnum> commentTagMap = CommentTagEnum.allTagMap();
+                Map<String, MoreCommentTagEnum> moreCommentTagMap = MoreCommentTagEnum.allTagMap();
                 PsiComment psiComment = (PsiComment) child;
                 String text = psiComment.getText();
                 if (text.startsWith("/**") && text.endsWith("*/")) {
@@ -61,7 +61,7 @@ public class PsiClassAnnotationHolderImpl extends AbstractAnnotationHolder {
                             }
                             tag = tag.substring(1);
                             if (commentTagMap.containsKey(tag)) {
-                                switch (CommentTag.of(tag)) {
+                                switch (CommentTagEnum.of(tag)) {
                                     case IMPORTANT:
                                         commentInfoTag.setImportant(getBooleanVal(tagVal));
                                         break;
@@ -98,18 +98,18 @@ public class PsiClassAnnotationHolderImpl extends AbstractAnnotationHolder {
     public CommentInfo getCommentInfoByAnnotation() {
         CommentInfo commentInfo = new CommentInfo();
         if (hasAnnotation(QNAME_OF_MODEL)) {
-            commentInfo.setValue(getAnnotationValueByQname(QNAME_OF_MODEL, CommentTag.DEFAULT.getTag()));
+            commentInfo.setValue(getAnnotationValueByQname(QNAME_OF_MODEL, CommentTagEnum.DEFAULT.getTag()));
         }
         if (hasAnnotation(QNAME_OF_API)) {
-            commentInfo.setValue(getAnnotationValueByQname(QNAME_OF_API, CommentTag.DESCRIPTION.getTag()));
-            commentInfo.setNotes(getAnnotationValueByQname(QNAME_OF_API, CommentTag.DESCRIPTION.getTag()));
-            List<String> tagsList = getAnnotationListValueByQname(QNAME_OF_API, CommentTag.TAGS.getTag());
+            commentInfo.setValue(getAnnotationValueByQname(QNAME_OF_API, CommentTagEnum.DESCRIPTION.getTag()));
+            commentInfo.setNotes(getAnnotationValueByQname(QNAME_OF_API, CommentTagEnum.DESCRIPTION.getTag()));
+            List<String> tagsList = getAnnotationListValueByQname(QNAME_OF_API, CommentTagEnum.TAGS.getTag());
             String tags = "";
             if (CollectionUtils.isNotEmpty(tagsList)) {
                 tags = tagsList.get(0);
             }
             commentInfo.setTags(tags);
-            commentInfo.setHidden(getAnnotationValueByQname(QNAME_OF_API, CommentTag.HIDDEN.getTag()));
+            commentInfo.setHidden(getAnnotationValueByQname(QNAME_OF_API, CommentTagEnum.HIDDEN.getTag()));
         }
         return commentInfo;
     }

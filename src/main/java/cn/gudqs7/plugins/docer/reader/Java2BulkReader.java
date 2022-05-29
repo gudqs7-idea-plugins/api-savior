@@ -1,8 +1,8 @@
 package cn.gudqs7.plugins.docer.reader;
 
 import cn.gudqs7.plugins.docer.constant.CommentConst;
-import cn.gudqs7.plugins.docer.constant.FieldType;
 import cn.gudqs7.plugins.docer.constant.MapKeyConstant;
+import cn.gudqs7.plugins.docer.enums.FieldType;
 import cn.gudqs7.plugins.docer.pojo.PostmanKvInfo;
 import cn.gudqs7.plugins.docer.pojo.ReadOnlyMap;
 import cn.gudqs7.plugins.docer.pojo.StructureAndCommentInfo;

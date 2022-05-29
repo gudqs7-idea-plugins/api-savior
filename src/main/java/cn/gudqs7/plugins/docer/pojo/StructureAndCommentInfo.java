@@ -1,6 +1,6 @@
 package cn.gudqs7.plugins.docer.pojo;
 
-import cn.gudqs7.plugins.docer.constant.StructureType;
+import cn.gudqs7.plugins.docer.enums.StructureType;
 import cn.gudqs7.plugins.docer.pojo.annotation.CommentInfo;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;

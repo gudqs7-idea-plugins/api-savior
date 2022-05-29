@@ -2,6 +2,7 @@ package cn.gudqs7.plugins.docer.savior.more;
 
 import cn.gudqs7.plugins.docer.annotation.AnnotationHolder;
 import cn.gudqs7.plugins.docer.constant.CommentConst;
+import cn.gudqs7.plugins.docer.enums.MoreCommentTagEnum;
 import cn.gudqs7.plugins.docer.pojo.ComplexInfo;
 import cn.gudqs7.plugins.docer.pojo.FieldCommentInfo;
 import cn.gudqs7.plugins.docer.pojo.StructureAndCommentInfo;
@@ -84,8 +85,8 @@ public class JavaToOneApiSavior extends AbstractSavior<Void> {
 
         String methodName = publicMethod.getName();
         String interfaceName = commentInfo.getValue(methodName);
-        String actionName = commentInfo.getSingleStr("ActionName", null);
-        String dataSize = commentInfo.getSingleStr("DataSize", "2");
+        String actionName = commentInfo.getSingleStr(MoreCommentTagEnum.AMP_ACTION_NAME.getTag(), null);
+        String dataSize = commentInfo.getSingleStr(MoreCommentTagEnum.AMP_DATA_SIZE.getTag(), "2");
         String projectCode = config.get("oneApi.projectCode");
         String catalogId = config.get("oneApi.catalogId");
         String cookie = config.get("oneApi.cookie");
@@ -153,7 +154,7 @@ public class JavaToOneApiSavior extends AbstractSavior<Void> {
                 }
                 CommentInfo commentInfo = complexInfo.getCommentInfo();
                 if (commentInfo != null) {
-                    String mockjs = commentInfo.getSingleStr("mock-val", "");
+                    String mockjs = commentInfo.getSingleStr(MoreCommentTagEnum.AMP_MOCK_VAL.getTag(), "");
                     if (StringUtils.isNotBlank(mockjs)) {
                         jsonWriter.value(mockjs);
                         return;
@@ -265,8 +266,8 @@ public class JavaToOneApiSavior extends AbstractSavior<Void> {
             FieldCommentInfo fieldCommentInfo = complexInfo.getFieldCommentInfo();
             CommentInfo commentInfo = complexInfo.getCommentInfo();
             if (commentInfo != null) {
-                upperKey = commentInfo.getSingleStr("AmpField", upperKey);
-                upperKey = commentInfo.getSingleStr("mock-key", upperKey);
+                upperKey = commentInfo.getSingleStr(MoreCommentTagEnum.AMP_FIELD.getTag(), upperKey);
+                upperKey = commentInfo.getSingleStr(MoreCommentTagEnum.AMP_MOCK_KEY.getTag(), upperKey);
             }
             map.put(upperKey, value);
         } else if (value instanceof Map) {
@@ -318,7 +319,7 @@ public class JavaToOneApiSavior extends AbstractSavior<Void> {
                     fieldDesc = fieldDesc.replaceAll(CommentConst.BREAK_LINE, "\n");
                 }
                 if (commentInfo != null) {
-                    upperKey = commentInfo.getSingleStr("AmpField", upperKey);
+                    upperKey = commentInfo.getSingleStr(MoreCommentTagEnum.AMP_FIELD.getTag(), upperKey);
                 }
 
                 Object realVal = complexInfo.getRealVal();
@@ -371,7 +372,7 @@ public class JavaToOneApiSavior extends AbstractSavior<Void> {
                 String require = "false";
                 String upperKey = key.substring(0, 1).toUpperCase() + key.substring(1);
                 if (commentInfo != null) {
-                    upperKey = commentInfo.getSingleStr("AmpField", upperKey);
+                    upperKey = commentInfo.getSingleStr(MoreCommentTagEnum.AMP_FIELD.getTag(), upperKey);
                     require = String.valueOf(commentInfo.isRequired(false));
                 }
 

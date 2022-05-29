@@ -1,5 +1,6 @@
 package cn.gudqs7.plugins.docer.pojo;
 
+import cn.gudqs7.plugins.docer.enums.FieldType;
 import lombok.Data;
 
 /**
@@ -37,14 +38,14 @@ public class FieldMemoInfo {
     /**
      * 当前类型code
      *
-     * @see cn.gudqs7.plugins.docer.constant.FieldType
+     * @see FieldType
      */
     private Integer fieldTypeCode;
 
     /**
      * 原始当前类型code
      *
-     * @see cn.gudqs7.plugins.docer.constant.FieldType
+     * @see FieldType
      */
     private Integer originalFieldTypeCode;
 

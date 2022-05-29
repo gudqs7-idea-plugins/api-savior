@@ -1,6 +1,7 @@
 package cn.gudqs7.plugins.docer.action.base;
 
 import cn.gudqs7.plugins.docer.annotation.AnnotationHolder;
+import cn.gudqs7.plugins.docer.enums.MoreCommentTagEnum;
 import cn.gudqs7.plugins.docer.pojo.annotation.CommentInfo;
 import cn.gudqs7.plugins.docer.util.*;
 import cn.gudqs7.plugins.util.PsiUtil;
@@ -321,13 +322,13 @@ public abstract class AbstractBatchDocerSavior extends AnAction implements Updat
             // 从 package-info.java 的注释中获取模块信息
             PsiJavaFile psiJavaFile = PsiUtil.getPsiJavaFileByName(project, packageName, "package-info.java");
             PsiComment packageComment = PsiUtil.getPackageComment(psiJavaFile);
-            String module = PsiUtil.getCommentTagByPsiComment(packageComment, "module");
+            String module = PsiUtil.getCommentTagByPsiComment(packageComment, MoreCommentTagEnum.MODULE.getTag());
             if (module != null) {
                 suffix = module;
             }
         }
         if (commentInfo != null) {
-            suffix = commentInfo.getSingleStr("module", suffix);
+            suffix = commentInfo.getSingleStr(MoreCommentTagEnum.MODULE.getTag(), suffix);
         }
         return FileUtil.getRightFileName(suffix);
     }

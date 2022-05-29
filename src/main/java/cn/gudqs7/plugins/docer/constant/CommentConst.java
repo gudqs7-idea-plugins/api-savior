@@ -7,5 +7,6 @@ package cn.gudqs7.plugins.docer.constant;
 public interface CommentConst {
 
     String BREAK_LINE = "&br;";
+    String SPACE = " ";
 
 }

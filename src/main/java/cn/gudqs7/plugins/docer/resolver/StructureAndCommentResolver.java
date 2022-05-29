@@ -1,9 +1,9 @@
 package cn.gudqs7.plugins.docer.resolver;
 
 import cn.gudqs7.plugins.docer.annotation.AnnotationHolder;
-import cn.gudqs7.plugins.docer.constant.FieldType;
 import cn.gudqs7.plugins.docer.constant.MapKeyConstant;
-import cn.gudqs7.plugins.docer.constant.StructureType;
+import cn.gudqs7.plugins.docer.enums.FieldType;
+import cn.gudqs7.plugins.docer.enums.StructureType;
 import cn.gudqs7.plugins.docer.pojo.StructureAndCommentInfo;
 import cn.gudqs7.plugins.docer.pojo.annotation.CommentInfo;
 import cn.gudqs7.plugins.docer.savior.base.BaseSavior;

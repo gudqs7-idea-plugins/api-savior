@@ -1,7 +1,8 @@
 package cn.gudqs7.plugins.docer.annotation;
 
-import cn.gudqs7.plugins.docer.constant.CommentTag;
-import cn.gudqs7.plugins.docer.constant.MoreCommentTag;
+import cn.gudqs7.plugins.docer.constant.CommentConst;
+import cn.gudqs7.plugins.docer.enums.CommentTagEnum;
+import cn.gudqs7.plugins.docer.enums.MoreCommentTagEnum;
 import cn.gudqs7.plugins.docer.pojo.annotation.CommentInfo;
 import cn.gudqs7.plugins.docer.pojo.annotation.CommentInfoTag;
 import com.intellij.psi.PsiAnnotation;
@@ -37,8 +38,8 @@ public class PsiParameterAnnotationHolderImpl extends AbstractAnnotationHolder {
         if (parent instanceof PsiMethod) {
             for (PsiElement child : parent.getChildren()) {
                 if (child instanceof PsiDocComment) {
-                    Map<String, CommentTag> commentTagMap = CommentTag.allTagMap();
-                    Map<String, MoreCommentTag> moreCommentTagMap = MoreCommentTag.allTagMap();
+                    Map<String, CommentTagEnum> commentTagMap = CommentTagEnum.allTagMap();
+                    Map<String, MoreCommentTagEnum> moreCommentTagMap = MoreCommentTagEnum.allTagMap();
                     PsiDocComment psiComment = (PsiDocComment) child;
                     String text = psiComment.getText();
                     if (text.startsWith("/**") && text.endsWith("*/")) {
@@ -75,13 +76,13 @@ public class PsiParameterAnnotationHolderImpl extends AbstractAnnotationHolder {
                                                 tagVal = tagKeyVal[1];
                                             }
                                         }
-                                        for (String moreTag : MoreCommentTag.allTagList()) {
+                                        for (String moreTag : MoreCommentTagEnum.allTagList()) {
                                             if (moreTag.equals(tagName)) {
                                                 commentInfoTag.appendToTag(moreTag, tagVal);
                                             }
                                         }
                                         if (commentTagMap.containsKey(tagName)) {
-                                            switch (CommentTag.of(tagName)) {
+                                            switch (CommentTagEnum.of(tagName)) {
                                                 case REQUIRED:
                                                     commentInfoTag.setRequired(getBooleanVal(tagVal));
                                                     break;
@@ -103,7 +104,7 @@ public class PsiParameterAnnotationHolderImpl extends AbstractAnnotationHolder {
                                         } else if (moreCommentTagMap.containsKey(tag)) {
                                             commentInfoTag.appendToTag(tag, tagVal);
                                         } else {
-                                            commentInfoTag.appendValue(t);
+                                            commentInfoTag.appendValue(t, CommentConst.SPACE);
                                         }
                                     }
                                 }
@@ -123,10 +124,10 @@ public class PsiParameterAnnotationHolderImpl extends AbstractAnnotationHolder {
         CommentInfo commentInfo = new CommentInfo();
         boolean hasParamAnnotatation = hasAnnotation(QNAME_OF_PARAM);
         if (hasParamAnnotatation) {
-            commentInfo.setHidden(getAnnotationValueByParam(CommentTag.HIDDEN.getTag()));
-            commentInfo.setRequired(getAnnotationValueByParam(CommentTag.REQUIRED.getTag()));
-            commentInfo.setValue(getAnnotationValueByParam(CommentTag.DEFAULT.getTag()));
-            commentInfo.setExample(getAnnotationValueByParam(CommentTag.EXAMPLE.getTag()));
+            commentInfo.setHidden(getAnnotationValueByParam(CommentTagEnum.HIDDEN.getTag()));
+            commentInfo.setRequired(getAnnotationValueByParam(CommentTagEnum.REQUIRED.getTag()));
+            commentInfo.setValue(getAnnotationValueByParam(CommentTagEnum.DEFAULT.getTag()));
+            commentInfo.setExample(getAnnotationValueByParam(CommentTagEnum.EXAMPLE.getTag()));
         }
         dealOtherAnnotation(commentInfo);
         return commentInfo;
@@ -138,10 +139,10 @@ public class PsiParameterAnnotationHolderImpl extends AbstractAnnotationHolder {
         if (hasReqParamAnnotation) {
             String name = getAnnotationValueByReqParam("name");
             if (name == null) {
-                name = getAnnotationValueByReqParam(CommentTag.DEFAULT.getTag());
+                name = getAnnotationValueByReqParam(CommentTagEnum.DEFAULT.getTag());
             }
             commentInfo.setName(name);
-            Boolean required = getAnnotationValueByReqParam(CommentTag.REQUIRED.getTag());
+            Boolean required = getAnnotationValueByReqParam(CommentTagEnum.REQUIRED.getTag());
             if (required == null || required) {
                 commentInfo.setRequired(true);
             }

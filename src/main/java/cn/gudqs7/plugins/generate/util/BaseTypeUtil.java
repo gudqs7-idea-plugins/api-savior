@@ -1,7 +1,7 @@
 package cn.gudqs7.plugins.generate.util;
 
 import cn.gudqs7.plugins.docer.constant.CommentConst;
-import cn.gudqs7.plugins.docer.constant.MoreCommentTag;
+import cn.gudqs7.plugins.docer.enums.MoreCommentTagEnum;
 import cn.gudqs7.plugins.docer.pojo.annotation.CommentInfo;
 import cn.gudqs7.plugins.docer.util.ConfigHolder;
 import com.intellij.psi.PsiClass;
@@ -295,8 +295,8 @@ public class BaseTypeUtil {
 
     private static String randomDate(CommentInfo commentInfo) {
         Date now = new Date();
-        String pattern = commentInfo.getSingleStr(MoreCommentTag.JSON_FORMAT.getTag(), "yyyy-MM-dd'T'HH:mm:ss.SSS+0000");
-        pattern = commentInfo.getSingleStr(MoreCommentTag.DATE_FORMAT.getTag(), pattern);
+        String pattern = commentInfo.getSingleStr(MoreCommentTagEnum.JSON_FORMAT.getTag(), "yyyy-MM-dd'T'HH:mm:ss.SSS+0000");
+        pattern = commentInfo.getSingleStr(MoreCommentTagEnum.DATE_FORMAT.getTag(), pattern);
         now.setTime(System.currentTimeMillis() + RandomUtils.nextLong(0, 86400000));
         if (notUsingRandom()) {
             now.setTime(1338182040520L);
@@ -306,8 +306,8 @@ public class BaseTypeUtil {
 
     private static String randomString(CommentInfo commentInfo) {
         String fieldDesc = commentInfo.getValue("");
-        Boolean random = commentInfo.getSingleBool(MoreCommentTag.EXAMPLE_RANDOM.getTag(), false);
-        Boolean guid = commentInfo.getSingleBool(MoreCommentTag.EXAMPLE_GUID.getTag(), false);
+        Boolean random = commentInfo.getSingleBool(MoreCommentTagEnum.EXAMPLE_RANDOM.getTag(), false);
+        Boolean guid = commentInfo.getSingleBool(MoreCommentTagEnum.EXAMPLE_GUID.getTag(), false);
         if (guid) {
             if (notUsingRandom()) {
                 return "98100F81-C8D8-45F8-9658-F31F5DC693C2";

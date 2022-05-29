@@ -2,7 +2,7 @@ package cn.gudqs7.plugins.docer.pojo.annotation;
 
 import cn.gudqs7.plugins.docer.annotation.AnnotationHolder;
 import cn.gudqs7.plugins.docer.constant.CommentConst;
-import cn.gudqs7.plugins.docer.constant.MoreCommentTag;
+import cn.gudqs7.plugins.docer.enums.MoreCommentTagEnum;
 import cn.gudqs7.plugins.docer.util.BaseTypeParseUtil;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -109,19 +109,19 @@ public class CommentInfo extends RequestMapping {
     }
 
     public List<String> getHiddenRequest() {
-        return getSplitData(MoreCommentTag.HIDDEN_REQUEST.getTag(), ",");
+        return getSplitData(MoreCommentTagEnum.HIDDEN_REQUEST.getTag(), ",");
     }
 
     public List<String> getHiddenResponse() {
-        return getSplitData(MoreCommentTag.HIDDEN_RESPONSE.getTag(), ",");
+        return getSplitData(MoreCommentTagEnum.HIDDEN_RESPONSE.getTag(), ",");
     }
 
     public List<String> getOnlyRequest() {
-        return getSplitData(MoreCommentTag.ONLY_REQUEST.getTag(), ",");
+        return getSplitData(MoreCommentTagEnum.ONLY_REQUEST.getTag(), ",");
     }
 
     public List<String> getOnlyResponse() {
-        return getSplitData(MoreCommentTag.ONLY_RESPONSE.getTag(), ",");
+        return getSplitData(MoreCommentTagEnum.ONLY_RESPONSE.getTag(), ",");
     }
 
     @NotNull
@@ -185,11 +185,15 @@ public class CommentInfo extends RequestMapping {
     }
 
     public void appendValue(String value) {
+        appendValue(value, CommentConst.BREAK_LINE);
+    }
+
+    public void appendValue(String value, String splitText) {
         String oldVal = this.value;
         if (StringUtils.isBlank(oldVal)) {
             this.value = value;
         } else {
-            this.value += CommentConst.BREAK_LINE + value;
+            this.value += splitText + value;
         }
     }
 

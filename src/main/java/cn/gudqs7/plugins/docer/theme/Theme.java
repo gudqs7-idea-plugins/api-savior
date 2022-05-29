@@ -1,7 +1,7 @@
 package cn.gudqs7.plugins.docer.theme;
 
 import cn.gudqs7.plugins.docer.annotation.AnnotationHolder;
-import cn.gudqs7.plugins.docer.constant.ThemeType;
+import cn.gudqs7.plugins.docer.enums.ThemeType;
 import cn.gudqs7.plugins.docer.pojo.StructureAndCommentInfo;
 import cn.gudqs7.plugins.docer.pojo.annotation.CommentInfo;
 import cn.gudqs7.plugins.docer.pojo.annotation.RequestMapping;

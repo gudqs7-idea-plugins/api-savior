@@ -2,6 +2,7 @@ package cn.gudqs7.plugins.docer.savior.base;
 
 import cn.gudqs7.plugins.docer.annotation.AnnotationHolder;
 import cn.gudqs7.plugins.docer.constant.MapKeyConstant;
+import cn.gudqs7.plugins.docer.enums.MoreCommentTagEnum;
 import cn.gudqs7.plugins.docer.pojo.StructureAndCommentInfo;
 import cn.gudqs7.plugins.docer.pojo.annotation.CommentInfo;
 import cn.gudqs7.plugins.docer.reader.Java2ApiReader;
@@ -73,7 +74,7 @@ public abstract class AbstractSavior<T> extends BaseSavior {
         AnnotationHolder psiMethodHolder = AnnotationHolder.getPsiMethodHolder(method);
         CommentInfo propertyForMethod = psiMethodHolder.getCommentInfo();
         if (propertyForMethod != null) {
-            return propertyForMethod.getSingleStr("ActionName", null);
+            return propertyForMethod.getSingleStr(MoreCommentTagEnum.AMP_ACTION_NAME.getTag(), null);
         }
         return null;
     }

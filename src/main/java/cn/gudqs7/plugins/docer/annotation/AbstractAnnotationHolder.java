@@ -1,7 +1,7 @@
 package cn.gudqs7.plugins.docer.annotation;
 
 import cn.gudqs7.plugins.docer.constant.CommentConst;
-import cn.gudqs7.plugins.docer.constant.MoreCommentTag;
+import cn.gudqs7.plugins.docer.enums.MoreCommentTagEnum;
 import cn.gudqs7.plugins.docer.pojo.annotation.CommentInfo;
 import cn.gudqs7.plugins.docer.pojo.annotation.CommentInfoTag;
 import cn.gudqs7.plugins.docer.util.BaseTypeParseUtil;
@@ -169,14 +169,14 @@ public abstract class AbstractAnnotationHolder implements AnnotationHolder {
         if (hasJsonFormatAnnotation) {
             String pattern = getAnnotationValueByQname(QNAME_OF_JSON_FORMAT, "pattern");
             if (StringUtils.isNotBlank(pattern)) {
-                commentInfo.appendToTag(MoreCommentTag.JSON_FORMAT.getTag(), pattern);
+                commentInfo.appendToTag(MoreCommentTagEnum.JSON_FORMAT.getTag(), pattern);
             }
         }
         boolean hasDateFormatAnnotation = hasAnnotation(QNAME_OF_DATE_TIME_FORMAT);
         if (hasDateFormatAnnotation) {
             String pattern = getAnnotationValueByQname(QNAME_OF_DATE_TIME_FORMAT, "pattern");
             if (StringUtils.isNotBlank(pattern)) {
-                commentInfo.appendToTag(MoreCommentTag.DATE_FORMAT.getTag(), pattern);
+                commentInfo.appendToTag(MoreCommentTagEnum.DATE_FORMAT.getTag(), pattern);
             }
         }
     }

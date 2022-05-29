@@ -1,8 +1,8 @@
 package cn.gudqs7.plugins.docer.annotation;
 
 import cn.gudqs7.plugins.docer.constant.CommentConst;
-import cn.gudqs7.plugins.docer.constant.CommentTag;
-import cn.gudqs7.plugins.docer.constant.MoreCommentTag;
+import cn.gudqs7.plugins.docer.enums.CommentTagEnum;
+import cn.gudqs7.plugins.docer.enums.MoreCommentTagEnum;
 import cn.gudqs7.plugins.docer.pojo.annotation.CommentInfo;
 import cn.gudqs7.plugins.docer.pojo.annotation.CommentInfoTag;
 import com.intellij.psi.PsiAnnotation;
@@ -34,8 +34,8 @@ public class PsiFieldAnnotationHolderImpl extends AbstractAnnotationHolder {
         CommentInfoTag commentInfoTag = new CommentInfoTag();
         for (PsiElement child : psiField.getChildren()) {
             if (child instanceof PsiComment) {
-                Map<String, CommentTag> commentTagMap = CommentTag.allTagMap();
-                Map<String, MoreCommentTag> moreCommentTagMap = MoreCommentTag.allTagMap();
+                Map<String, CommentTagEnum> commentTagMap = CommentTagEnum.allTagMap();
+                Map<String, MoreCommentTagEnum> moreCommentTagMap = MoreCommentTagEnum.allTagMap();
                 PsiComment psiComment = (PsiComment) child;
                 String text = psiComment.getText();
                 if (text.startsWith("/**") && text.endsWith("*/")) {
@@ -60,7 +60,7 @@ public class PsiFieldAnnotationHolderImpl extends AbstractAnnotationHolder {
                             }
                             tag = tag.substring(1);
                             if (commentTagMap.containsKey(tag)) {
-                                switch (CommentTag.of(tag)) {
+                                switch (CommentTagEnum.of(tag)) {
                                     case REQUIRED:
                                         commentInfoTag.setRequired(getBooleanVal(tagVal));
                                         break;
@@ -99,10 +99,10 @@ public class PsiFieldAnnotationHolderImpl extends AbstractAnnotationHolder {
         CommentInfo commentInfo = new CommentInfo();
         boolean hasAnnotatation = hasAnnotation(QNAME_OF_PROPERTY);
         if (hasAnnotatation) {
-            commentInfo.setHidden(getAnnotationValueByProperty(CommentTag.HIDDEN.getTag()));
-            commentInfo.setRequired(getAnnotationValueByProperty(CommentTag.REQUIRED.getTag()));
-            String value = getAnnotationValueByProperty(CommentTag.DEFAULT.getTag());
-            String notes = getAnnotationValueByProperty(CommentTag.NOTES.getTag());
+            commentInfo.setHidden(getAnnotationValueByProperty(CommentTagEnum.HIDDEN.getTag()));
+            commentInfo.setRequired(getAnnotationValueByProperty(CommentTagEnum.REQUIRED.getTag()));
+            String value = getAnnotationValueByProperty(CommentTagEnum.DEFAULT.getTag());
+            String notes = getAnnotationValueByProperty(CommentTagEnum.NOTES.getTag());
             if (StringUtils.isNotBlank(value)) {
                 value = value.replaceAll("\\n", CommentConst.BREAK_LINE);
             }
@@ -111,7 +111,7 @@ public class PsiFieldAnnotationHolderImpl extends AbstractAnnotationHolder {
             }
             commentInfo.setValue(value);
             commentInfo.setNotes(notes);
-            commentInfo.setExample(getAnnotationValueByProperty(CommentTag.EXAMPLE.getTag()));
+            commentInfo.setExample(getAnnotationValueByProperty(CommentTagEnum.EXAMPLE.getTag()));
         }
         dealOtherAnnotation(commentInfo);
         return commentInfo;

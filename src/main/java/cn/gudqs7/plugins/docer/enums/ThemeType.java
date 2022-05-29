@@ -1,4 +1,4 @@
-package cn.gudqs7.plugins.docer.constant;
+package cn.gudqs7.plugins.docer.enums;
 
 /**
  * @author wenquan

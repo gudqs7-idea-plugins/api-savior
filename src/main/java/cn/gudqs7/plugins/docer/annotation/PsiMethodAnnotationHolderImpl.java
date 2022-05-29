@@ -1,8 +1,8 @@
 package cn.gudqs7.plugins.docer.annotation;
 
 import cn.gudqs7.plugins.docer.constant.CommentConst;
-import cn.gudqs7.plugins.docer.constant.CommentTag;
-import cn.gudqs7.plugins.docer.constant.MoreCommentTag;
+import cn.gudqs7.plugins.docer.enums.CommentTagEnum;
+import cn.gudqs7.plugins.docer.enums.MoreCommentTagEnum;
 import cn.gudqs7.plugins.docer.pojo.annotation.CommentInfo;
 import cn.gudqs7.plugins.docer.pojo.annotation.CommentInfoTag;
 import cn.gudqs7.plugins.docer.pojo.annotation.RequestMapping;
@@ -42,8 +42,8 @@ public class PsiMethodAnnotationHolderImpl extends AbstractAnnotationHolder {
         CommentInfoTag commentInfoTag = new CommentInfoTag();
         for (PsiElement child : psiMethod.getChildren()) {
             if (child instanceof PsiComment) {
-                Map<String, CommentTag> commentTagMap = CommentTag.allTagMap();
-                Map<String, MoreCommentTag> moreCommentTagMap = MoreCommentTag.allTagMap();
+                Map<String, CommentTagEnum> commentTagMap = CommentTagEnum.allTagMap();
+                Map<String, MoreCommentTagEnum> moreCommentTagMap = MoreCommentTagEnum.allTagMap();
                 PsiComment psiComment = (PsiComment) child;
                 String text = psiComment.getText();
                 if (text.startsWith("/**") && text.endsWith("*/")) {
@@ -84,7 +84,7 @@ public class PsiMethodAnnotationHolderImpl extends AbstractAnnotationHolder {
                             }
                             tag = tag.substring(1);
                             if (commentTagMap.containsKey(tag)) {
-                                switch (CommentTag.of(tag)) {
+                                switch (CommentTagEnum.of(tag)) {
                                     case HIDDEN:
                                         commentInfoTag.setHidden(getBooleanVal(tagVal));
                                         break;
@@ -117,9 +117,9 @@ public class PsiMethodAnnotationHolderImpl extends AbstractAnnotationHolder {
         CommentInfo commentInfo = new CommentInfo();
         boolean hasOperationAnnotation = hasAnnotation(QNAME_OF_OPERATION);
         if (hasOperationAnnotation) {
-            commentInfo.setHidden(getAnnotationValueByApiOperation(CommentTag.HIDDEN.getTag()));
-            String value = getAnnotationValueByApiOperation(CommentTag.DEFAULT.getTag());
-            String notes = getAnnotationValueByApiOperation(CommentTag.NOTES.getTag());
+            commentInfo.setHidden(getAnnotationValueByApiOperation(CommentTagEnum.HIDDEN.getTag()));
+            String value = getAnnotationValueByApiOperation(CommentTagEnum.DEFAULT.getTag());
+            String notes = getAnnotationValueByApiOperation(CommentTagEnum.NOTES.getTag());
             if (StringUtils.isNotBlank(value)) {
                 value = value.replaceAll("\\n", CommentConst.BREAK_LINE);
             }
@@ -133,9 +133,9 @@ public class PsiMethodAnnotationHolderImpl extends AbstractAnnotationHolder {
         // 优先级是有 ignoreParameters 则跳过 includeParameters 字段
         if (hasAnnotation(QNAME_OF_OPERATION_SUPPORT)) {
             List<String> includeParameters = getAnnotationValueByQname(QNAME_OF_OPERATION_SUPPORT, "includeParameters");
-            addRequestTagInfo(commentInfo, includeParameters, MoreCommentTag.ONLY_REQUEST.getTag());
+            addRequestTagInfo(commentInfo, includeParameters, MoreCommentTagEnum.ONLY_REQUEST.getTag());
             List<String> ignoreParameters = getAnnotationValueByQname(QNAME_OF_OPERATION_SUPPORT, "ignoreParameters");
-            addRequestTagInfo(commentInfo, ignoreParameters, MoreCommentTag.HIDDEN_REQUEST.getTag());
+            addRequestTagInfo(commentInfo, ignoreParameters, MoreCommentTagEnum.HIDDEN_REQUEST.getTag());
         }
         if (hasAnnotation(QNAME_OF_RESPONSES)) {
             // 存在多个 code

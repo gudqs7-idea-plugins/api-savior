@@ -1,7 +1,7 @@
 package cn.gudqs7.plugins.docer.reader.base;
 
-import cn.gudqs7.plugins.docer.constant.FieldType;
-import cn.gudqs7.plugins.docer.constant.StructureType;
+import cn.gudqs7.plugins.docer.enums.FieldType;
+import cn.gudqs7.plugins.docer.enums.StructureType;
 import cn.gudqs7.plugins.docer.pojo.ReadOnlyMap;
 import cn.gudqs7.plugins.docer.pojo.StructureAndCommentInfo;
 import cn.gudqs7.plugins.docer.pojo.annotation.CommentInfo;
