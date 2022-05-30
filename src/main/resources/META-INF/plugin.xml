@@ -1,7 +1,7 @@
 <idea-plugin>
     <id>gudqs7.github.io.doc-savior</id>
     <name>Docer Savior</name>
-    <vendor email="gudqs7@gmail.com" url="https://www.yuque.com/gudqs7/docer/ygtgmz">Docer Savior</vendor>
+    <vendor email="gudqs7@gmail.com" url="https://github.com/gudqs7">gudqs7</vendor>
 
     <description><![CDATA[ Description will be added by gradle build]]></description>
 
