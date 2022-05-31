@@ -1,9 +1,8 @@
 package cn.gudqs7.plugins.docer.util;
 
+import org.apache.commons.codec.net.URLCodec;
 import org.apache.commons.collections.CollectionUtils;
 
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
 import java.util.Base64;
 import java.util.HashMap;
@@ -24,34 +23,43 @@ public class GithubApiUtil {
     private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#");
 
     public static String searchIssue(String body) {
-        Map<String, String> headers = null;
-        String q = "repo:" + GITHUB_REPOSITORY + " is:issue in:body " + body;
-        String query = "q=" + URLEncoder.encode(q, StandardCharsets.UTF_8) + "&page=1&per_page=1";
-        String result = HttpUtil.sendHttpWithBody(API_BASE_URL + "/search/issues?" + query, "GET", null, headers);
-        System.out.println("searchIssue res :: " + result);
-        Map map = JsonUtil.fromJson(result, Map.class);
-        List<Map<String, Object>> items = (List<Map<String, Object>>) map.get("items");
-        if (CollectionUtils.isNotEmpty(items)) {
-            Map<String, Object> item0 = items.get(0);
-            Object number = item0.get("number");
-            if (number != null) {
-                return DECIMAL_FORMAT.format(number);
+        try {
+            Map<String, String> headers = null;
+            String q = "repo:" + GITHUB_REPOSITORY + " is:issue in:body " + body;
+            URLCodec urlCodec = new URLCodec("UTF-8");
+            String query = "q=" + urlCodec.encode(q) + "&page=1&per_page=1";
+            String result = HttpUtil.sendHttpWithBody(API_BASE_URL + "/search/issues?" + query, "GET", null, headers);
+            System.out.println("searchIssue res :: " + result);
+            Map map = JsonUtil.fromJson(result, Map.class);
+            List<Map<String, Object>> items = (List<Map<String, Object>>) map.get("items");
+            if (CollectionUtils.isNotEmpty(items)) {
+                Map<String, Object> item0 = items.get(0);
+                Object number = item0.get("number");
+                if (number != null) {
+                    return DECIMAL_FORMAT.format(number);
+                }
             }
+        } catch (Exception e) {
+            ActionUtil.handleException(e);
         }
         return null;
     }
 
     public static String newIssue(String title, String body) {
-        Map<String, String> headers = getAuthHeader();
-        Map<String, Object> json = new HashMap<>(4);
-        json.put("title", title);
-        json.put("body", body);
-        String result = HttpUtil.sendHttpWithBody(API_BASE_URL + "/repos/" + GITHUB_REPOSITORY + "/issues", "POST", JsonUtil.toJson(json), headers);
-        System.out.println("newIssue res :: " + result);
-        Map map = JsonUtil.fromJson(result, Map.class);
-        Object number = map.get("number");
-        if (number != null) {
-            return DECIMAL_FORMAT.format(number);
+        try {
+            Map<String, String> headers = getAuthHeader();
+            Map<String, Object> json = new HashMap<>(4);
+            json.put("title", title);
+            json.put("body", body);
+            String result = HttpUtil.sendHttpWithBody(API_BASE_URL + "/repos/" + GITHUB_REPOSITORY + "/issues", "POST", JsonUtil.toJson(json), headers);
+            System.out.println("newIssue res :: " + result);
+            Map map = JsonUtil.fromJson(result, Map.class);
+            Object number = map.get("number");
+            if (number != null) {
+                return DECIMAL_FORMAT.format(number);
+            }
+        } catch (Exception e) {
+            ActionUtil.handleException(e);
         }
         return null;
     }
