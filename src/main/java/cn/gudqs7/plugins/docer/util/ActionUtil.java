@@ -4,6 +4,7 @@ import com.intellij.notification.*;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.psi.*;
+import lombok.Lombok;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -141,10 +142,9 @@ public class ActionUtil {
     public static void handleException(Throwable e1) {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream(40960);
         e1.printStackTrace(new PrintStream(byteArrayOutputStream));
-        //noinspection StringOperationCanBeSimplified
-        String stackTrace = new String(byteArrayOutputStream.toByteArray());
-        ActionUtil.showNotification("插件运行失败, 可通过 IDEA 右下角感叹号, 点击 Report To Gudqs7 一键上报到 GitHub; 错误信息如下: " + stackTrace, NotificationDisplayType.BALLOON, NotificationType.ERROR);
-        throw new RuntimeException(e1.getMessage(), e1.getCause());
+        String stackTrace = byteArrayOutputStream.toString();
+        ActionUtil.showNotification("插件运行失败, 可通过 IDEA 右下角感叹号, 点击 Report To Gudqs7(或 Report And Clear All) 一键上报到 GitHub; 错误信息如下: " + stackTrace, NotificationDisplayType.BALLOON, NotificationType.ERROR);
+        throw Lombok.sneakyThrow(e1);
     }
 
 }

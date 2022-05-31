@@ -110,7 +110,7 @@ public abstract class AbstractAnnotationHolder implements AnnotationHolder {
         String notes = commentInfo.getNotes("");
         String example = commentInfo.getExample("");
         if (StringUtils.isNotBlank(example)) {
-            notes += "默认值为 " + example + CommentConst.BREAK_LINE;
+            notes += "示例值为 " + example + CommentConst.BREAK_LINE;
         }
         boolean hasLengthAnnotation = hasAnnotation(QNAME_OF_VALID_LENGTH);
         if (hasLengthAnnotation) {
@@ -123,11 +123,11 @@ public abstract class AbstractAnnotationHolder implements AnnotationHolder {
                 notes += "最大长度为 " + max + CommentConst.BREAK_LINE;
             }
         }
-        Long min = null;
-        Long max = null;
+        Number min = null;
+        Number max = null;
         if (hasAnnotation(QNAME_OF_VALID_RANGE)) {
             min = getAnnotationValueByQname(QNAME_OF_VALID_RANGE, "min");
-            max = getAnnotationValueByQname(QNAME_OF_VALID_RANGE, "min");
+            max = getAnnotationValueByQname(QNAME_OF_VALID_RANGE, "max");
         }
         if (hasAnnotation(QNAME_OF_VALID_MIN)) {
             min = getAnnotationValueByQname(QNAME_OF_VALID_MIN, "value");
