@@ -108,6 +108,9 @@ public abstract class AbstractAnnotationHolder implements AnnotationHolder {
      */
     protected void addInfoToNotes(CommentInfo commentInfo) {
         String notes = commentInfo.getNotes("");
+        if (StringUtils.isNotBlank(notes)) {
+            notes += CommentConst.BREAK_LINE;
+        }
         String example = commentInfo.getExample("");
         if (StringUtils.isNotBlank(example)) {
             notes += "示例值为 " + example + CommentConst.BREAK_LINE;
