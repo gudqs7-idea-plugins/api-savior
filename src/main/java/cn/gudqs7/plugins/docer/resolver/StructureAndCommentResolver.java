@@ -13,9 +13,13 @@ import cn.gudqs7.plugins.generate.util.BaseTypeUtil;
 import cn.gudqs7.plugins.util.PsiClassUtil;
 import cn.gudqs7.plugins.util.PsiUtil;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.openapi.vfs.VirtualFileManager;
 import com.intellij.psi.*;
+import com.intellij.psi.impl.compiled.ClsClassImpl;
 import com.intellij.psi.impl.source.PsiClassReferenceType;
 import org.apache.commons.collections.CollectionUtils;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Objects;
@@ -146,6 +150,8 @@ public class StructureAndCommentResolver extends BaseSavior implements IStructur
         if (psiClass == null) {
             PsiUtil.handleSyntaxError(psiClassReferenceType.getCanonicalText());
         }
+        //兼容第三方jar包
+        psiClass = replacePsiClassIfFromJar(psiClass);
         String qualifiedName = psiClass.getQualifiedName();
         PsiUtil.resolvePsiClassParameter(psiClassReferenceType);
         if (qualifiedName != null) {
@@ -201,6 +207,37 @@ public class StructureAndCommentResolver extends BaseSavior implements IStructur
             psiClassCache.put(qualifiedName, root);
         }
         return root;
+    }
+
+    @NotNull
+    private PsiClass replacePsiClassIfFromJar(@NotNull PsiClass psiClass) {
+        if (psiClass instanceof ClsClassImpl) {
+            PsiFile containingFile = psiClass.getContainingFile();
+            if (containingFile != null) {
+                VirtualFile virtualFile = containingFile.getVirtualFile();
+                String sourcePath = virtualFile.toString().replace(".jar!", "-sources.jar!");
+                // replace .class  to  .java
+                sourcePath = sourcePath.substring(0, sourcePath.length() - 5) + "java";
+                VirtualFile sourceFile = VirtualFileManager.getInstance().findFileByUrl(sourcePath);
+                if (sourceFile != null) {
+                    PsiFile psiFile = PsiManager.getInstance(project).findFile(sourceFile);
+                    if (psiFile instanceof PsiJavaFile) {
+                        PsiJavaFile psiJavaFile = (PsiJavaFile) psiFile;
+                        PsiClass[] psiClasses = psiJavaFile.getClasses();
+                        for (PsiClass psiClass0 : psiClasses) {
+                            if (Objects.equals(psiClass0.getQualifiedName(), psiClass.getQualifiedName())) {
+                                return psiClass0;
+                            }
+                        }
+                    }
+                } else {
+                    System.err.println("findFileByUrl - not found :: " + sourcePath);
+                }
+            } else {
+                System.err.println("containingFile is null :: " + psiClass.getQualifiedName());
+            }
+        }
+        return psiClass;
     }
 
     private StructureAndCommentInfo resolveByPsiType(StructureAndCommentInfo parent, String fieldName, PsiType psiFieldType, CommentInfo commentInfo, PsiClassReferenceType parentPsiClassReferenceType, String fieldPrefix, int level) {
