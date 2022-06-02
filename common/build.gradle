@@ -1,16 +1,15 @@
 plugins {
     id 'java'
-    id 'org.jetbrains.intellij' version '0.7.3'
 }
 
 group 'cn.gudqs7.idea.plugins'
-version '2.1.1'
+version '1.0.0'
 
 repositories {
     mavenCentral()
 }
+
 dependencies {
-    compile project(':common')
     compile group: 'org.yaml', name: 'snakeyaml', version: '1.25'
     implementation 'org.apache.commons:commons-lang3:3.12.0'
     implementation 'commons-codec:commons-codec:1.15'
@@ -22,30 +21,4 @@ dependencies {
     implementation 'org.freemarker:freemarker:2.3.31'
     annotationProcessor 'org.projectlombok:lombok:1.18.2'
     compileOnly 'org.projectlombok:lombok:1.18.2'
-}
-
-// See https://github.com/JetBrains/gradle-intellij-plugin/
-intellij {
-//    version '2021.3.3'
-    version '2021.1.1'
-    updateSinceUntilBuild false
-    plugins = ['java', 'org.nik.presentation-assistant:1.0.8']
-}
-
-// study from https://github.com/liuzhihang/doc-view/blob/master/build.gradle
-patchPluginXml {
-    pluginDescription = file(descriptionFile).text
-    changeNotes = file(changesFile).text
-}
-test {
-    useJUnitPlatform()
-}
-
-publishPlugin {
-    channels = ''
-    token = System.getenv("JET_PUB_TOKEN")
-}
-
-tasks.withType(JavaCompile) {
-    options.encoding = "UTF-8"
 }

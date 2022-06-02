@@ -227,9 +227,12 @@ public class PsiMethodAnnotationHolderImpl extends AbstractAnnotationHolder {
             String controllerUrl = "/";
             PsiAnnotation psiAnnotation = psiMethod.getContainingClass().getAnnotation(QNAME_OF_MAPPING);
             if (psiAnnotation != null) {
-                controllerUrl = PsiAnnotationUtil.getAnnotationValue(psiAnnotation, "value", controllerUrl);
-                if (controllerUrl == null) {
-                    controllerUrl = PsiAnnotationUtil.getAnnotationValue(psiAnnotation, "path", controllerUrl);
+                List<String> pathList = PsiAnnotationUtil.getAnnotationListValue(psiAnnotation, "value", null);
+                if (pathList == null) {
+                    pathList = PsiAnnotationUtil.getAnnotationListValue(psiAnnotation, "path", null);
+                }
+                if (CollectionUtils.isNotEmpty(pathList)) {
+                    controllerUrl = pathList.get(0);
                 }
                 if (controllerUrl.startsWith("/")) {
                     controllerUrl = controllerUrl.substring(1);

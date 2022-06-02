@@ -1,2 +1,3 @@
 rootProject.name = 'docer-savior-idea-plugin'
+include 'common'
 
