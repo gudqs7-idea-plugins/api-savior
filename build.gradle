@@ -10,7 +10,6 @@ repositories {
     mavenCentral()
 }
 dependencies {
-    compile project(':common')
     compile group: 'org.yaml', name: 'snakeyaml', version: '1.25'
     implementation 'org.apache.commons:commons-lang3:3.12.0'
     implementation 'commons-codec:commons-codec:1.15'
