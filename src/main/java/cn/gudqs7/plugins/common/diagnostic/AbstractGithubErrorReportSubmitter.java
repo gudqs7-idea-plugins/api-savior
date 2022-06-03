@@ -1,5 +1,6 @@
 package cn.gudqs7.plugins.common.diagnostic;
 
+import cn.gudqs7.plugins.common.consts.CommonConst;
 import cn.gudqs7.plugins.common.util.JsonUtil;
 import cn.gudqs7.plugins.common.util.api.HttpUtil;
 import cn.gudqs7.plugins.common.util.jetbrain.ExceptionUtil;
@@ -75,7 +76,7 @@ public abstract class AbstractGithubErrorReportSubmitter extends AbstractErrorRe
         try {
             Map<String, String> headers = null;
             String q = "repo:" + getGithubRepo() + " is:issue in:body " + throwableMd5;
-            URLCodec urlCodec = new URLCodec("UTF-8");
+            URLCodec urlCodec = new URLCodec(CommonConst.UTF8);
             String query = "q=" + urlCodec.encode(q) + "&page=1&per_page=1";
             String result = HttpUtil.sendHttpWithBody(API_BASE_URL + "/search/issues?" + query, "GET", null, headers);
             System.out.println("searchIssue res :: " + result);

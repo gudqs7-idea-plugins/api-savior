@@ -1,6 +1,6 @@
 package cn.gudqs7.plugins.common.resolver.comment;
 
-import cn.gudqs7.plugins.common.consts.CommentConst;
+import cn.gudqs7.plugins.common.consts.CommonConst;
 import cn.gudqs7.plugins.common.enums.CommentTagEnum;
 import cn.gudqs7.plugins.common.enums.MoreCommentTagEnum;
 import cn.gudqs7.plugins.common.pojo.resolver.CommentInfo;
@@ -86,10 +86,10 @@ public class PsiFieldAnnotationHolderImpl extends AbstractFieldAnnotationHolder 
             String value = getAnnotationValueByProperty(CommentTagEnum.DEFAULT.getTag());
             String notes = getAnnotationValueByProperty(CommentTagEnum.NOTES.getTag());
             if (StringUtils.isNotBlank(value)) {
-                value = value.replaceAll("\\n", CommentConst.BREAK_LINE);
+                value = value.replaceAll("\\n", CommonConst.BREAK_LINE);
             }
             if (StringUtils.isNotBlank(notes)) {
-                notes = notes.replaceAll("\\n", CommentConst.BREAK_LINE);
+                notes = notes.replaceAll("\\n", CommonConst.BREAK_LINE);
             }
             commentInfo.setValue(value);
             commentInfo.setNotes(notes);

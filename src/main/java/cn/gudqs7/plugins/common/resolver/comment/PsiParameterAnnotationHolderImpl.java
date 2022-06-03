@@ -1,6 +1,6 @@
 package cn.gudqs7.plugins.common.resolver.comment;
 
-import cn.gudqs7.plugins.common.consts.CommentConst;
+import cn.gudqs7.plugins.common.consts.CommonConst;
 import cn.gudqs7.plugins.common.enums.CommentTagEnum;
 import cn.gudqs7.plugins.common.enums.MoreCommentTagEnum;
 import cn.gudqs7.plugins.common.pojo.resolver.CommentInfo;
@@ -81,7 +81,7 @@ public class PsiParameterAnnotationHolderImpl extends AbstractFieldAnnotationHol
                                         } else if (moreCommentTagMap.containsKey(tagName)) {
                                             commentInfoTag.appendToTag(tagName, tagVal);
                                         } else {
-                                            commentInfoTag.appendValue(t, CommentConst.SPACE);
+                                            commentInfoTag.appendValue(t, CommonConst.SPACE);
                                         }
                                     }
                                 }

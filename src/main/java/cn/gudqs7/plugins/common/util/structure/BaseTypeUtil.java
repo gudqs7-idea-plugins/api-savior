@@ -1,6 +1,6 @@
 package cn.gudqs7.plugins.common.util.structure;
 
-import cn.gudqs7.plugins.common.consts.CommentConst;
+import cn.gudqs7.plugins.common.consts.CommonConst;
 import cn.gudqs7.plugins.common.enums.MoreCommentTagEnum;
 import cn.gudqs7.plugins.common.pojo.resolver.CommentInfo;
 import cn.gudqs7.plugins.common.util.ConfigHolder;
@@ -326,8 +326,8 @@ public class BaseTypeUtil {
             }
             return stringBuilder.toString();
         } else {
-            if (fieldDesc.contains(CommentConst.BREAK_LINE)) {
-                fieldDesc = fieldDesc.substring(0, fieldDesc.indexOf(CommentConst.BREAK_LINE));
+            if (fieldDesc.contains(CommonConst.BREAK_LINE)) {
+                fieldDesc = fieldDesc.substring(0, fieldDesc.indexOf(CommonConst.BREAK_LINE));
             }
             if (notUsingRandom()) {
                 return fieldDesc;

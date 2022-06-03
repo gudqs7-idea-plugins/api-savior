@@ -1,6 +1,6 @@
 package cn.gudqs7.plugins.common.resolver.comment;
 
-import cn.gudqs7.plugins.common.consts.CommentConst;
+import cn.gudqs7.plugins.common.consts.CommonConst;
 import cn.gudqs7.plugins.common.enums.MoreCommentTagEnum;
 import cn.gudqs7.plugins.common.pojo.resolver.CommentInfo;
 import cn.gudqs7.plugins.common.pojo.resolver.CommentInfoTag;
@@ -109,21 +109,21 @@ public abstract class AbstractAnnotationHolder implements AnnotationHolder {
     protected void addInfoToNotes(CommentInfo commentInfo) {
         String notes = commentInfo.getNotes("");
         if (StringUtils.isNotBlank(notes)) {
-            notes += CommentConst.BREAK_LINE;
+            notes += CommonConst.BREAK_LINE;
         }
         String example = commentInfo.getExample("");
         if (StringUtils.isNotBlank(example)) {
-            notes += "示例值为 " + example + CommentConst.BREAK_LINE;
+            notes += "示例值为 " + example + CommonConst.BREAK_LINE;
         }
         boolean hasLengthAnnotation = hasAnnotation(QNAME_OF_VALID_LENGTH);
         if (hasLengthAnnotation) {
             Integer min = getAnnotationValueByQname(QNAME_OF_VALID_LENGTH, "min");
             Integer max = getAnnotationValueByQname(QNAME_OF_VALID_LENGTH, "max");
             if (min != null) {
-                notes += "最小长度为 " + min + CommentConst.BREAK_LINE;
+                notes += "最小长度为 " + min + CommonConst.BREAK_LINE;
             }
             if (max != null) {
-                notes += "最大长度为 " + max + CommentConst.BREAK_LINE;
+                notes += "最大长度为 " + max + CommonConst.BREAK_LINE;
             }
         }
         Number min = null;
@@ -139,13 +139,13 @@ public abstract class AbstractAnnotationHolder implements AnnotationHolder {
             max = getAnnotationValueByQname(QNAME_OF_VALID_MAX, "value");
         }
         if (min != null) {
-            notes += "最小值为 " + min + CommentConst.BREAK_LINE;
+            notes += "最小值为 " + min + CommonConst.BREAK_LINE;
         }
         if (max != null) {
-            notes += "最大值为 " + max + CommentConst.BREAK_LINE;
+            notes += "最大值为 " + max + CommonConst.BREAK_LINE;
         }
-        if (notes.endsWith(CommentConst.BREAK_LINE)) {
-            notes = notes.substring(0, notes.length() - CommentConst.BREAK_LINE.length());
+        if (notes.endsWith(CommonConst.BREAK_LINE)) {
+            notes = notes.substring(0, notes.length() - CommonConst.BREAK_LINE.length());
         }
         commentInfo.setNotes(notes);
     }

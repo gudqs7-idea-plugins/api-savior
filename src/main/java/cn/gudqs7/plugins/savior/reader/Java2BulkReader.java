@@ -1,6 +1,6 @@
 package cn.gudqs7.plugins.savior.reader;
 
-import cn.gudqs7.plugins.common.consts.CommentConst;
+import cn.gudqs7.plugins.common.consts.CommonConst;
 import cn.gudqs7.plugins.common.consts.MapKeyConstant;
 import cn.gudqs7.plugins.common.enums.FieldType;
 import cn.gudqs7.plugins.common.pojo.ReadOnlyMap;
@@ -89,7 +89,7 @@ public class Java2BulkReader extends AbstractJsonReader<List<PostmanKvInfo>> {
                 boolean required = false;
                 if (commentInfo != null) {
                     desc = commentInfo.getValue(desc);
-                    desc = desc.replaceAll(CommentConst.BREAK_LINE, "\n");
+                    desc = desc.replaceAll(CommonConst.BREAK_LINE, "\n");
                     Object exampleVal = getBaseExampleVal(structureAndCommentInfo);
                     if (exampleVal != null) {
                         example = String.valueOf(exampleVal);

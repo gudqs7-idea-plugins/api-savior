@@ -1,5 +1,6 @@
 package cn.gudqs7.plugins.common.util;
 
+import cn.gudqs7.plugins.common.consts.CommonConst;
 import cn.gudqs7.plugins.common.util.jetbrain.ExceptionUtil;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
@@ -23,7 +24,7 @@ public class FreeMarkerUtil {
         try {
             Configuration cfg = new Configuration(Configuration.VERSION_2_3_22);
             cfg.setClassLoaderForTemplateLoading(FreeMarkerUtil.class.getClassLoader(), TEMPLATE_PATH);
-            cfg.setDefaultEncoding("UTF-8");
+            cfg.setDefaultEncoding(CommonConst.UTF8);
             cfg.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
 
             Template temp = cfg.getTemplate(templateName);

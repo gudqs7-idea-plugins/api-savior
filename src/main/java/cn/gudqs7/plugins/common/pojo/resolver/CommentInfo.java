@@ -1,6 +1,6 @@
 package cn.gudqs7.plugins.common.pojo.resolver;
 
-import cn.gudqs7.plugins.common.consts.CommentConst;
+import cn.gudqs7.plugins.common.consts.CommonConst;
 import cn.gudqs7.plugins.common.enums.MoreCommentTagEnum;
 import cn.gudqs7.plugins.common.resolver.comment.AnnotationHolder;
 import cn.gudqs7.plugins.common.util.structure.BaseTypeParseUtil;
@@ -185,7 +185,7 @@ public class CommentInfo extends RequestMapping {
     }
 
     public void appendValue(String value) {
-        appendValue(value, CommentConst.BREAK_LINE);
+        appendValue(value, CommonConst.BREAK_LINE);
     }
 
     public void appendValue(String value, String splitText) {
@@ -202,7 +202,7 @@ public class CommentInfo extends RequestMapping {
         if (StringUtils.isBlank(oldVal)) {
             this.notes = notes;
         } else {
-            this.notes += CommentConst.BREAK_LINE + notes;
+            this.notes += CommonConst.BREAK_LINE + notes;
         }
     }
 

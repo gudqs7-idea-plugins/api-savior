@@ -5,6 +5,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.nio.charset.StandardCharsets;
 
 /**
  * @author wq
@@ -42,7 +43,8 @@ public class FileUtil {
             }
 
             FileOutputStream fileOutputStream = new FileOutputStream(file);
-            fileOutputStream.write(content.getBytes());
+            // 此处编码应与 FreeMarker 设置的编码以及文件编码统一, 因此需要指定, 与默认编码无关
+            fileOutputStream.write(content.getBytes(StandardCharsets.UTF_8));
             fileOutputStream.flush();
             fileOutputStream.close();
         } catch (Exception e) {

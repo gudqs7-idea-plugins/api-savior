@@ -1,6 +1,6 @@
 package cn.gudqs7.plugins.savior.savior.more;
 
-import cn.gudqs7.plugins.common.consts.CommentConst;
+import cn.gudqs7.plugins.common.consts.CommonConst;
 import cn.gudqs7.plugins.common.enums.MoreCommentTagEnum;
 import cn.gudqs7.plugins.common.pojo.resolver.CommentInfo;
 import cn.gudqs7.plugins.common.pojo.resolver.StructureAndCommentInfo;
@@ -222,7 +222,7 @@ public class JavaToAmpSavior extends AbstractSavior<Map<String, Object>> {
                 String example = fieldCommentInfo.getExample();
                 String fieldDesc = fieldCommentInfo.getFieldDesc();
                 if (StringUtils.isNotBlank(fieldDesc)) {
-                    fieldDesc = fieldDesc.replaceAll(CommentConst.BREAK_LINE, "\n");
+                    fieldDesc = fieldDesc.replaceAll(CommonConst.BREAK_LINE, "\n");
                 }
 
                 String upperKey = key.substring(0, 1).toUpperCase() + key.substring(1);
@@ -329,7 +329,7 @@ public class JavaToAmpSavior extends AbstractSavior<Map<String, Object>> {
                 CommentInfo commentInfo = complexInfo.getCommentInfo();
                 String fieldDesc = fieldCommentInfo.getFieldDesc();
                 if (StringUtils.isNotBlank(fieldDesc)) {
-                    fieldDesc = fieldDesc.replaceAll(CommentConst.BREAK_LINE, "\n");
+                    fieldDesc = fieldDesc.replaceAll(CommonConst.BREAK_LINE, "\n");
                 }
                 if (commentInfo != null) {
                     upperKey = commentInfo.getSingleStr(MoreCommentTagEnum.AMP_FIELD.getTag(), upperKey);

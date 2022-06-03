@@ -1,6 +1,6 @@
 package cn.gudqs7.plugins.common.util;
 
-import cn.gudqs7.plugins.common.consts.CommentConst;
+import cn.gudqs7.plugins.common.consts.CommonConst;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -28,7 +28,7 @@ public class StringTool {
         source = source.replaceAll("\\<", "\\\\<");
         source = source.replaceAll("\\>", "\\\\>");
         source = source.replaceAll("\\|", "\\\\|");
-        source = source.replaceAll(CommentConst.BREAK_LINE, "<br>");
+        source = source.replaceAll(CommonConst.BREAK_LINE, "<br>");
         return source;
     }
 
