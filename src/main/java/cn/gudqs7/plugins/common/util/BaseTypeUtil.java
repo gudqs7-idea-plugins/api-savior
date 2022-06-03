@@ -57,7 +57,6 @@ public class BaseTypeUtil {
 
         OTHER_BASE_TYPE_MAP.put("java.sql.Blob", TypeInfo.of("javax.sql.rowset.serial.SerialBlob", "new SerialBlob(new byte[]{})", stringGetFn));
         OTHER_BASE_TYPE_MAP.put("java.sql.Clob", TypeInfo.of("javax.sql.rowset.serial.SerialClob", "new SerialClob(new char[]{})", stringGetFn));
-        OTHER_BASE_TYPE_MAP.put("java.sql.NClob", TypeInfo.of("javax.sql.rowset.serial.SerialClob", "new SerialClob(new char[]{})", stringGetFn));
 
 
         // java base

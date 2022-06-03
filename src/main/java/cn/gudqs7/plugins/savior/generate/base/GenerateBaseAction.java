@@ -1,31 +1,30 @@
 package cn.gudqs7.plugins.savior.generate.base;
 
-import cn.gudqs7.plugins.common.util.PsiDocumentUtil;
+import cn.gudqs7.plugins.common.base.action.intention.AbstractEditorIntentionAction;
 import cn.gudqs7.plugins.common.util.PsiUtil;
-import com.intellij.codeInsight.intention.PsiElementBaseIntentionAction;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.psi.util.PsiTypesUtil;
-import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * @author wenquan
  * @date 2021/9/30
  */
-public abstract class GenerateBaseAction extends PsiElementBaseIntentionAction {
+public abstract class GenerateBaseAction extends AbstractEditorIntentionAction {
 
     /**
      * 根据当前情况构建生成器
+     *
      * @param element 上下文信息
      * @return 生成器
      */
     protected GenerateBase buildGenerate(PsiElement element) {
-        PsiLocalVariable psiLocal = PsiTreeUtil.getParentOfType(element, PsiLocalVariable.class);
         BaseVar baseVar = null;
+        PsiLocalVariable psiLocal = PsiTreeUtil.getParentOfType(element, PsiLocalVariable.class);
         if (psiLocal != null) {
             baseVar = new BaseVar();
             baseVar.setVarName(psiLocal.getName());
@@ -42,6 +41,7 @@ public abstract class GenerateBaseAction extends PsiElementBaseIntentionAction {
 
     /**
      * 根据当前情况构建生成器
+     *
      * @param baseVar 变量
      * @return 生成器
      */
@@ -54,6 +54,7 @@ public abstract class GenerateBaseAction extends PsiElementBaseIntentionAction {
         }
         return PsiTypesUtil.getPsiClass(psiParent.getType());
     }
+
     private PsiClass getLocalVariableContainingClass(@NotNull PsiElement element) {
         PsiLocalVariable psiLocal = PsiTreeUtil.getParentOfType(element, PsiLocalVariable.class);
         if (psiLocal == null) {
@@ -89,20 +90,14 @@ public abstract class GenerateBaseAction extends PsiElementBaseIntentionAction {
     protected abstract boolean checkVariableClass(PsiClass psiClass);
 
     @Override
-    public void invoke(@NotNull Project project, Editor editor, @NotNull PsiElement element) throws IncorrectOperationException {
+    protected void invoke0(Project project, Editor editor, PsiElement element, Document elementDocument, PsiDocumentManager psiDocumentManager) {
         GenerateBase generateBase = buildGenerate(element);
         PsiLocalVariable psiLocal = PsiTreeUtil.getParentOfType(element, PsiLocalVariable.class);
-        PsiDocumentManager psiDocumentManager = PsiDocumentManager.getInstance(project);
         PsiFile containingFile = element.getContainingFile();
-        Document document = psiDocumentManager.getDocument(containingFile);
-        if (document == null) {
-            return;
-        }
         if (psiLocal != null) {
-            PsiElement parent = psiLocal.getParent();
-            String splitText = PsiDocumentUtil.calculateSplitText(document, parent.getTextOffset(), "");
-            int textOffset = parent.getTextOffset() + parent.getText().length();
-            generateBase.insertCodeByPsiType(document, psiDocumentManager, containingFile, splitText, textOffset);
+            String splitText = getPrefixWithBreakLine(elementDocument, psiLocal);
+            int textOffset = getInsertOffset(psiLocal);
+            generateBase.insertCodeByPsiType(elementDocument, psiDocumentManager, containingFile, splitText, textOffset);
         }
         PsiParameter psiParameter = PsiTreeUtil.getParentOfType(element, PsiParameter.class);
         if (psiParameter != null) {
@@ -110,15 +105,15 @@ public abstract class GenerateBaseAction extends PsiElementBaseIntentionAction {
             PsiElement parent0 = parent.getParent();
             if (parent0 instanceof PsiMethod) {
                 PsiMethod psiMethod = (PsiMethod) parent0;
-                String splitText = PsiDocumentUtil.calculateSplitText(document, psiMethod.getTextRange().getStartOffset(), "    ");
-                int insertOffset = psiMethod.getBody().getTextOffset() + 1;
-                generateBase.insertCodeByPsiType(document, psiDocumentManager, containingFile, splitText, insertOffset);
+                String splitText = getPrefixWithBreakLine(elementDocument, psiMethod);
+                int insertOffset = getInsertOffset(psiMethod);
+                generateBase.insertCodeByPsiType(elementDocument, psiDocumentManager, containingFile, splitText, insertOffset);
             }
             if (parent instanceof PsiForeachStatement) {
                 PsiForeachStatement psiForeachStatement = (PsiForeachStatement) parent;
-                String splitText = PsiDocumentUtil.calculateSplitText(document, psiForeachStatement.getTextOffset(), "    ");
-                int insertOffset = psiForeachStatement.getBody().getTextOffset() + 1;
-                generateBase.insertCodeByPsiType(document, psiDocumentManager, containingFile, splitText, insertOffset);
+                String splitText = getPrefixWithBreakLine(elementDocument, psiForeachStatement);
+                int insertOffset = getInsertOffset(psiForeachStatement);
+                generateBase.insertCodeByPsiType(elementDocument, psiDocumentManager, containingFile, splitText, insertOffset);
             }
         }
         PsiUtil.clearGeneric();
