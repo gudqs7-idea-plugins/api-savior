@@ -1,6 +1,5 @@
-package cn.gudqs7.plugins.savior.docer.util;
+package cn.gudqs7.plugins.common.util;
 
-import com.intellij.notification.*;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.psi.*;
@@ -20,29 +19,8 @@ import java.util.Map;
  */
 public class ActionUtil {
 
-    private static final String NOTIFICATION_GROUP_ID = "notificationGroup";
     public static boolean show = true;
     public static String ip = null;
-
-    public static void showNotification(String content) {
-        showNotification(content, NotificationDisplayType.BALLOON, NotificationType.INFORMATION);
-    }
-
-    public static void showNotification(String content, NotificationDisplayType notificationDisplayType, NotificationType notificationType) {
-        NotificationGroup notificationGroup = new NotificationGroup(NOTIFICATION_GROUP_ID,
-                notificationDisplayType, true);
-        Notification notification = notificationGroup.createNotification(content,
-                notificationType);
-        Notifications.Bus.notify(notification);
-    }
-
-//    public static void showNotificationNew(String content, NotificationType notificationType) {
-//        NotificationGroup notificationGroup = NotificationGroupManager.getInstance().getNotificationGroup("Docer Savior Notification Group");
-//        Notification notification = notificationGroup.createNotification(content,
-//                notificationType);
-//        Notifications.Bus.notify(notification);
-//    }
-
 
     public static PsiClass getPsiClass(PsiElement psiElement) {
         PsiClass psiClass = null;
@@ -85,7 +63,7 @@ public class ActionUtil {
     }
 
     public static void showDialog(Project project, String tip, String content, boolean force) {
-        ActionUtil.showNotification("可以粘贴(Ctrl+V)了");
+        NotificationUtil.showTips("可以粘贴(Ctrl+V)了");
         if (force || show) {
             String title = "若希望之后不在弹出请点击确定";
             if (force) {
@@ -143,7 +121,7 @@ public class ActionUtil {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream(40960);
         e1.printStackTrace(new PrintStream(byteArrayOutputStream));
         String stackTrace = byteArrayOutputStream.toString();
-        ActionUtil.showNotification("插件运行失败, 可通过 IDEA 右下角感叹号, 点击 Report To Gudqs7(或 Report And Clear All) 一键上报到 GitHub; 错误信息如下: " + stackTrace, NotificationDisplayType.BALLOON, NotificationType.ERROR);
+        NotificationUtil.showError("插件运行失败, 可通过 IDEA 右下角感叹号, 点击 Report To Gudqs7(或 Report And Clear All) 一键上报到 GitHub; 错误信息如下: " + stackTrace);
         throw Lombok.sneakyThrow(e1);
     }
 

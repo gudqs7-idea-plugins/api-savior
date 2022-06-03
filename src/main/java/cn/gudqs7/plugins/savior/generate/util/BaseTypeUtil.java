@@ -1,9 +1,9 @@
 package cn.gudqs7.plugins.savior.generate.util;
 
+import cn.gudqs7.plugins.common.util.ConfigHolder;
 import cn.gudqs7.plugins.savior.docer.constant.CommentConst;
 import cn.gudqs7.plugins.savior.docer.enums.MoreCommentTagEnum;
 import cn.gudqs7.plugins.savior.docer.pojo.annotation.CommentInfo;
-import cn.gudqs7.plugins.savior.docer.util.ConfigHolder;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiType;
 import lombok.Data;

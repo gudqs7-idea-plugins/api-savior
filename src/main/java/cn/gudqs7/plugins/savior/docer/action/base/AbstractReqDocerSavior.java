@@ -1,5 +1,6 @@
 package cn.gudqs7.plugins.savior.docer.action.base;
 
+import cn.gudqs7.plugins.common.util.*;
 import cn.gudqs7.plugins.savior.docer.pojo.FieldLevelInfo;
 import cn.gudqs7.plugins.savior.docer.pojo.PostmanKvInfo;
 import cn.gudqs7.plugins.savior.docer.pojo.StructureAndCommentInfo;
@@ -8,12 +9,7 @@ import cn.gudqs7.plugins.savior.docer.reader.Java2BulkReader;
 import cn.gudqs7.plugins.savior.docer.reader.Java2JsonReader;
 import cn.gudqs7.plugins.savior.docer.resolver.StructureAndCommentResolver;
 import cn.gudqs7.plugins.savior.docer.theme.Theme;
-import cn.gudqs7.plugins.savior.docer.util.ClipboardUtil;
-import cn.gudqs7.plugins.savior.docer.util.FreeMarkerUtil;
-import cn.gudqs7.plugins.savior.docer.util.JsonUtil;
-import cn.gudqs7.plugins.savior.docer.util.RestfulUtil;
 import cn.gudqs7.plugins.savior.generate.util.BaseTypeUtil;
-import cn.gudqs7.plugins.savior.util.PsiClassUtil;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;

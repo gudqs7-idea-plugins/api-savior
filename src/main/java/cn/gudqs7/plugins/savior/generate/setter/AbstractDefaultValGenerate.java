@@ -1,9 +1,9 @@
 package cn.gudqs7.plugins.savior.generate.setter;
 
+import cn.gudqs7.plugins.common.util.PsiUtil;
 import cn.gudqs7.plugins.savior.generate.base.AbstractMethodListGenerate;
 import cn.gudqs7.plugins.savior.generate.base.BaseVar;
 import cn.gudqs7.plugins.savior.generate.util.BaseTypeUtil;
-import cn.gudqs7.plugins.savior.util.PsiUtil;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiParameter;

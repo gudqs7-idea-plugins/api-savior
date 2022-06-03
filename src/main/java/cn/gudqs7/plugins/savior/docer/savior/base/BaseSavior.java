@@ -1,8 +1,8 @@
 package cn.gudqs7.plugins.savior.docer.savior.base;
 
+import cn.gudqs7.plugins.common.util.PsiAnnotationUtil;
+import cn.gudqs7.plugins.common.util.StringUtil;
 import cn.gudqs7.plugins.savior.docer.theme.Theme;
-import cn.gudqs7.plugins.savior.util.PsiAnnotationUtil;
-import cn.gudqs7.plugins.savior.util.StringUtil;
 import com.intellij.psi.PsiAnnotation;
 
 import java.util.List;

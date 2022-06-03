@@ -1,10 +1,10 @@
 package cn.gudqs7.plugins.savior.generate.setter.action;
 
+import cn.gudqs7.plugins.common.util.PsiClassUtil;
 import cn.gudqs7.plugins.savior.generate.base.BaseVar;
 import cn.gudqs7.plugins.savior.generate.base.GenerateBase;
 import cn.gudqs7.plugins.savior.generate.base.GenerateBaseAction;
 import cn.gudqs7.plugins.savior.generate.setter.GenerateSetter;
-import cn.gudqs7.plugins.savior.util.PsiClassUtil;
 import com.intellij.psi.PsiClass;
 
 /**

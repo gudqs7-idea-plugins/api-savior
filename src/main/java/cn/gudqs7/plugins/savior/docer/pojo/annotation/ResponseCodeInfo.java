@@ -1,6 +1,6 @@
 package cn.gudqs7.plugins.savior.docer.pojo.annotation;
 
-import cn.gudqs7.plugins.savior.util.StringUtil;
+import cn.gudqs7.plugins.common.util.StringUtil;
 import lombok.Data;
 
 /**

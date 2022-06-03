@@ -1,4 +1,4 @@
-package cn.gudqs7.plugins.savior.docer.util;
+package cn.gudqs7.plugins.common.util;
 
 import cn.gudqs7.plugins.savior.docer.pojo.ComplexInfo;
 import com.google.gson.Gson;

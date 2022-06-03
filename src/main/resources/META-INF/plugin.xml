@@ -15,7 +15,9 @@
     <depends>com.intellij.modules.java</depends>
 
     <extensions defaultExtensionNs="com.intellij">
-        <!-- <notificationGroup id="Docer Savior Notification Group" displayType="BALLOON" key="notification.group.name" /> -->
+        <notificationGroup displayType="BALLOON" id="Search Everywhere Api Tip" bundle="group" key="notification.group.tip.name"/>
+        <notificationGroup displayType="STICKY_BALLOON" id="Search Everywhere Api Error" bundle="group" key="notification.group.error.name"/>
+
         <projectService serviceImplementation="cn.gudqs7.plugins.savior.search.MethodFilterConfiguration"/>
 
         <intentionAction>

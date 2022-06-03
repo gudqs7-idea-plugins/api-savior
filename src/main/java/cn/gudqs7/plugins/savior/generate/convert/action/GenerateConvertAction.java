@@ -1,14 +1,14 @@
 package cn.gudqs7.plugins.savior.generate.convert.action;
 
+import cn.gudqs7.plugins.common.util.PsiClassUtil;
+import cn.gudqs7.plugins.common.util.PsiDocumentUtil;
+import cn.gudqs7.plugins.common.util.PsiUtil;
+import cn.gudqs7.plugins.common.util.StringUtil;
 import cn.gudqs7.plugins.savior.generate.base.BaseVar;
 import cn.gudqs7.plugins.savior.generate.base.GenerateBase;
 import cn.gudqs7.plugins.savior.generate.base.GenerateBaseAction;
 import cn.gudqs7.plugins.savior.generate.consant.GenerateConst;
 import cn.gudqs7.plugins.savior.generate.convert.GenerateConvertForMethod;
-import cn.gudqs7.plugins.savior.util.PsiClassUtil;
-import cn.gudqs7.plugins.savior.util.PsiDocumentUtil;
-import cn.gudqs7.plugins.savior.util.PsiUtil;
-import cn.gudqs7.plugins.savior.util.StringUtil;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;

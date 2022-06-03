@@ -1,9 +1,9 @@
 package cn.gudqs7.plugins.savior.search;
 
+import cn.gudqs7.plugins.common.util.IconUtil;
 import cn.gudqs7.plugins.savior.search.resolver.ApiNavigationItem;
 import cn.gudqs7.plugins.savior.search.resolver.ApiResolverService;
 import cn.gudqs7.plugins.savior.search.resolver.HttpMethod;
-import cn.gudqs7.plugins.savior.util.IconUtil;
 import com.intellij.ide.actions.SearchEverywherePsiRenderer;
 import com.intellij.ide.actions.bigPopup.ShowFilterAction;
 import com.intellij.ide.actions.searcheverywhere.FoundItemDescriptor;

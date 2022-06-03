@@ -1,7 +1,7 @@
 package cn.gudqs7.plugins.savior.error;
 
-import cn.gudqs7.plugins.savior.docer.util.FreeMarkerUtil;
-import cn.gudqs7.plugins.savior.docer.util.GithubApiUtil;
+import cn.gudqs7.plugins.common.util.FreeMarkerUtil;
+import cn.gudqs7.plugins.common.util.GithubApiUtil;
 import com.intellij.openapi.application.ApplicationNamesInfo;
 import com.intellij.openapi.application.ex.ApplicationInfoEx;
 import com.intellij.openapi.diagnostic.ErrorReportSubmitter;

@@ -1,4 +1,4 @@
-package cn.gudqs7.plugins.savior.util;
+package cn.gudqs7.plugins.common.util;
 
 import cn.gudqs7.plugins.savior.search.resolver.HttpMethod;
 import com.intellij.openapi.util.IconLoader;

@@ -1,5 +1,8 @@
 package cn.gudqs7.plugins.savior.docer.annotation;
 
+import cn.gudqs7.plugins.common.util.ActionUtil;
+import cn.gudqs7.plugins.common.util.PsiAnnotationUtil;
+import cn.gudqs7.plugins.common.util.PsiUtil;
 import cn.gudqs7.plugins.savior.docer.constant.CommentConst;
 import cn.gudqs7.plugins.savior.docer.enums.CommentTagEnum;
 import cn.gudqs7.plugins.savior.docer.enums.MoreCommentTagEnum;
@@ -7,9 +10,6 @@ import cn.gudqs7.plugins.savior.docer.pojo.annotation.CommentInfo;
 import cn.gudqs7.plugins.savior.docer.pojo.annotation.CommentInfoTag;
 import cn.gudqs7.plugins.savior.docer.pojo.annotation.RequestMapping;
 import cn.gudqs7.plugins.savior.docer.pojo.annotation.ResponseCodeInfo;
-import cn.gudqs7.plugins.savior.docer.util.ActionUtil;
-import cn.gudqs7.plugins.savior.util.PsiAnnotationUtil;
-import cn.gudqs7.plugins.savior.util.PsiUtil;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.*;

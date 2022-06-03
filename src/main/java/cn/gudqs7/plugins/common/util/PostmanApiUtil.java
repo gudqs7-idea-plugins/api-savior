@@ -1,4 +1,4 @@
-package cn.gudqs7.plugins.savior.docer.util;
+package cn.gudqs7.plugins.common.util;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

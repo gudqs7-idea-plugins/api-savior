@@ -1,4 +1,4 @@
-package cn.gudqs7.plugins.savior.docer.util;
+package cn.gudqs7.plugins.common.util;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

@@ -1,5 +1,6 @@
 package cn.gudqs7.plugins.savior.docer.savior.more;
 
+import cn.gudqs7.plugins.common.util.*;
 import cn.gudqs7.plugins.savior.docer.annotation.AnnotationHolder;
 import cn.gudqs7.plugins.savior.docer.constant.CommentConst;
 import cn.gudqs7.plugins.savior.docer.enums.MoreCommentTagEnum;
@@ -10,16 +11,9 @@ import cn.gudqs7.plugins.savior.docer.pojo.annotation.CommentInfo;
 import cn.gudqs7.plugins.savior.docer.reader.Java2ComplexReader;
 import cn.gudqs7.plugins.savior.docer.savior.base.AbstractSavior;
 import cn.gudqs7.plugins.savior.docer.theme.Theme;
-import cn.gudqs7.plugins.savior.docer.util.ActionUtil;
-import cn.gudqs7.plugins.savior.docer.util.ConfigHolder;
-import cn.gudqs7.plugins.savior.docer.util.HttpUtil;
-import cn.gudqs7.plugins.savior.docer.util.JsonUtil;
-import cn.gudqs7.plugins.savior.util.PsiClassUtil;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
-import com.intellij.notification.NotificationDisplayType;
-import com.intellij.notification.NotificationType;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiClass;
@@ -223,7 +217,7 @@ public class JavaToOneApiSavior extends AbstractSavior<Void> {
     private void showErrorTip(String actionName, String createRes, final String operate) {
         if (!createRes.startsWith("{")) {
             String content = actionName + " " + operate + " error, cause by " + createRes;
-            ActionUtil.showNotification(content, NotificationDisplayType.BALLOON, NotificationType.ERROR);
+            NotificationUtil.showError(content);
             return;
         }
         Map map = JsonUtil.fromJson(createRes, Map.class);
@@ -233,10 +227,10 @@ public class JavaToOneApiSavior extends AbstractSavior<Void> {
                 Boolean success0 = (Boolean) success;
                 if (success0) {
                     String content = actionName + " " + operate + " success!";
-                    ActionUtil.showNotification(content, NotificationDisplayType.BALLOON, NotificationType.INFORMATION);
+                    NotificationUtil.showError(content);
                 } else {
                     String content = actionName + " " + operate + " error, cause by " + createRes;
-                    ActionUtil.showNotification(content, NotificationDisplayType.BALLOON, NotificationType.ERROR);
+                    NotificationUtil.showError(content);
                 }
             }
         }

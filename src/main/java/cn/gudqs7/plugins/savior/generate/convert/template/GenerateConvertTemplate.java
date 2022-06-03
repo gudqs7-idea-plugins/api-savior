@@ -1,10 +1,10 @@
 package cn.gudqs7.plugins.savior.generate.convert.template;
 
+import cn.gudqs7.plugins.common.util.PsiExpressionUtil;
 import cn.gudqs7.plugins.savior.generate.base.BaseVar;
 import cn.gudqs7.plugins.savior.generate.base.GenerateBase;
 import cn.gudqs7.plugins.savior.generate.base.GenerateBaseTemplate;
 import cn.gudqs7.plugins.savior.generate.convert.GenerateConvert;
-import cn.gudqs7.plugins.savior.util.PsiExpressionUtil;
 import com.intellij.openapi.editor.Document;
 import com.intellij.psi.*;
 import com.intellij.psi.tree.IElementType;

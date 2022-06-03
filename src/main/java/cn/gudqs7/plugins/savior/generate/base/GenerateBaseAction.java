@@ -1,7 +1,7 @@
 package cn.gudqs7.plugins.savior.generate.base;
 
-import cn.gudqs7.plugins.savior.util.PsiDocumentUtil;
-import cn.gudqs7.plugins.savior.util.PsiUtil;
+import cn.gudqs7.plugins.common.util.PsiDocumentUtil;
+import cn.gudqs7.plugins.common.util.PsiUtil;
 import com.intellij.codeInsight.intention.PsiElementBaseIntentionAction;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;

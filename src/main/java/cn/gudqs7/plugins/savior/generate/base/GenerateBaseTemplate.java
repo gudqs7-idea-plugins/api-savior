@@ -1,7 +1,7 @@
 package cn.gudqs7.plugins.savior.generate.base;
 
-import cn.gudqs7.plugins.savior.docer.util.ActionUtil;
-import cn.gudqs7.plugins.savior.util.PsiUtil;
+import cn.gudqs7.plugins.common.util.ActionUtil;
+import cn.gudqs7.plugins.common.util.PsiUtil;
 import com.intellij.codeInsight.template.postfix.templates.PostfixTemplateExpressionSelectorBase;
 import com.intellij.codeInsight.template.postfix.templates.PostfixTemplateWithExpressionSelector;
 import com.intellij.codeInsight.template.postfix.util.JavaPostfixTemplatesUtils;

@@ -1,4 +1,4 @@
-package cn.gudqs7.plugins.savior.docer.util;
+package cn.gudqs7.plugins.common.util;
 
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;

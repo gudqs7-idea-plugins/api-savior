@@ -1,11 +1,11 @@
 package cn.gudqs7.plugins.savior.generate.getter.action;
 
+import cn.gudqs7.plugins.common.util.PsiClassUtil;
 import cn.gudqs7.plugins.savior.generate.base.BaseVar;
 import cn.gudqs7.plugins.savior.generate.base.GenerateBase;
 import cn.gudqs7.plugins.savior.generate.base.GenerateBaseAction;
 import cn.gudqs7.plugins.savior.generate.consant.GenerateConst;
 import cn.gudqs7.plugins.savior.generate.getter.GenerateGetter;
-import cn.gudqs7.plugins.savior.util.PsiClassUtil;
 import com.intellij.psi.PsiClass;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;

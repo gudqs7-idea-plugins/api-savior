@@ -1,4 +1,4 @@
-package cn.gudqs7.plugins.savior.docer.util;
+package cn.gudqs7.plugins.common.util;
 
 import org.apache.commons.codec.net.URLCodec;
 import org.apache.commons.collections.CollectionUtils;

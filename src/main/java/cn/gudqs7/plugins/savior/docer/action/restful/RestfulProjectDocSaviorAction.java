@@ -1,9 +1,9 @@
 package cn.gudqs7.plugins.savior.docer.action.restful;
 
+import cn.gudqs7.plugins.common.util.PsiClassUtil;
 import cn.gudqs7.plugins.savior.docer.action.base.AbstractProjectDocerSavior;
 import cn.gudqs7.plugins.savior.docer.savior.more.JavaToDocSavior;
 import cn.gudqs7.plugins.savior.docer.theme.ThemeHelper;
-import cn.gudqs7.plugins.savior.util.PsiClassUtil;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiClass;
 

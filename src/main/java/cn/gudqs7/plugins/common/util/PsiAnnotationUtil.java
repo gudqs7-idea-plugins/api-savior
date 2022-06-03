@@ -1,4 +1,4 @@
-package cn.gudqs7.plugins.savior.util;
+package cn.gudqs7.plugins.common.util;
 
 import com.intellij.psi.PsiAnnotation;
 import com.intellij.psi.PsiAnnotationMemberValue;

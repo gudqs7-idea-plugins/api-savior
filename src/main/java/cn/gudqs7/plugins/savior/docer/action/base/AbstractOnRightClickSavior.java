@@ -1,11 +1,7 @@
 package cn.gudqs7.plugins.savior.docer.action.base;
 
+import cn.gudqs7.plugins.common.util.*;
 import cn.gudqs7.plugins.savior.docer.annotation.AnnotationHolder;
-import cn.gudqs7.plugins.savior.docer.util.ActionUtil;
-import cn.gudqs7.plugins.savior.docer.util.ClipboardUtil;
-import cn.gudqs7.plugins.savior.docer.util.ConfigHolder;
-import cn.gudqs7.plugins.savior.docer.util.ConfigUtil;
-import cn.gudqs7.plugins.savior.util.PsiUtil;
 import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;

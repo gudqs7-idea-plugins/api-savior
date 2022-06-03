@@ -1,11 +1,11 @@
 package cn.gudqs7.plugins.savior.docer.annotation;
 
+import cn.gudqs7.plugins.common.util.BaseTypeParseUtil;
+import cn.gudqs7.plugins.common.util.PsiAnnotationUtil;
 import cn.gudqs7.plugins.savior.docer.constant.CommentConst;
 import cn.gudqs7.plugins.savior.docer.enums.MoreCommentTagEnum;
 import cn.gudqs7.plugins.savior.docer.pojo.annotation.CommentInfo;
 import cn.gudqs7.plugins.savior.docer.pojo.annotation.CommentInfoTag;
-import cn.gudqs7.plugins.savior.docer.util.BaseTypeParseUtil;
-import cn.gudqs7.plugins.savior.util.PsiAnnotationUtil;
 import com.intellij.psi.PsiAnnotation;
 import org.apache.commons.lang3.StringUtils;
 

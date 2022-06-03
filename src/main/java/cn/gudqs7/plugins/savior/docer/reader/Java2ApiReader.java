@@ -1,5 +1,6 @@
 package cn.gudqs7.plugins.savior.docer.reader;
 
+import cn.gudqs7.plugins.common.util.IndexIncrementUtil;
 import cn.gudqs7.plugins.savior.docer.enums.StructureType;
 import cn.gudqs7.plugins.savior.docer.pojo.FieldLevelInfo;
 import cn.gudqs7.plugins.savior.docer.pojo.FieldMemoInfo;
@@ -8,7 +9,6 @@ import cn.gudqs7.plugins.savior.docer.pojo.StructureAndCommentInfo;
 import cn.gudqs7.plugins.savior.docer.pojo.annotation.CommentInfo;
 import cn.gudqs7.plugins.savior.docer.reader.base.AbstractReader;
 import cn.gudqs7.plugins.savior.docer.theme.Theme;
-import cn.gudqs7.plugins.savior.docer.util.IndexIncrementUtil;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;

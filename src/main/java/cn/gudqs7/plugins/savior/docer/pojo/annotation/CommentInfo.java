@@ -1,9 +1,9 @@
 package cn.gudqs7.plugins.savior.docer.pojo.annotation;
 
+import cn.gudqs7.plugins.common.util.BaseTypeParseUtil;
 import cn.gudqs7.plugins.savior.docer.annotation.AnnotationHolder;
 import cn.gudqs7.plugins.savior.docer.constant.CommentConst;
 import cn.gudqs7.plugins.savior.docer.enums.MoreCommentTagEnum;
-import cn.gudqs7.plugins.savior.docer.util.BaseTypeParseUtil;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.apache.commons.collections.CollectionUtils;

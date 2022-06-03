@@ -1,4 +1,4 @@
-package cn.gudqs7.plugins.savior.util;
+package cn.gudqs7.plugins.common.util;
 
 import cn.gudqs7.plugins.savior.generate.consant.GenerateConst;
 import com.intellij.openapi.project.Project;
@@ -10,7 +10,7 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static cn.gudqs7.plugins.savior.util.PsiUtil.handleSyntaxError;
+import static cn.gudqs7.plugins.common.util.PsiUtil.handleSyntaxError;
 
 /**
  * @author wenquan

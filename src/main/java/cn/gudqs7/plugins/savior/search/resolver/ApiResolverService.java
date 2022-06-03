@@ -1,9 +1,9 @@
 package cn.gudqs7.plugins.savior.search.resolver;
 
+import cn.gudqs7.plugins.common.util.ActionUtil;
+import cn.gudqs7.plugins.common.util.PsiAnnotationUtil;
 import cn.gudqs7.plugins.savior.docer.annotation.AnnotationHolder;
 import cn.gudqs7.plugins.savior.docer.pojo.annotation.CommentInfo;
-import cn.gudqs7.plugins.savior.docer.util.ActionUtil;
-import cn.gudqs7.plugins.savior.util.PsiAnnotationUtil;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
 import com.intellij.psi.impl.java.stubs.index.JavaAnnotationIndex;
