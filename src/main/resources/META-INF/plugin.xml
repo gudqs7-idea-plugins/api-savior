@@ -37,7 +37,7 @@
         
         <searchEverywhereContributor implementation="cn.gudqs7.plugins.search.ApiSearchContributorFactory"/>
 
-        <errorHandler implementation="cn.gudqs7.plugins.error.ReportSubmitter"/>
+        <errorHandler implementation="cn.gudqs7.plugins.diagnostic.SaviorIssueSubmitter"/>
     </extensions>
 
     <actions>

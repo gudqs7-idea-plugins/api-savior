@@ -1,7 +1,6 @@
-package cn.gudqs7.plugins.error;
+package cn.gudqs7.plugins.common.diagnostic;
 
 import cn.gudqs7.plugins.common.util.FreeMarkerUtil;
-import cn.gudqs7.plugins.common.util.GithubApiUtil;
 import com.intellij.openapi.application.ApplicationNamesInfo;
 import com.intellij.openapi.application.ex.ApplicationInfoEx;
 import com.intellij.openapi.diagnostic.ErrorReportSubmitter;
@@ -26,22 +25,19 @@ import java.util.Properties;
  * @author wenquan
  * @date 2022/5/13
  */
-public class ReportSubmitter extends ErrorReportSubmitter {
+public abstract class AbstractErrorReportSubmitter extends ErrorReportSubmitter {
 
-    private static final String ISSUE_URL = "https://github.com/docer-savior/docer-savior-idea-plugin/issues";
-
-    @Override
-    public @NotNull String getReportActionText() {
-        return "Report To Gudqs7";
+    protected String getAuthorName() {
+        return "Gudqs7";
     }
 
     @Override
-    public boolean submit(
-            IdeaLoggingEvent[] events,
-            @Nullable String additionalInfo,
-            @NotNull Component parentComponent,
-            @NotNull Consumer<? super SubmittedReportInfo> consumer
-    ) {
+    public @NotNull String getReportActionText() {
+        return "Report To " + getAuthorName();
+    }
+
+    @Override
+    public boolean submit(@NotNull IdeaLoggingEvent[] events, @Nullable String additionalInfo, @NotNull Component parentComponent, @NotNull Consumer<? super SubmittedReportInfo> consumer) {
         try {
             IdeaLoggingEvent event = events[0];
             String throwableText = event.getThrowableText();
@@ -60,11 +56,9 @@ public class ReportSubmitter extends ErrorReportSubmitter {
             String issueId = findIssue(throwableText);
             if (issueId == null) {
                 issueId = newIssue(throwableText, message, additionalInfo);
-                reportInfo = new SubmittedReportInfo(ISSUE_URL + "/" + issueId,
-                        "Issue#" + issueId, SubmittedReportInfo.SubmissionStatus.NEW_ISSUE);
+                reportInfo = new SubmittedReportInfo(generateUrlByIssueId(issueId), generateTextByIssueId(issueId), SubmittedReportInfo.SubmissionStatus.NEW_ISSUE);
             } else {
-                reportInfo = new SubmittedReportInfo(ISSUE_URL + "/" + issueId,
-                        "Issue#" + issueId, SubmittedReportInfo.SubmissionStatus.DUPLICATE);
+                reportInfo = new SubmittedReportInfo(generateUrlByIssueId(issueId), generateTextByIssueId(issueId), SubmittedReportInfo.SubmissionStatus.DUPLICATE);
             }
             consumer.consume(reportInfo);
         } catch (Exception e) {
@@ -73,7 +67,33 @@ public class ReportSubmitter extends ErrorReportSubmitter {
         return true;
     }
 
-    private String newIssue(String throwableText, String message, String additionalInfo) {
+    /**
+     * 根据 issue id 生成展示文字
+     *
+     * @param issueId issue id
+     * @return 展示文字
+     */
+    @NotNull
+    protected abstract String generateTextByIssueId(String issueId);
+
+    /**
+     * 根据 issue id 生成跳转 url
+     *
+     * @param issueId issue id
+     * @return 跳转 url
+     */
+    @NotNull
+    protected abstract String generateUrlByIssueId(String issueId);
+
+    /**
+     * 根据错误信息新建 issue
+     *
+     * @param throwableText  错误栈信息
+     * @param message        一般为栈的第一行信息
+     * @param additionalInfo 用户输入信息
+     * @return issue id
+     */
+    protected String newIssue(String throwableText, String message, String additionalInfo) {
         String issueMd5 = DigestUtils.md5Hex(throwableText).toUpperCase();
         ApplicationInfoEx appInfo = ApplicationInfoEx.getInstanceEx();
         PluginDescriptor pluginDescriptor = getPluginDescriptor();
@@ -104,11 +124,35 @@ public class ReportSubmitter extends ErrorReportSubmitter {
 
         String title = "[Report From Idea] " + message;
         String body = FreeMarkerUtil.renderTemplate("issue.md.ftl", root);
-        return GithubApiUtil.newIssue(title, body);
+        return newIssue0(title, body);
     }
 
-    private String findIssue(String throwableText) {
-        String md5Hex = DigestUtils.md5Hex(throwableText).toUpperCase();
-        return GithubApiUtil.searchIssue(md5Hex);
+    /**
+     * 根据固定模板生成的问题描述和问题标题生成 issue
+     *
+     * @param title 标题
+     * @param body  描述
+     * @return issue id
+     */
+    protected abstract String newIssue0(String title, String body);
+
+    /**
+     * 根据错误栈信息查找 issue id
+     *
+     * @param throwableText 错误栈信息
+     * @return issue id
+     */
+    protected String findIssue(String throwableText) {
+        String throwableMd5 = DigestUtils.md5Hex(throwableText).toUpperCase();
+        return findIssue0(throwableMd5);
     }
+
+    /**
+     * 根据错误栈信息MD5查找 issue id
+     *
+     * @param throwableMd5 错误栈信息MD5
+     * @return issue id
+     */
+    protected abstract String findIssue0(String throwableMd5);
+
 }

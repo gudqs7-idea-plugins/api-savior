@@ -5,8 +5,8 @@ import com.intellij.openapi.ui.Messages;
 import com.intellij.psi.*;
 import lombok.Lombok;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
@@ -117,12 +117,12 @@ public class ActionUtil {
         ip = null;
     }
 
-    public static void handleException(Throwable e1) {
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream(40960);
-        e1.printStackTrace(new PrintStream(byteArrayOutputStream));
-        String stackTrace = byteArrayOutputStream.toString();
+    public static void handleException(Throwable throwable) {
+        StringWriter writer = new StringWriter();
+        throwable.printStackTrace(new PrintWriter(writer));
+        String stackTrace = writer.getBuffer().toString();;
         NotificationUtil.showError("插件运行失败, 可通过 IDEA 右下角感叹号, 点击 Report To Gudqs7(或 Report And Clear All) 一键上报到 GitHub; 错误信息如下: " + stackTrace);
-        throw Lombok.sneakyThrow(e1);
+        throw Lombok.sneakyThrow(throwable);
     }
 
 }
