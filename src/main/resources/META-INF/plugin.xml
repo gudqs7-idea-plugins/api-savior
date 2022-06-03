@@ -16,48 +16,48 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <!-- <notificationGroup id="Docer Savior Notification Group" displayType="BALLOON" key="notification.group.name" /> -->
-        <projectService serviceImplementation="cn.gudqs7.plugins.search.MethodFilterConfiguration"/>
+        <projectService serviceImplementation="cn.gudqs7.plugins.savior.search.MethodFilterConfiguration"/>
 
         <intentionAction>
-            <className>cn.gudqs7.plugins.generate.getter.action.GenerateAllGetterAction</className>
+            <className>cn.gudqs7.plugins.savior.generate.getter.action.GenerateAllGetterAction</className>
         </intentionAction>
         <intentionAction>
-            <className>cn.gudqs7.plugins.generate.setter.action.GenerateAllSetterWithDefaultValAction</className>
+            <className>cn.gudqs7.plugins.savior.generate.setter.action.GenerateAllSetterWithDefaultValAction</className>
         </intentionAction>
         <intentionAction>
-            <className>cn.gudqs7.plugins.generate.setter.action.GenerateAllSetterWithoutDefaultValAction</className>
+            <className>cn.gudqs7.plugins.savior.generate.setter.action.GenerateAllSetterWithoutDefaultValAction</className>
         </intentionAction>
         <intentionAction>
-            <className>cn.gudqs7.plugins.generate.convert.action.GenerateConvertAction</className>
+            <className>cn.gudqs7.plugins.savior.generate.convert.action.GenerateConvertAction</className>
         </intentionAction>
 
-        <codeInsight.template.postfixTemplateProvider language="JAVA" implementationClass="cn.gudqs7.plugins.generate.postfix.GeneratePostfixTemplateProvider"/>
+        <codeInsight.template.postfixTemplateProvider language="JAVA" implementationClass="cn.gudqs7.plugins.savior.generate.postfix.GeneratePostfixTemplateProvider"/>
         
-        <searchEverywhereContributor implementation="cn.gudqs7.plugins.search.ApiSearchContributorFactory"/>
+        <searchEverywhereContributor implementation="cn.gudqs7.plugins.savior.search.ApiSearchContributorFactory"/>
 
-        <errorHandler implementation="cn.gudqs7.plugins.error.ReportSubmitter"/>
+        <errorHandler implementation="cn.gudqs7.plugins.savior.error.ReportSubmitter"/>
     </extensions>
 
     <actions>
         <group id="cn.gudqs.docer.savior" text="Docer Savior Group">
             <add-to-group group-id="EditorPopupMenu" anchor="after" relative-to-action="ShowIntentionsGroup"/>
 
-            <action id="cn.gudqs.docer.savior.req.rpc" class="cn.gudqs7.plugins.docer.action.rpc.RpcReqDocSaviorAction"
+            <action id="cn.gudqs.docer.savior.req.rpc" class="cn.gudqs7.plugins.savior.docer.action.rpc.RpcReqDocSaviorAction"
                     text="Generate RPC Param Doc" description="Generate RPC request parameter documentation">
             </action>
-            <action id="cn.gudqs.docer.savior.req.restful" class="cn.gudqs7.plugins.docer.action.restful.RestfulReqDocSaviorAction"
+            <action id="cn.gudqs.docer.savior.req.restful" class="cn.gudqs7.plugins.savior.docer.action.restful.RestfulReqDocSaviorAction"
                     text="Generate Api Param Doc" description="Generate API request parameter documentation">
             </action>
-            <action id="cn.gudqs.docer.savior.rpc" class="cn.gudqs7.plugins.docer.action.rpc.RpcDocSaviorAction"
+            <action id="cn.gudqs.docer.savior.rpc" class="cn.gudqs7.plugins.savior.docer.action.rpc.RpcDocSaviorAction"
                     text="Generate RPC Interface Doc" description="Generate RPC interface documentation">
             </action>
-            <action id="cn.gudqs.docer.savior.restful" class="cn.gudqs7.plugins.docer.action.restful.RestfulDocSaviorAction"
+            <action id="cn.gudqs.docer.savior.restful" class="cn.gudqs7.plugins.savior.docer.action.restful.RestfulDocSaviorAction"
                     text="Generate Api Interface Doc" description="Generate API interface documentation">
             </action>
-            <action id="cn.gudqs.docer.savior.curl" class="cn.gudqs7.plugins.docer.action.restful.RestfulCurlSaviorAction"
+            <action id="cn.gudqs.docer.savior.curl" class="cn.gudqs7.plugins.savior.docer.action.restful.RestfulCurlSaviorAction"
                     text="Generate cURL" description="Generate cURL">
             </action>
-            <action id="cn.gudqs.docer.savior.curlRequire" class="cn.gudqs7.plugins.docer.action.restful.RestfulCurlRequireSaviorAction"
+            <action id="cn.gudqs.docer.savior.curlRequire" class="cn.gudqs7.plugins.savior.docer.action.restful.RestfulCurlRequireSaviorAction"
                     text="Generate cURL(Only required parameters)" description="Generate cURL(Only required parameters)">
             </action>
         </group>
@@ -65,29 +65,29 @@
         <group id="cn.gudqs.docer.savior.project" text="Docer Savior Project Group">
             <add-to-group group-id="ProjectViewPopupMenu" anchor="after" relative-to-action="CutCopyPasteGroup"/>
 
-            <action id="cn.gudqs.docer.savior.project.rpc" class="cn.gudqs7.plugins.docer.action.rpc.RpcProjectDocSaviorAction"
+            <action id="cn.gudqs.docer.savior.project.rpc" class="cn.gudqs7.plugins.savior.docer.action.rpc.RpcProjectDocSaviorAction"
                     text="Batch Generate RPC Interface Doc" description="Generate RPC interface documents in batches">
             </action>
-            <action id="cn.gudqs.docer.savior.project.restful" class="cn.gudqs7.plugins.docer.action.restful.RestfulProjectDocSaviorAction"
+            <action id="cn.gudqs.docer.savior.project.restful" class="cn.gudqs7.plugins.savior.docer.action.restful.RestfulProjectDocSaviorAction"
                     text="Batch Generate Api Interface Doc" description="Generate API interface documents in batches">
             </action>
-            <action id="cn.gudqs.docer.savior.project.html" class="cn.gudqs7.plugins.docer.action.batch.HtmlDocerSaviorAction"
+            <action id="cn.gudqs.docer.savior.project.html" class="cn.gudqs7.plugins.savior.docer.action.batch.HtmlDocerSaviorAction"
                     text="Batch Generate Api Interface Doc(HTML)" description="Batch generate Api interface documents in HTML format">
             </action>
-            <action id="cn.gudqs.docer.savior.project.postman" class="cn.gudqs7.plugins.docer.action.batch.PostmanDocerSaviorAction"
+            <action id="cn.gudqs.docer.savior.project.postman" class="cn.gudqs7.plugins.savior.docer.action.batch.PostmanDocerSaviorAction"
                     text="Export Api Interface to Postman" description="Export Api interface to Postman">
             </action>
-            <action id="cn.gudqs.docer.savior.project.amp" class="cn.gudqs7.plugins.docer.action.batch.AmpDocerSaviorAction"
+            <action id="cn.gudqs.docer.savior.project.amp" class="cn.gudqs7.plugins.savior.docer.action.batch.AmpDocerSaviorAction"
                     text="Export Api to Amp" description="Export Api to amp">
             </action>
-            <action id="cn.gudqs.docer.savior.project.oneapi" class="cn.gudqs7.plugins.docer.action.batch.OneApiDocerSaviorAction"
+            <action id="cn.gudqs.docer.savior.project.oneapi" class="cn.gudqs7.plugins.savior.docer.action.batch.OneApiDocerSaviorAction"
                     text="Export Api to OneApi" description="Export Api to oneApi">
             </action>
         </group>
 
 
         <!-- url 导航 -->
-        <action id="cn.gudqs.search.goto" class="cn.gudqs7.plugins.search.GotoApiAction"
+        <action id="cn.gudqs.search.goto" class="cn.gudqs7.plugins.savior.search.GotoApiAction"
                 text="_Api" description="Go to Api"
                 icon="AllIcons.Actions.Search">
             <add-to-group group-id="GoToTargetEx" anchor="first"/>

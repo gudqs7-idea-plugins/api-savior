@@ -1,0 +1,187 @@
+package cn.gudqs7.plugins.savior.generate.convert.action;
+
+import cn.gudqs7.plugins.savior.generate.base.BaseVar;
+import cn.gudqs7.plugins.savior.generate.base.GenerateBase;
+import cn.gudqs7.plugins.savior.generate.base.GenerateBaseAction;
+import cn.gudqs7.plugins.savior.generate.consant.GenerateConst;
+import cn.gudqs7.plugins.savior.generate.convert.GenerateConvertForMethod;
+import cn.gudqs7.plugins.savior.util.PsiClassUtil;
+import cn.gudqs7.plugins.savior.util.PsiDocumentUtil;
+import cn.gudqs7.plugins.savior.util.PsiUtil;
+import cn.gudqs7.plugins.savior.util.StringUtil;
+import com.intellij.openapi.editor.Document;
+import com.intellij.openapi.editor.Editor;
+import com.intellij.openapi.project.Project;
+import com.intellij.psi.*;
+import com.intellij.psi.tree.IElementType;
+import com.intellij.util.IncorrectOperationException;
+import org.jetbrains.annotations.Nls;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+/**
+ *
+ * @author WQ
+ */
+@SuppressWarnings("IntentionDescriptionNotFoundInspection")
+public class GenerateConvertAction extends GenerateBaseAction {
+
+    @Override
+    protected boolean checkVariableClass(PsiClass psiClass) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    protected GenerateBase buildGenerateByVar(BaseVar baseVar) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public boolean isAvailable(@NotNull Project project, Editor editor, @NotNull PsiElement psiElement) {
+        if (psiElement instanceof PsiJavaToken) {
+            PsiJavaToken psiJavaToken = (PsiJavaToken) psiElement;
+            IElementType tokenType = psiJavaToken.getTokenType();
+            String tokenTypeName = tokenType.toString();
+            if ("LPARENTH".equals(tokenTypeName)) {
+                PsiElement parent = psiElement.getParent();
+                if (parent != null) {
+                    if (parent.getParent() instanceof PsiMethod) {
+                        PsiMethod psiMethod = (PsiMethod) parent.getParent();
+                        return isAvailableByPsiMethod(psiMethod);
+                    }
+                }
+            }
+        }
+        if (psiElement instanceof PsiIdentifier) {
+            PsiElement parent = psiElement.getParent();
+            if (parent instanceof PsiMethod) {
+                PsiMethod psiMethod = (PsiMethod) parent;
+                return isAvailableByPsiMethod(psiMethod);
+            }
+        }
+        return false;
+    }
+
+    @Override
+    protected GenerateBase buildGenerate(PsiElement psiElement) {
+        if (psiElement instanceof PsiJavaToken) {
+            PsiJavaToken psiJavaToken = (PsiJavaToken) psiElement;
+            IElementType tokenType = psiJavaToken.getTokenType();
+            String tokenTypeName = tokenType.toString();
+            if ("LPARENTH".equals(tokenTypeName)) {
+                PsiElement parent = psiElement.getParent();
+                if (parent != null) {
+                    if (parent.getParent() instanceof PsiMethod) {
+                        PsiMethod psiMethod = (PsiMethod) parent.getParent();
+                        return buildGenerateByPsiMethod(psiMethod);
+                    }
+                }
+            }
+        }
+        if (psiElement instanceof PsiIdentifier) {
+            PsiElement parent = psiElement.getParent();
+            if (parent instanceof PsiMethod) {
+                PsiMethod psiMethod = (PsiMethod) parent;
+                return buildGenerateByPsiMethod(psiMethod);
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public void invoke(@NotNull Project project, Editor editor, @NotNull PsiElement psiElement) throws IncorrectOperationException {
+        GenerateBase generateBase = buildGenerate(psiElement);
+        PsiDocumentManager psiDocumentManager = PsiDocumentManager.getInstance(project);
+        PsiFile containingFile = psiElement.getContainingFile();
+        Document document = psiDocumentManager.getDocument(containingFile);
+        if (document == null) {
+            return;
+        }
+        if (psiElement instanceof PsiJavaToken) {
+            PsiJavaToken psiJavaToken = (PsiJavaToken) psiElement;
+            IElementType tokenType = psiJavaToken.getTokenType();
+            String tokenTypeName = tokenType.toString();
+            if ("LPARENTH".equals(tokenTypeName)) {
+                PsiElement parent = psiElement.getParent();
+                if (parent != null) {
+                    if (parent.getParent() instanceof PsiMethod) {
+                        PsiMethod psiMethod = (PsiMethod) parent.getParent();
+                        invokeByPsiMethod(generateBase, psiDocumentManager, containingFile, document, psiMethod);
+                    }
+                }
+            }
+        }
+        if (psiElement instanceof PsiIdentifier) {
+            PsiElement parent = psiElement.getParent();
+            if (parent instanceof PsiMethod) {
+                PsiMethod psiMethod = (PsiMethod) parent;
+                invokeByPsiMethod(generateBase, psiDocumentManager, containingFile, document, psiMethod);
+            }
+        }
+        PsiUtil.clearGeneric();
+    }
+
+    @Nls
+    @NotNull
+    @Override
+    public String getFamilyName() {
+        return GenerateConst.GENERATE_CONVERT;
+    }
+
+    @NotNull
+    @Override
+    public String getText() {
+        return GenerateConst.GENERATE_CONVERT;
+    }
+
+    private boolean isAvailableByPsiMethod(PsiMethod psiMethod) {
+        PsiParameter[] parameters = psiMethod.getParameterList().getParameters();
+        PsiType returnType = psiMethod.getReturnType();
+        if (returnType != null && parameters.length == 1) {
+            boolean srcClassHasValidGetter = false;
+            boolean dstClassHasValidSetter = false;
+            PsiParameter psiParameter = parameters[0];
+            PsiType psiType = psiParameter.getType();
+            PsiClass srcPsiClass = PsiClassUtil.getPsiClassByPsiType(psiType);
+            if (srcPsiClass != null) {
+                srcClassHasValidGetter = PsiClassUtil.checkClassHasValidGetter(srcPsiClass);
+            }
+            PsiClass dstPsiClass = PsiClassUtil.getPsiClassByPsiType(returnType);
+            if (dstPsiClass != null) {
+                dstClassHasValidSetter = PsiClassUtil.checkClassHasValidSetter(dstPsiClass);
+            }
+            // 当源对象有 Get 方法, 目标对象有 Set 方法, 即认为可以进行 Convert
+            return srcClassHasValidGetter && dstClassHasValidSetter;
+        } else {
+            return false;
+        }
+    }
+
+    @Nullable
+    private GenerateConvertForMethod buildGenerateByPsiMethod(PsiMethod psiMethod) {
+        PsiType dstPsiType = psiMethod.getReturnType();
+        PsiParameter[] parameters = psiMethod.getParameterList().getParameters();
+        if (dstPsiType != null && parameters.length == 1) {
+            PsiParameter psiParameter = parameters[0];
+            PsiType srcPsiType = psiParameter.getType();
+            String dstTypeName = dstPsiType.getPresentableText();
+            BaseVar varForSet = new BaseVar();
+            varForSet.setVarName(StringUtil.toCamelCase(dstTypeName));
+            varForSet.setVarType(dstPsiType);
+
+            BaseVar varForGet = new BaseVar();
+            varForGet.setVarName(psiParameter.getName());
+            varForGet.setVarType(srcPsiType);
+            return new GenerateConvertForMethod(varForSet, varForGet);
+        } else {
+            return null;
+        }
+    }
+
+    private void invokeByPsiMethod(GenerateBase generateBase, PsiDocumentManager psiDocumentManager, PsiFile containingFile, Document document, PsiMethod psiMethod) {
+        String splitText = PsiDocumentUtil.calculateSplitText(document, psiMethod.getTextRange().getStartOffset(), "    ");
+        int insertOffset = psiMethod.getBody().getTextOffset() + 2;
+        generateBase.insertCodeByPsiType(document, psiDocumentManager, containingFile, splitText, insertOffset);
+    }
+
+}
