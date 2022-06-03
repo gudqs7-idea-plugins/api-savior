@@ -6,12 +6,7 @@ import cn.gudqs7.plugins.common.enums.StructureType;
 import cn.gudqs7.plugins.common.pojo.resolver.CommentInfo;
 import cn.gudqs7.plugins.common.pojo.resolver.StructureAndCommentInfo;
 import cn.gudqs7.plugins.common.resolver.comment.AnnotationHolder;
-import cn.gudqs7.plugins.common.util.BaseTypeUtil;
-import cn.gudqs7.plugins.common.util.DataHolder;
-import cn.gudqs7.plugins.common.util.PsiClassUtil;
-import cn.gudqs7.plugins.common.util.PsiUtil;
-import cn.gudqs7.plugins.savior.docer.savior.base.BaseSavior;
-import cn.gudqs7.plugins.savior.docer.theme.Theme;
+import cn.gudqs7.plugins.common.util.*;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.VirtualFileManager;
@@ -29,16 +24,12 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author WQ
  * @date 2022/4/4
  */
-public class StructureAndCommentResolver extends BaseSavior implements IStructureAndCommentResolver {
+public class StructureAndCommentResolver implements IStructureAndCommentResolver {
 
     private Project project;
 
     private final ConcurrentHashMap<String, StructureAndCommentInfo> earlyCache = new ConcurrentHashMap<>(16);
     private final ConcurrentHashMap<String, StructureAndCommentInfo> psiClassCache = new ConcurrentHashMap<>(16);
-
-    public StructureAndCommentResolver(Theme theme) {
-        super(theme);
-    }
 
     public void setProject(Project project) {
         this.project = project;
@@ -195,7 +186,7 @@ public class StructureAndCommentResolver extends BaseSavior implements IStructur
                 continue;
             }
 
-            StructureAndCommentInfo child =  resolveByPsiType(root, fieldName, psiFieldType, commentInfo, psiClassReferenceType, fieldPrefix, level);
+            StructureAndCommentInfo child = resolveByPsiType(root, fieldName, psiFieldType, commentInfo, psiClassReferenceType, fieldPrefix, level);
             if (child == null) {
                 continue;
             }
@@ -263,7 +254,7 @@ public class StructureAndCommentResolver extends BaseSavior implements IStructur
     private StructureAndCommentInfo resolveByPsiType0(int fieldTypeCode, String fieldName, PsiType psiFieldType, CommentInfo commentInfo, String typeNameFormat, String fieldPrefix, int level) {
         boolean hidden = commentInfo.isHidden(false);
         fieldName = commentInfo.getName(fieldName);
-        hidden = theme.handleHidden(fieldName, psiFieldType, hidden);
+        hidden = handleHidden(fieldName, psiFieldType, hidden);
         if (hidden) {
             return null;
         }
@@ -393,6 +384,17 @@ public class StructureAndCommentResolver extends BaseSavior implements IStructur
             System.out.println(psiFieldType.getPresentableText() + " ==> not basic type, not ReferenceType");
         }
         return structureAndCommentInfo;
+    }
+
+    private boolean handleHidden(String fieldName, PsiType psiFieldType, boolean oldVal) {
+        if (ParamFilter.isFieldNameNeedJump(fieldName)) {
+            return true;
+        }
+        String typeQname = psiFieldType.getCanonicalText();
+        if (ParamFilter.isFieldTypeNeedJump(typeQname)) {
+            return true;
+        }
+        return oldVal;
     }
 
     private StructureAndCommentInfo getStructureAndCommentInfoByCollection(String fieldName, CommentInfo commentInfo, String typeNameFormat, String fieldPrefix, int level, StructureAndCommentInfo structureAndCommentInfo, PsiType[] parameters, String format, FieldType fieldType) {

@@ -3,24 +3,21 @@ package cn.gudqs7.plugins.common.base.reader;
 import cn.gudqs7.plugins.common.consts.MapKeyConstant;
 import cn.gudqs7.plugins.common.pojo.ReadOnlyMap;
 import cn.gudqs7.plugins.common.pojo.resolver.StructureAndCommentInfo;
-import cn.gudqs7.plugins.savior.docer.savior.base.BaseSavior;
-import cn.gudqs7.plugins.savior.docer.theme.Theme;
 import com.intellij.openapi.project.Project;
 
 import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * T: 初步解析后的返回值类型
+ * B: 根据初步解析后的返回值加工后最终地返回值
+ *
  * @author WQ
  * @date 2022/4/4
  */
-public abstract class AbstractReader<T, B> extends BaseSavior implements IStructureAndCommentReader<B> {
+public abstract class AbstractReader<T, B> implements IStructureAndCommentReader<B> {
 
     protected Project project;
-
-    public AbstractReader(Theme theme) {
-        super(theme);
-    }
 
     @Override
     public B read(StructureAndCommentInfo structureAndCommentInfo) {

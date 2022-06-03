@@ -1,6 +1,6 @@
 package cn.gudqs7.plugins.common.pojo.resolver;
 
-import cn.gudqs7.plugins.common.util.StringUtil;
+import cn.gudqs7.plugins.common.util.StringTool;
 import lombok.Data;
 
 /**
@@ -16,8 +16,8 @@ public class ResponseCodeInfo {
     }
 
     public ResponseCodeInfo(String code, String message) {
-        this.code = StringUtil.replaceMd(code);
-        this.message = StringUtil.replaceMd(message);
+        this.code = StringTool.replaceMd(code);
+        this.message = StringTool.replaceMd(message);
     }
 
 }

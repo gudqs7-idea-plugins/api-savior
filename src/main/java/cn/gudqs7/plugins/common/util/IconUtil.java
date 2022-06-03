@@ -1,6 +1,6 @@
 package cn.gudqs7.plugins.common.util;
 
-import cn.gudqs7.plugins.savior.search.resolver.HttpMethod;
+import cn.gudqs7.plugins.common.enums.HttpMethod;
 import com.intellij.openapi.util.IconLoader;
 
 import javax.swing.*;
