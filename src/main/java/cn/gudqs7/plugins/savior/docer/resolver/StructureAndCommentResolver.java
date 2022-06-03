@@ -1,5 +1,6 @@
 package cn.gudqs7.plugins.savior.docer.resolver;
 
+import cn.gudqs7.plugins.common.util.BaseTypeUtil;
 import cn.gudqs7.plugins.common.util.DataHolder;
 import cn.gudqs7.plugins.common.util.PsiClassUtil;
 import cn.gudqs7.plugins.common.util.PsiUtil;
@@ -11,7 +12,6 @@ import cn.gudqs7.plugins.savior.docer.pojo.StructureAndCommentInfo;
 import cn.gudqs7.plugins.savior.docer.pojo.annotation.CommentInfo;
 import cn.gudqs7.plugins.savior.docer.savior.base.BaseSavior;
 import cn.gudqs7.plugins.savior.docer.theme.Theme;
-import cn.gudqs7.plugins.savior.generate.util.BaseTypeUtil;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.VirtualFileManager;

@@ -9,7 +9,6 @@ import cn.gudqs7.plugins.savior.docer.reader.Java2BulkReader;
 import cn.gudqs7.plugins.savior.docer.reader.Java2JsonReader;
 import cn.gudqs7.plugins.savior.docer.resolver.StructureAndCommentResolver;
 import cn.gudqs7.plugins.savior.docer.theme.Theme;
-import cn.gudqs7.plugins.savior.generate.util.BaseTypeUtil;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;

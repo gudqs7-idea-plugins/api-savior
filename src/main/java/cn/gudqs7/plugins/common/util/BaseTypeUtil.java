@@ -1,6 +1,5 @@
-package cn.gudqs7.plugins.savior.generate.util;
+package cn.gudqs7.plugins.common.util;
 
-import cn.gudqs7.plugins.common.util.ConfigHolder;
 import cn.gudqs7.plugins.savior.docer.constant.CommentConst;
 import cn.gudqs7.plugins.savior.docer.enums.MoreCommentTagEnum;
 import cn.gudqs7.plugins.savior.docer.pojo.annotation.CommentInfo;

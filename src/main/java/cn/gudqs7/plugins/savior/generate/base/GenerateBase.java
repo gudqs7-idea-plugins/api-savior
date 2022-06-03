@@ -1,9 +1,9 @@
 package cn.gudqs7.plugins.savior.generate.base;
 
 import cn.gudqs7.plugins.common.util.ActionUtil;
+import cn.gudqs7.plugins.common.util.BaseTypeUtil;
 import cn.gudqs7.plugins.common.util.PsiDocumentUtil;
 import cn.gudqs7.plugins.common.util.PsiUtil;
-import cn.gudqs7.plugins.savior.generate.util.BaseTypeUtil;
 import com.intellij.codeInsight.template.Template;
 import com.intellij.codeInsight.template.TemplateManager;
 import com.intellij.openapi.editor.Document;
