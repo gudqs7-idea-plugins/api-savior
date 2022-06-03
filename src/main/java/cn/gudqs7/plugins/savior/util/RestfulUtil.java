@@ -1,4 +1,4 @@
-package cn.gudqs7.plugins.common.util;
+package cn.gudqs7.plugins.savior.util;
 
 import cn.gudqs7.plugins.savior.pojo.PostmanKvInfo;
 import org.apache.commons.collections.CollectionUtils;

@@ -7,10 +7,10 @@ import cn.gudqs7.plugins.common.pojo.resolver.RequestMapping;
 import cn.gudqs7.plugins.common.pojo.resolver.StructureAndCommentInfo;
 import cn.gudqs7.plugins.common.resolver.comment.AnnotationHolder;
 import cn.gudqs7.plugins.common.util.JsonUtil;
-import cn.gudqs7.plugins.common.util.RestfulUtil;
 import cn.gudqs7.plugins.savior.enums.ThemeType;
 import cn.gudqs7.plugins.savior.pojo.PostmanKvInfo;
 import cn.gudqs7.plugins.savior.reader.Java2BulkReader;
+import cn.gudqs7.plugins.savior.util.RestfulUtil;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiMethod;
 

@@ -10,6 +10,7 @@ import cn.gudqs7.plugins.savior.reader.Java2ApiReader;
 import cn.gudqs7.plugins.savior.reader.Java2BulkReader;
 import cn.gudqs7.plugins.savior.reader.Java2MapReader;
 import cn.gudqs7.plugins.savior.theme.Theme;
+import cn.gudqs7.plugins.savior.util.RestfulUtil;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
