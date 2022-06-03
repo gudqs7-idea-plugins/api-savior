@@ -1,8 +1,9 @@
-package cn.gudqs7.plugins.common.util;
+package cn.gudqs7.plugins.common.util.structure;
 
 import cn.gudqs7.plugins.common.consts.CommentConst;
 import cn.gudqs7.plugins.common.enums.MoreCommentTagEnum;
 import cn.gudqs7.plugins.common.pojo.resolver.CommentInfo;
+import cn.gudqs7.plugins.common.util.ConfigHolder;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiType;
 import lombok.Data;

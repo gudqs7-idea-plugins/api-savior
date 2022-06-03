@@ -1,9 +1,8 @@
 package cn.gudqs7.plugins.generate.convert.action;
 
-import cn.gudqs7.plugins.common.util.PsiClassUtil;
-import cn.gudqs7.plugins.common.util.PsiDocumentUtil;
-import cn.gudqs7.plugins.common.util.PsiUtil;
 import cn.gudqs7.plugins.common.util.StringTool;
+import cn.gudqs7.plugins.common.util.jetbrain.PsiClassUtil;
+import cn.gudqs7.plugins.common.util.jetbrain.PsiUtil;
 import cn.gudqs7.plugins.generate.base.BaseVar;
 import cn.gudqs7.plugins.generate.base.GenerateBase;
 import cn.gudqs7.plugins.generate.base.GenerateBaseAction;
@@ -179,9 +178,9 @@ public class GenerateConvertAction extends GenerateBaseAction {
     }
 
     private void invokeByPsiMethod(GenerateBase generateBase, PsiDocumentManager psiDocumentManager, PsiFile containingFile, Document document, PsiMethod psiMethod) {
-        String splitText = PsiDocumentUtil.calculateSplitText(document, psiMethod.getTextRange().getStartOffset(), "    ");
-        int insertOffset = psiMethod.getBody().getTextOffset() + 2;
-        generateBase.insertCodeByPsiType(document, psiDocumentManager, containingFile, splitText, insertOffset);
+        String prefix = getPrefix(document, psiMethod);
+        Integer insertOffset = getInsertOffset(psiMethod);
+        generateBase.insertCodeByPsiType(document, psiDocumentManager, containingFile, prefix, insertOffset);
     }
 
 }

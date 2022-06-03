@@ -23,9 +23,10 @@ public class GenerateConvertForMethod extends GenerateConvert {
         String varName = baseVar.getVarName();
         PsiType psiType = baseVar.getVarType();
         String typeName = psiType.getPresentableText();
-        if (splitText.startsWith("\n")) {
-            builder.append(splitText.substring(1));
-        }
+//        if (splitText.startsWith("\n")) {
+//            builder.append(splitText.substring(1));
+//        }
+        builder.append(splitText);
         builder.append(typeName).append(" ").append(varName).append(" = ").append("new ").append(typeName).append("();").append(splitText);
     }
 

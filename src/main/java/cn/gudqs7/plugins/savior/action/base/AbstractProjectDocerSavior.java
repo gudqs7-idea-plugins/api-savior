@@ -2,8 +2,8 @@ package cn.gudqs7.plugins.savior.action.base;
 
 import cn.gudqs7.plugins.common.base.action.AbstractBatchDocerSavior;
 import cn.gudqs7.plugins.common.pojo.resolver.CommentInfo;
-import cn.gudqs7.plugins.common.util.ActionUtil;
-import cn.gudqs7.plugins.common.util.ClipboardUtil;
+import cn.gudqs7.plugins.common.util.jetbrain.ClipboardUtil;
+import cn.gudqs7.plugins.common.util.jetbrain.DialogUtil;
 import cn.gudqs7.plugins.savior.savior.more.JavaToDocSavior;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiClass;
@@ -32,7 +32,7 @@ public abstract class AbstractProjectDocerSavior extends AbstractBatchDocerSavio
         if (isNeedDealPsiClass(psiClass, project)) {
             String docByInterface = docSavior.generateApiByServiceInterface(psiClass, project);
             ClipboardUtil.setSysClipboardText(docByInterface);
-            ActionUtil.showDialog(project, "已自动的将 Markdown 文档复制到您的剪切板!\n您可在此预览后再去粘贴!", docByInterface);
+            DialogUtil.showDialog(project, "已自动的将 Markdown 文档复制到您的剪切板!\n您可在此预览后再去粘贴!", docByInterface);
             return true;
         }
         return false;

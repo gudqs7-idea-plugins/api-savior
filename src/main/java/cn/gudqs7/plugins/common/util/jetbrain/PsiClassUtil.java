@@ -1,4 +1,4 @@
-package cn.gudqs7.plugins.common.util;
+package cn.gudqs7.plugins.common.util.jetbrain;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
@@ -9,7 +9,7 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static cn.gudqs7.plugins.common.util.PsiUtil.handleSyntaxError;
+import static cn.gudqs7.plugins.common.util.jetbrain.ExceptionUtil.handleSyntaxError;
 
 /**
  * @author wenquan

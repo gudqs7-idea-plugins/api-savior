@@ -1,8 +1,8 @@
 package cn.gudqs7.plugins.common.diagnostic;
 
-import cn.gudqs7.plugins.common.util.ActionUtil;
-import cn.gudqs7.plugins.common.util.HttpUtil;
 import cn.gudqs7.plugins.common.util.JsonUtil;
+import cn.gudqs7.plugins.common.util.api.HttpUtil;
+import cn.gudqs7.plugins.common.util.jetbrain.ExceptionUtil;
 import org.apache.commons.codec.net.URLCodec;
 import org.apache.commons.collections.CollectionUtils;
 import org.jetbrains.annotations.NotNull;
@@ -65,7 +65,7 @@ public abstract class AbstractGithubErrorReportSubmitter extends AbstractErrorRe
                 return DECIMAL_FORMAT.format(number);
             }
         } catch (Exception e) {
-            ActionUtil.handleException(e);
+            ExceptionUtil.handleException(e);
         }
         return null;
     }
@@ -89,7 +89,7 @@ public abstract class AbstractGithubErrorReportSubmitter extends AbstractErrorRe
                 }
             }
         } catch (Exception e) {
-            ActionUtil.handleException(e);
+            ExceptionUtil.handleException(e);
         }
         return null;
     }

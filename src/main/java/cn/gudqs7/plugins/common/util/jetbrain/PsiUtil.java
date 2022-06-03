@@ -1,4 +1,4 @@
-package cn.gudqs7.plugins.common.util;
+package cn.gudqs7.plugins.common.util.jetbrain;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
@@ -24,7 +24,7 @@ public class PsiUtil {
     public static void resolvePsiClassParameter(PsiClassType psiClassReferenceType) {
         PsiClass psiClass = psiClassReferenceType.resolve();
         if (psiClass == null) {
-            handleSyntaxError(psiClassReferenceType.getCanonicalText());
+            ExceptionUtil.handleSyntaxError(psiClassReferenceType.getCanonicalText());
         }
         String qualifiedName = psiClass.getQualifiedName();
         PsiType[] parameters = psiClassReferenceType.getParameters();
@@ -146,7 +146,7 @@ public class PsiUtil {
             PsiClassReferenceType psiClassReferenceType = (PsiClassReferenceType) psiFieldType;
             PsiClass resolveClass = psiClassReferenceType.resolve();
             if (resolveClass == null) {
-                handleSyntaxError(psiClassReferenceType.getCanonicalText());
+                ExceptionUtil.handleSyntaxError(psiClassReferenceType.getCanonicalText());
             }
             return resolveClass instanceof PsiTypeParameter;
         }
@@ -175,7 +175,7 @@ public class PsiUtil {
             PsiClassReferenceType psiClassReferenceType = (PsiClassReferenceType) psiFieldType;
             PsiClass resolveClass = psiClassReferenceType.resolve();
             if (resolveClass == null) {
-                handleSyntaxError(psiClassReferenceType.getCanonicalText());
+                ExceptionUtil.handleSyntaxError(psiClassReferenceType.getCanonicalText());
             }
             return isPsiClassFromXxx(resolveClass, project, qNameOfXxx);
         }
@@ -197,10 +197,6 @@ public class PsiUtil {
 
 
     // =================     其他相关工具     ====================
-
-    public static void handleSyntaxError(String code) throws RuntimeException {
-        throw new RuntimeException("您的代码可能存在语法错误, 无法为您生成代码, 参考信息: " + code);
-    }
 
     public static PsiClass findOnePsiClassByClassName(String qualifiedClassName, Project project) {
         return JavaPsiFacade.getInstance(project).findClass(qualifiedClassName, GlobalSearchScope.allScope(project));
@@ -314,7 +310,7 @@ public class PsiUtil {
      * @param method 方法
      * @return setter 对应的字段是否为 boolean 类型
      */
-    public static boolean setMethodIsBoolean(PsiMethod method) {
+    public static boolean setterIsBoolType(PsiMethod method) {
         PsiParameter[] parameters = method.getParameterList().getParameters();
         if (parameters.length > 0) {
             PsiParameter parameter = parameters[0];

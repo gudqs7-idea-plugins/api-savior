@@ -1,6 +1,6 @@
 package cn.gudqs7.plugins.common.base.action.intention.helper;
 
-import cn.gudqs7.plugins.common.util.PsiDocumentUtil;
+import cn.gudqs7.plugins.common.util.jetbrain.PsiDocumentUtil;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiDocumentManager;

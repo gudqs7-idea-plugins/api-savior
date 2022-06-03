@@ -1,23 +1,15 @@
 package cn.gudqs7.plugins.common.util;
 
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiJavaFile;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.nio.charset.StandardCharsets;
 
 /**
  * @author wq
  */
 public class FileUtil {
-
-    public static void writeStringToFile() {
-
-    }
 
     public static String getRightFileName(String fileName) {
         fileName = fileName.replaceAll("\\\\", "");
@@ -37,7 +29,7 @@ public class FileUtil {
             return;
         }
         path = getRightFileName(path);
-        if (parent == null || parent.isFile()) {
+        if (parent == null || !parent.isDirectory()) {
             return;
         }
         try {
@@ -50,7 +42,7 @@ public class FileUtil {
             }
 
             FileOutputStream fileOutputStream = new FileOutputStream(file);
-            fileOutputStream.write(content.getBytes(StandardCharsets.UTF_8));
+            fileOutputStream.write(content.getBytes());
             fileOutputStream.flush();
             fileOutputStream.close();
         } catch (Exception e) {
@@ -66,23 +58,6 @@ public class FileUtil {
         } catch (Exception e) {
             throw new RuntimeException("deleteDirectory Error: " + e.toString());
         }
-    }
-
-    public static String getPackageNameByPsiClass(PsiClass psiClass0) {
-        String packageNameUnique = "";
-        PsiElement element = psiClass0.getParent();
-        if (element instanceof PsiJavaFile) {
-            PsiJavaFile psiJavaFile = (PsiJavaFile) element;
-            String packageName = psiJavaFile.getPackageName();
-            if (StringUtils.isNotBlank(packageName)) {
-                return packageName;
-            }
-        }
-        if (element instanceof PsiClass) {
-            PsiClass psiClass = (PsiClass) element;
-            return getPackageNameByPsiClass(psiClass);
-        }
-        return packageNameUnique;
     }
 
 }

@@ -4,7 +4,7 @@ import cn.gudqs7.plugins.common.base.action.AbstractBatchDocerSavior;
 import cn.gudqs7.plugins.common.pojo.resolver.CommentInfo;
 import cn.gudqs7.plugins.common.util.FileUtil;
 import cn.gudqs7.plugins.common.util.FreeMarkerUtil;
-import cn.gudqs7.plugins.common.util.PsiClassUtil;
+import cn.gudqs7.plugins.common.util.jetbrain.PsiClassUtil;
 import cn.gudqs7.plugins.savior.savior.more.JavaToDocSavior;
 import cn.gudqs7.plugins.savior.theme.ThemeHelper;
 import com.intellij.openapi.progress.ProgressIndicator;

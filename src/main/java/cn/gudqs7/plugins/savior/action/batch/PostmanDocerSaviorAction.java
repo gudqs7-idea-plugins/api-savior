@@ -3,7 +3,12 @@ package cn.gudqs7.plugins.savior.action.batch;
 import cn.gudqs7.plugins.common.base.action.AbstractBatchDocerSavior;
 import cn.gudqs7.plugins.common.consts.MapKeyConstant;
 import cn.gudqs7.plugins.common.pojo.resolver.CommentInfo;
-import cn.gudqs7.plugins.common.util.*;
+import cn.gudqs7.plugins.common.util.ConfigHolder;
+import cn.gudqs7.plugins.common.util.FileUtil;
+import cn.gudqs7.plugins.common.util.JsonUtil;
+import cn.gudqs7.plugins.common.util.api.PostmanApiUtil;
+import cn.gudqs7.plugins.common.util.jetbrain.ExceptionUtil;
+import cn.gudqs7.plugins.common.util.jetbrain.PsiClassUtil;
 import cn.gudqs7.plugins.savior.savior.more.JavaToPostmanSavior;
 import cn.gudqs7.plugins.savior.theme.ThemeHelper;
 import com.intellij.openapi.application.ApplicationManager;
@@ -64,7 +69,7 @@ public class PostmanDocerSaviorAction extends AbstractBatchDocerSavior {
                     itemList.add(postmanItem);
                 }
             } catch (Exception e1) {
-                ActionUtil.handleException(e1);
+                ExceptionUtil.handleException(e1);
                 hasCancelAtomic.set(true);
             }
         });

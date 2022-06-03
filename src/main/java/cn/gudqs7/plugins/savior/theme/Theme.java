@@ -6,11 +6,9 @@ import cn.gudqs7.plugins.common.pojo.resolver.StructureAndCommentInfo;
 import cn.gudqs7.plugins.common.resolver.comment.AnnotationHolder;
 import cn.gudqs7.plugins.common.util.ConfigHolder;
 import cn.gudqs7.plugins.common.util.FreeMarkerUtil;
-import cn.gudqs7.plugins.common.util.ParamFilter;
 import cn.gudqs7.plugins.savior.enums.ThemeType;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiMethod;
-import com.intellij.psi.PsiType;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.InputStream;
@@ -84,25 +82,6 @@ public interface Theme {
      */
     default String getDefaultContentType() {
         return RequestMapping.ContentType.APPLICATION_JSON;
-    }
-
-    /**
-     * 判断参数是否需要跳过
-     *
-     * @param fieldName
-     * @param psiFieldType
-     * @param oldVal
-     * @return
-     */
-    default Boolean handleHidden(String fieldName, PsiType psiFieldType, Boolean oldVal) {
-        if (ParamFilter.isFieldNameNeedJump(fieldName)) {
-            return true;
-        }
-        String typeQname = psiFieldType.getCanonicalText();
-        if (ParamFilter.isFieldTypeNeedJump(typeQname)) {
-            return true;
-        }
-        return oldVal;
     }
 
     /**

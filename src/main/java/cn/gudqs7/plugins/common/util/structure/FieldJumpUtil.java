@@ -1,4 +1,4 @@
-package cn.gudqs7.plugins.common.util;
+package cn.gudqs7.plugins.common.util.structure;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -6,7 +6,7 @@ import java.util.Set;
 /**
  * @author wq
  */
-public class ParamFilter {
+public class FieldJumpUtil {
 
 
     private static final Set<String> JUMP_FIELD_NAME_SET = new HashSet<>();
@@ -22,17 +22,11 @@ public class ParamFilter {
     }
 
     public static boolean isFieldNameNeedJump(String fieldName) {
-        if (JUMP_FIELD_NAME_SET.contains(fieldName)) {
-            return true;
-        }
-        return false;
+        return JUMP_FIELD_NAME_SET.contains(fieldName);
     }
 
     public static boolean isFieldTypeNeedJump(String typeQname) {
-        if (JUMP_TYPE_NAME_SET.contains(typeQname)) {
-            return true;
-        }
-        return false;
+        return JUMP_TYPE_NAME_SET.contains(typeQname);
     }
 
 }

@@ -1,6 +1,6 @@
 package cn.gudqs7.plugins.generate.setter.action;
 
-import cn.gudqs7.plugins.common.util.PsiClassUtil;
+import cn.gudqs7.plugins.common.util.jetbrain.PsiClassUtil;
 import cn.gudqs7.plugins.generate.base.BaseVar;
 import cn.gudqs7.plugins.generate.base.GenerateBase;
 import cn.gudqs7.plugins.generate.base.GenerateBaseAction;

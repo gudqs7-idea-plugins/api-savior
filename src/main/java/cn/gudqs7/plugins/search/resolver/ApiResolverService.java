@@ -3,8 +3,8 @@ package cn.gudqs7.plugins.search.resolver;
 import cn.gudqs7.plugins.common.enums.HttpMethod;
 import cn.gudqs7.plugins.common.pojo.resolver.CommentInfo;
 import cn.gudqs7.plugins.common.resolver.comment.AnnotationHolder;
-import cn.gudqs7.plugins.common.util.ActionUtil;
-import cn.gudqs7.plugins.common.util.PsiAnnotationUtil;
+import cn.gudqs7.plugins.common.util.jetbrain.ExceptionUtil;
+import cn.gudqs7.plugins.common.util.jetbrain.PsiAnnotationUtil;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
 import com.intellij.psi.impl.java.stubs.index.JavaAnnotationIndex;
@@ -49,7 +49,7 @@ public class ApiResolverService {
             try {
                 navigationItemList.addAll(getServiceItemList(psiClass));
             } catch (Exception e) {
-                ActionUtil.handleException(e);
+                ExceptionUtil.handleException(e);
             }
         }
         return navigationItemList;
@@ -72,7 +72,7 @@ public class ApiResolverService {
                 methodPathList.addAll(getMethodList0(psiMethod, AnnotationHolder.QNAME_OF_PUT_MAPPING, HttpMethod.PUT));
                 methodPathList.addAll(getMethodList0(psiMethod, AnnotationHolder.QNAME_OF_DELETE_MAPPING, HttpMethod.DELETE));
             } catch (Exception e) {
-                ActionUtil.handleException(e);
+                ExceptionUtil.handleException(e);
             }
         }
 

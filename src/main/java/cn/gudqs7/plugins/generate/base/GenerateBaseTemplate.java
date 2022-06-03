@@ -1,8 +1,8 @@
 package cn.gudqs7.plugins.generate.base;
 
 import cn.gudqs7.plugins.common.base.postfix.template.AbstractPostfixTemplate;
-import cn.gudqs7.plugins.common.util.ActionUtil;
-import cn.gudqs7.plugins.common.util.PsiUtil;
+import cn.gudqs7.plugins.common.util.jetbrain.ExceptionUtil;
+import cn.gudqs7.plugins.common.util.jetbrain.PsiUtil;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
@@ -56,7 +56,7 @@ public abstract class GenerateBaseTemplate extends AbstractPostfixTemplate {
             generateBase.insertCodeByPsiTypeWithTemplate(document, psiDocumentManager, containingFile, editor);
             PsiUtil.clearGeneric();
         } catch (Exception e) {
-            ActionUtil.handleException(e);
+            ExceptionUtil.handleException(e);
         }
     }
 

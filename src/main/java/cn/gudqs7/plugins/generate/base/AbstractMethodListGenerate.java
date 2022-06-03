@@ -1,6 +1,6 @@
 package cn.gudqs7.plugins.generate.base;
 
-import cn.gudqs7.plugins.common.util.PsiUtil;
+import cn.gudqs7.plugins.common.util.jetbrain.PsiUtil;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiClassType;
 import com.intellij.psi.PsiMethod;

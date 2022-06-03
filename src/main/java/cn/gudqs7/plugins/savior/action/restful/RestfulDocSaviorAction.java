@@ -1,6 +1,6 @@
 package cn.gudqs7.plugins.savior.action.restful;
 
-import cn.gudqs7.plugins.common.util.PsiClassUtil;
+import cn.gudqs7.plugins.common.util.jetbrain.PsiClassUtil;
 import cn.gudqs7.plugins.savior.action.base.AbstractDocerSavior;
 import cn.gudqs7.plugins.savior.theme.ThemeHelper;
 import com.intellij.openapi.actionSystem.AnActionEvent;

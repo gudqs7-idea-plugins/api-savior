@@ -1,9 +1,9 @@
 package cn.gudqs7.plugins.generate.base;
 
-import cn.gudqs7.plugins.common.util.ActionUtil;
-import cn.gudqs7.plugins.common.util.BaseTypeUtil;
-import cn.gudqs7.plugins.common.util.PsiDocumentUtil;
-import cn.gudqs7.plugins.common.util.PsiUtil;
+import cn.gudqs7.plugins.common.util.jetbrain.ExceptionUtil;
+import cn.gudqs7.plugins.common.util.jetbrain.PsiDocumentUtil;
+import cn.gudqs7.plugins.common.util.jetbrain.PsiUtil;
+import cn.gudqs7.plugins.common.util.structure.BaseTypeUtil;
 import com.intellij.codeInsight.template.Template;
 import com.intellij.codeInsight.template.TemplateManager;
 import com.intellij.openapi.editor.Document;
@@ -67,7 +67,7 @@ public interface GenerateBase {
             PsiClassReferenceType psiClassReferenceType = (PsiClassReferenceType) psiFieldType;
             PsiClass resolveClass = psiClassReferenceType.resolve();
             if (resolveClass == null) {
-                PsiUtil.handleSyntaxError(psiClassReferenceType.getCanonicalText());
+                ExceptionUtil.handleSyntaxError(psiClassReferenceType.getCanonicalText());
             }
 
             PsiType[] parameters = psiClassReferenceType.getParameters();
@@ -210,7 +210,7 @@ public interface GenerateBase {
             manager.startTemplate(editor, template);
             PsiDocumentUtil.addImportToFile(psiDocumentManager, (PsiJavaFile) containingFile, document, newImportList);
         } catch (Throwable throwable) {
-            ActionUtil.handleException(throwable);
+            ExceptionUtil.handleException(throwable);
         }
     }
 

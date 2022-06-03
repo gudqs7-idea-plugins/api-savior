@@ -3,8 +3,17 @@ package cn.gudqs7.plugins.common.base.action;
 import cn.gudqs7.plugins.common.enums.MoreCommentTagEnum;
 import cn.gudqs7.plugins.common.pojo.resolver.CommentInfo;
 import cn.gudqs7.plugins.common.resolver.comment.AnnotationHolder;
-import cn.gudqs7.plugins.common.util.*;
-import com.intellij.openapi.actionSystem.*;
+import cn.gudqs7.plugins.common.util.ConfigHolder;
+import cn.gudqs7.plugins.common.util.FileUtil;
+import cn.gudqs7.plugins.common.util.WebEnvironmentUtil;
+import cn.gudqs7.plugins.common.util.jetbrain.ClipboardUtil;
+import cn.gudqs7.plugins.common.util.jetbrain.DialogUtil;
+import cn.gudqs7.plugins.common.util.jetbrain.ExceptionUtil;
+import cn.gudqs7.plugins.common.util.jetbrain.PsiUtil;
+import com.intellij.openapi.actionSystem.AnActionEvent;
+import com.intellij.openapi.actionSystem.CommonDataKeys;
+import com.intellij.openapi.actionSystem.PlatformDataKeys;
+import com.intellij.openapi.actionSystem.UpdateInBackground;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.progress.ProcessCanceledException;
 import com.intellij.openapi.progress.ProgressIndicator;
@@ -26,7 +35,7 @@ import java.util.concurrent.atomic.AtomicReference;
 /**
  * @author wq
  */
-public abstract class AbstractBatchDocerSavior extends AnAction implements UpdateInBackground {
+public abstract class AbstractBatchDocerSavior extends AbstractAction implements UpdateInBackground {
 
     public final String API_DOC_ROOT_DIR_NAME = "api-doc";
 
@@ -38,8 +47,8 @@ public abstract class AbstractBatchDocerSavior extends AnAction implements Updat
             return;
         }
         PsiElement psiElement = e.getData(CommonDataKeys.PSI_ELEMENT);
-        PsiClass psiClass = ActionUtil.getPsiClass(psiElement);
-        PsiDirectory psiDirectory = ActionUtil.getPsiDirectory(psiElement);
+        PsiClass psiClass = getPsiClass(psiElement);
+        PsiDirectory psiDirectory = getPsiDirectory(psiElement);
 
         try {
             VirtualFile virtualFile = getFirstPsiFile(e, project, psiElement, false);
@@ -85,8 +94,8 @@ public abstract class AbstractBatchDocerSavior extends AnAction implements Updat
         }
         PsiElement psiElement = e.getData(CommonDataKeys.PSI_ELEMENT);
         try {
-            PsiClass psiClass = ActionUtil.getPsiClass(psiElement);
-            PsiDirectory psiDirectory = ActionUtil.getPsiDirectory(psiElement);
+            PsiClass psiClass = getPsiClass(psiElement);
+            PsiDirectory psiDirectory = getPsiDirectory(psiElement);
 
             Set<PsiClass> psiClassList = new TreeSet<>(
                     Comparator.comparing(PsiClass::getQualifiedName)
@@ -151,7 +160,7 @@ public abstract class AbstractBatchDocerSavior extends AnAction implements Updat
                                         AnnotationHolder psiClassHolder = AnnotationHolder.getPsiClassHolder(psiClass0);
                                         CommentInfo commentInfo = psiClassHolder.getCommentInfo();
                                         apiModelPropertyAtomic.set(commentInfo);
-                                        String packageName = FileUtil.getPackageNameByPsiClass(psiClass0);
+                                        String packageName = getPackageNameByPsiClass(psiClass0);
                                         String moduleName = getModuleName(project, packageName, psiClass0, commentInfo);
                                         moduleNameAtomic.set(moduleName);
                                     });
@@ -183,20 +192,20 @@ public abstract class AbstractBatchDocerSavior extends AnAction implements Updat
                             handleCancelTask(docRootDirPath, projectFilePath);
                         } catch (Throwable e1) {
                             hasCancelAtomic.set(true);
-                            ActionUtil.handleException(e1);
+                            ExceptionUtil.handleException(e1);
                         }
                     }
                 });
                 boolean hasCancel = hasCancelAtomic.get();
                 if (!hasCancel) {
                     ClipboardUtil.setSysClipboardText(docRootDirPath);
-                    ActionUtil.showDialog(project, getDialogTip(), docRootDirPath);
+                    DialogUtil.showDialog(project, getDialogTip(), docRootDirPath);
                 }
             }
         } catch (Throwable e1) {
-            ActionUtil.handleException(e1);
+            ExceptionUtil.handleException(e1);
         } finally {
-            ActionUtil.emptyIp();
+            WebEnvironmentUtil.emptyIp();
             destroy(e, project, psiElement);
         }
     }
@@ -206,8 +215,7 @@ public abstract class AbstractBatchDocerSavior extends AnAction implements Updat
     }
 
     protected void initConfig(AnActionEvent e, Project project, PsiElement psiElement, VirtualFile virtualFile) {
-        Map<String, String> config = ConfigUtil.getConfig("docer-config.properties", project, virtualFile);
-        ConfigHolder.putConfig(config);
+        ConfigHolder.initConfig(project, virtualFile);
     }
 
     protected void destroy(AnActionEvent e, Project project, PsiElement psiElement) {
@@ -215,8 +223,8 @@ public abstract class AbstractBatchDocerSavior extends AnAction implements Updat
     }
 
     private VirtualFile getFirstPsiFile(@NotNull AnActionEvent e, Project project, PsiElement psiElement, boolean isFromArray) {
-        PsiClass psiClass = ActionUtil.getPsiClass(psiElement);
-        PsiDirectory psiDirectory = ActionUtil.getPsiDirectory(psiElement);
+        PsiClass psiClass = getPsiClass(psiElement);
+        PsiDirectory psiDirectory = getPsiDirectory(psiElement);
         boolean isRightClickOnClass = psiClass != null;
         boolean isRightClickOnDirectory = psiDirectory != null;
         if (isRightClickOnClass) {
@@ -412,7 +420,7 @@ public abstract class AbstractBatchDocerSavior extends AnAction implements Updat
                     FileUtil.writeStringToFile(fileContent, parent, fullFileName);
                 }
             } catch (Exception e1) {
-                ActionUtil.handleException(e1);
+                ExceptionUtil.handleException(e1);
             }
         });
     }
@@ -519,6 +527,25 @@ public abstract class AbstractBatchDocerSavior extends AnAction implements Updat
                 psiClassList.addAll(Arrays.asList(classes));
             }
         }
+    }
+
+
+
+    private String getPackageNameByPsiClass(PsiClass psiClass0) {
+        String packageNameUnique = "";
+        PsiElement element = psiClass0.getParent();
+        if (element instanceof PsiJavaFile) {
+            PsiJavaFile psiJavaFile = (PsiJavaFile) element;
+            String packageName = psiJavaFile.getPackageName();
+            if (StringUtils.isNotBlank(packageName)) {
+                return packageName;
+            }
+        }
+        if (element instanceof PsiClass) {
+            PsiClass psiClass = (PsiClass) element;
+            return getPackageNameByPsiClass(psiClass);
+        }
+        return packageNameUnique;
     }
 
 }

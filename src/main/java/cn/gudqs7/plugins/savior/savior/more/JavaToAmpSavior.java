@@ -5,9 +5,9 @@ import cn.gudqs7.plugins.common.enums.MoreCommentTagEnum;
 import cn.gudqs7.plugins.common.pojo.resolver.CommentInfo;
 import cn.gudqs7.plugins.common.pojo.resolver.StructureAndCommentInfo;
 import cn.gudqs7.plugins.common.resolver.comment.AnnotationHolder;
-import cn.gudqs7.plugins.common.util.ActionUtil;
 import cn.gudqs7.plugins.common.util.ConfigHolder;
-import cn.gudqs7.plugins.common.util.PsiClassUtil;
+import cn.gudqs7.plugins.common.util.jetbrain.ExceptionUtil;
+import cn.gudqs7.plugins.common.util.jetbrain.PsiClassUtil;
 import cn.gudqs7.plugins.savior.pojo.ComplexInfo;
 import cn.gudqs7.plugins.savior.pojo.FieldCommentInfo;
 import cn.gudqs7.plugins.savior.reader.Java2ComplexReader;
@@ -80,7 +80,7 @@ public class JavaToAmpSavior extends AbstractSavior<Map<String, Object>> {
             JsonNode jsonNodeTree = objectMapper.readTree(json);
             return new YAMLMapper().writeValueAsString(jsonNodeTree);
         } catch (Exception e) {
-            ActionUtil.handleException(e);
+            ExceptionUtil.handleException(e);
         }
         return null;
     }

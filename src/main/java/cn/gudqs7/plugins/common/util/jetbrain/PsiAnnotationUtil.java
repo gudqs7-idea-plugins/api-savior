@@ -1,4 +1,4 @@
-package cn.gudqs7.plugins.common.util;
+package cn.gudqs7.plugins.common.util.jetbrain;
 
 import com.intellij.psi.PsiAnnotation;
 import com.intellij.psi.PsiAnnotationMemberValue;
@@ -11,15 +11,35 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * 注解工具类
+ *
  * @author wq
  * @date 2022/5/29
  */
 public class PsiAnnotationUtil {
 
+    /**
+     * 获取数组类型的注解字段数据
+     *
+     * @param fieldAnnotation 注解本体
+     * @param attr            字段名称
+     * @param <T>             数组元素类型
+     * @return 数组类型的注解字段数据
+     */
+    public static <T> List<T> getAnnotationListValue(PsiAnnotation fieldAnnotation, String attr) {
+        return getAnnotationListValue(fieldAnnotation, attr, null);
+    }
 
-    // =============== annotation util ===============
-
-    public static <T> List<T> getAnnotationListValue(PsiAnnotation fieldAnnotation, String attr, T defaultVal) {
+    /**
+     * 获取数组类型的注解字段数据
+     *
+     * @param fieldAnnotation 注解本体
+     * @param attr            字段名称
+     * @param <T>             数组元素类型
+     * @param defaultVal      默认值
+     * @return 数组类型的注解字段数据
+     */
+    public static <T> List<T> getAnnotationListValue(PsiAnnotation fieldAnnotation, String attr, List<T> defaultVal) {
         Object annotationValueByQname = getAnnotationValue(fieldAnnotation, attr, defaultVal);
         if (annotationValueByQname == null) {
             return null;
@@ -33,6 +53,27 @@ public class PsiAnnotationUtil {
         }
     }
 
+    /**
+     * 获取注解字段数据
+     *
+     * @param fieldAnnotation 注解本体
+     * @param attr            字段名称
+     * @param <T>             注解字段类型
+     * @return 注解字段数据
+     */
+    public static <T> T getAnnotationValue(PsiAnnotation fieldAnnotation, String attr) {
+        return getAnnotationValue(fieldAnnotation, attr, null);
+    }
+
+    /**
+     * 获取注解字段数据
+     *
+     * @param fieldAnnotation 注解本体
+     * @param attr            字段名称
+     * @param defaultVal      默认值
+     * @param <T>             注解字段类型
+     * @return 注解字段数据
+     */
     public static <T> T getAnnotationValue(PsiAnnotation fieldAnnotation, String attr, T defaultVal) {
         PsiAnnotationMemberValue value = fieldAnnotation.findAttributeValue(attr);
         if (value == null) {

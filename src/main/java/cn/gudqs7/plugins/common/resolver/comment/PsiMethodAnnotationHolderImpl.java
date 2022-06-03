@@ -7,17 +7,12 @@ import cn.gudqs7.plugins.common.pojo.resolver.CommentInfo;
 import cn.gudqs7.plugins.common.pojo.resolver.CommentInfoTag;
 import cn.gudqs7.plugins.common.pojo.resolver.RequestMapping;
 import cn.gudqs7.plugins.common.pojo.resolver.ResponseCodeInfo;
-import cn.gudqs7.plugins.common.util.ActionUtil;
-import cn.gudqs7.plugins.common.util.PsiAnnotationUtil;
-import cn.gudqs7.plugins.common.util.PsiUtil;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.vfs.VirtualFile;
+import cn.gudqs7.plugins.common.util.WebEnvironmentUtil;
+import cn.gudqs7.plugins.common.util.jetbrain.PsiAnnotationUtil;
+import cn.gudqs7.plugins.common.util.jetbrain.PsiUtil;
 import com.intellij.psi.*;
-import com.intellij.psi.search.FilenameIndex;
-import com.intellij.psi.search.GlobalSearchScope;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.yaml.snakeyaml.Yaml;
 
 import java.util.*;
 
@@ -278,111 +273,13 @@ public class PsiMethodAnnotationHolderImpl extends AbstractAnnotationHolder {
 
     private String getHostPrefix() {
         String hostPrefix = "http://%s:%s/";
-        String ip = ActionUtil.getIp();
+        String ip = WebEnvironmentUtil.getIp();
         String port = "8080";
-        String portByConfigFile = getPortByConfigFile();
+        String portByConfigFile = WebEnvironmentUtil.getPortByConfigFile(psiMethod.getProject(), psiMethod.getContainingFile());
         if (StringUtils.isNotBlank(portByConfigFile)) {
             port = portByConfigFile;
         }
         return String.format(hostPrefix, ip, port);
-    }
-
-    private String getPortByConfigFile() {
-        String nameYml = "application.yml";
-        String portByYmlFile = getPortByYamlFile(nameYml);
-        if (StringUtils.isNotBlank(portByYmlFile)) {
-            return portByYmlFile;
-        }
-        String nameYaml = "application.yaml";
-        String portByYamlFile = getPortByYamlFile(nameYaml);
-        if (StringUtils.isNotBlank(portByYamlFile)) {
-            return portByYamlFile;
-        }
-        String portByPropertiesFile = getPortByPropertiesFile();
-        if (StringUtils.isNotBlank(portByPropertiesFile)) {
-            return portByPropertiesFile;
-        }
-        return null;
-    }
-
-    private String getPortByPropertiesFile() {
-        Project project = psiMethod.getProject();
-        PsiFile[] filesByName = FilenameIndex.getFilesByName(project, "application.properties", GlobalSearchScope.projectScope(project));
-        if (filesByName.length > 0) {
-            String backPort = null;
-            for (PsiFile psiFile : filesByName) {
-                String text = psiFile.getText();
-                try {
-                    Properties properties = new Properties();
-                    VirtualFile virtualFile = psiFile.getVirtualFile();
-                    properties.load(virtualFile.getInputStream());
-                    String port = properties.getProperty("server.port");
-                    if (StringUtils.isNotBlank(port)) {
-                        PsiFile containingFile = psiMethod.getContainingFile();
-                        String path = containingFile.getVirtualFile().getPath();
-                        String configFilePath = virtualFile.getPath();
-                        String projectBasePath1 = getProjectBasePath(path);
-                        String projectBasePath2 = getProjectBasePath(configFilePath);
-                        if (projectBasePath1.equals(projectBasePath2)) {
-                            return port;
-                        }
-                        if (backPort == null) {
-                            backPort = port;
-                        }
-                    }
-                } catch (Exception ignored) {
-                }
-            }
-            return backPort;
-        }
-        return null;
-    }
-
-    private String getPortByYamlFile(String name) {
-        Project project = psiMethod.getProject();
-        PsiFile[] filesByName = FilenameIndex.getFilesByName(project, name, GlobalSearchScope.projectScope(project));
-        if (filesByName.length > 0) {
-            String backPort = null;
-            for (PsiFile psiFile : filesByName) {
-                String text = psiFile.getText();
-                try {
-                    Yaml yaml = new Yaml();
-                    Map<String, Object> map = yaml.load(text);
-                    if (map != null && map.size() > 0) {
-                        Object serverObj = map.get("server");
-                        if (serverObj instanceof Map) {
-                            Map server = (Map) serverObj;
-                            Object portObj = server.get("port");
-                            if (portObj != null) {
-                                String port = portObj.toString();
-                                PsiFile containingFile = psiMethod.getContainingFile();
-                                String path = containingFile.getVirtualFile().getPath();
-                                String configFilePath = psiFile.getVirtualFile().getPath();
-                                String projectBasePath1 = getProjectBasePath(path);
-                                String projectBasePath2 = getProjectBasePath(configFilePath);
-                                if (projectBasePath1.equals(projectBasePath2)) {
-                                    return port;
-                                }
-                                if (backPort == null) {
-                                    backPort = port;
-                                }
-                            }
-                        }
-                    }
-                } catch (Exception ignored) {
-                }
-            }
-            return backPort;
-        }
-        return null;
-    }
-
-    private String getProjectBasePath(String path) {
-        int indexOf = path.indexOf("src/");
-        if (indexOf != -1) {
-            return path.substring(0, path.indexOf("src/"));
-        }
-        return "";
     }
 
     private void dealHttpMethod(CommentInfo commentInfo, String qnameOfXxxMapping, String post) {

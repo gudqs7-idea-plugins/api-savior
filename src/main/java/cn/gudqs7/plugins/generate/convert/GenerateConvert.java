@@ -1,7 +1,7 @@
 package cn.gudqs7.plugins.generate.convert;
 
-import cn.gudqs7.plugins.common.util.PsiClassUtil;
-import cn.gudqs7.plugins.common.util.PsiUtil;
+import cn.gudqs7.plugins.common.util.jetbrain.PsiClassUtil;
+import cn.gudqs7.plugins.common.util.jetbrain.PsiUtil;
 import cn.gudqs7.plugins.generate.base.AbstractMethodListGenerate;
 import cn.gudqs7.plugins.generate.base.BaseVar;
 import com.intellij.psi.PsiClass;
@@ -45,7 +45,7 @@ public class GenerateConvert extends AbstractMethodListGenerate {
         if (parameters.length > 0) {
             String methodName = method.getName();
             String methodPrefix = "get";
-            boolean setterIsBoolean = PsiUtil.setMethodIsBoolean(method);
+            boolean setterIsBoolean = PsiUtil.setterIsBoolType(method);
             if (setterIsBoolean) {
                 methodPrefix = "is";
             }

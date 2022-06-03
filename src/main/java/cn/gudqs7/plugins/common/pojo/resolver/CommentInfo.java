@@ -3,7 +3,7 @@ package cn.gudqs7.plugins.common.pojo.resolver;
 import cn.gudqs7.plugins.common.consts.CommentConst;
 import cn.gudqs7.plugins.common.enums.MoreCommentTagEnum;
 import cn.gudqs7.plugins.common.resolver.comment.AnnotationHolder;
-import cn.gudqs7.plugins.common.util.BaseTypeParseUtil;
+import cn.gudqs7.plugins.common.util.structure.BaseTypeParseUtil;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.apache.commons.collections.CollectionUtils;

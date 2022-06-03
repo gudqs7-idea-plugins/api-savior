@@ -1,5 +1,6 @@
 package cn.gudqs7.plugins.common.util;
 
+import cn.gudqs7.plugins.common.util.jetbrain.ExceptionUtil;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateExceptionHandler;
@@ -16,10 +17,12 @@ import java.util.Map;
  */
 public class FreeMarkerUtil {
 
+    private static final String TEMPLATE_PATH = "template/ftl";
+
     public static String renderTemplate(String templateName, Map<String, Object> root) {
         try {
             Configuration cfg = new Configuration(Configuration.VERSION_2_3_22);
-            cfg.setClassLoaderForTemplateLoading(FreeMarkerUtil.class.getClassLoader(), "template/ftl");
+            cfg.setClassLoaderForTemplateLoading(FreeMarkerUtil.class.getClassLoader(), TEMPLATE_PATH);
             cfg.setDefaultEncoding("UTF-8");
             cfg.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
 
@@ -27,11 +30,9 @@ public class FreeMarkerUtil {
             ByteArrayOutputStream arrayOutputStream = new ByteArrayOutputStream(4096);
             Writer out = new OutputStreamWriter(arrayOutputStream);
             temp.process(root, out);
-            byte[] bytes = arrayOutputStream.toByteArray();
-            //noinspection StringOperationCanBeSimplified
-            return new String(bytes);
+            return arrayOutputStream.toString();
         } catch (Exception e) {
-            ActionUtil.handleException(e);
+            ExceptionUtil.handleException(e);
         }
         return null;
     }

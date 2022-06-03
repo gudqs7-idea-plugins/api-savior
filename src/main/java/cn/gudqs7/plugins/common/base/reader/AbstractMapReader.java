@@ -5,8 +5,8 @@ import cn.gudqs7.plugins.common.enums.StructureType;
 import cn.gudqs7.plugins.common.pojo.ReadOnlyMap;
 import cn.gudqs7.plugins.common.pojo.resolver.CommentInfo;
 import cn.gudqs7.plugins.common.pojo.resolver.StructureAndCommentInfo;
-import cn.gudqs7.plugins.common.util.ActionUtil;
-import cn.gudqs7.plugins.common.util.BaseTypeUtil;
+import cn.gudqs7.plugins.common.util.jetbrain.ExceptionUtil;
+import cn.gudqs7.plugins.common.util.structure.BaseTypeUtil;
 import com.intellij.psi.PsiType;
 
 import java.util.ArrayList;
@@ -196,7 +196,7 @@ public abstract class AbstractMapReader<B> extends AbstractReader<Map<String, Ob
                 return BaseTypeUtil.getInterfaceDefaultVal(qName, commentInfo);
             }
         } catch (Exception e) {
-            ActionUtil.handleException(e);
+            ExceptionUtil.handleException(e);
             return null;
         }
     }

@@ -1,4 +1,4 @@
-package cn.gudqs7.plugins.common.util;
+package cn.gudqs7.plugins.common.util.api;
 
 import org.apache.http.Consts;
 

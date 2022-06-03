@@ -1,13 +1,13 @@
 package cn.gudqs7.plugins.savior.savior.base;
 
-import cn.gudqs7.plugins.common.consts.MapKeyConstant;
 import cn.gudqs7.plugins.common.enums.MoreCommentTagEnum;
 import cn.gudqs7.plugins.common.pojo.resolver.CommentInfo;
 import cn.gudqs7.plugins.common.pojo.resolver.StructureAndCommentInfo;
 import cn.gudqs7.plugins.common.resolver.comment.AnnotationHolder;
 import cn.gudqs7.plugins.common.resolver.structure.StructureAndCommentResolver;
-import cn.gudqs7.plugins.common.util.DataHolder;
-import cn.gudqs7.plugins.common.util.PsiUtil;
+import cn.gudqs7.plugins.common.util.jetbrain.PsiAnnotationUtil;
+import cn.gudqs7.plugins.common.util.jetbrain.PsiUtil;
+import cn.gudqs7.plugins.common.util.structure.ResolverContextHolder;
 import cn.gudqs7.plugins.savior.reader.Java2ApiReader;
 import cn.gudqs7.plugins.savior.reader.Java2MapReader;
 import cn.gudqs7.plugins.savior.theme.Theme;
@@ -39,12 +39,12 @@ public abstract class AbstractSavior<T> extends BaseSavior {
         PsiAnnotation orderAnnotation = publicMethod.getAnnotation("org.springframework.core.annotation.Order");
         int order = Integer.MAX_VALUE;
         if (orderAnnotation != null) {
-            order = getAnnotationValue(orderAnnotation, "value", order);
+            order = PsiAnnotationUtil.getAnnotationValue(orderAnnotation, "value", order);
         }
         PsiAnnotation orderAnnotation2 = publicMethod2.getAnnotation("org.springframework.core.annotation.Order");
         int order2 = Integer.MAX_VALUE;
         if (orderAnnotation2 != null) {
-            order2 = getAnnotationValue(orderAnnotation2, "value", order2);
+            order2 = PsiAnnotationUtil.getAnnotationValue(orderAnnotation2, "value", order2);
         }
         return order - order2;
     }
@@ -117,23 +117,23 @@ public abstract class AbstractSavior<T> extends BaseSavior {
 
         List<String> hiddenRequest = commentInfo.getHiddenRequest();
         List<String> onlyRequest = commentInfo.getOnlyRequest();
-        DataHolder.addData(MapKeyConstant.HIDDEN_KEYS, hiddenRequest);
-        DataHolder.addData(MapKeyConstant.ONLY_KEYS, onlyRequest);
+        ResolverContextHolder.addData(ResolverContextHolder.HIDDEN_KEYS, hiddenRequest);
+        ResolverContextHolder.addData(ResolverContextHolder.ONLY_KEYS, onlyRequest);
 
         PsiParameterList parameterTypes = publicMethod.getParameterList();
         StructureAndCommentInfo paramStructureAndCommentInfo = structureAndCommentResolver.resolveFromParameterList(parameterTypes);
 
-        DataHolder.removeAll();
+        ResolverContextHolder.removeAll();
 
         List<String> hiddenResponse = commentInfo.getHiddenResponse();
         List<String> onlyResponse = commentInfo.getOnlyResponse();
-        DataHolder.addData(MapKeyConstant.HIDDEN_KEYS, hiddenResponse);
-        DataHolder.addData(MapKeyConstant.ONLY_KEYS, onlyResponse);
+        ResolverContextHolder.addData(ResolverContextHolder.HIDDEN_KEYS, hiddenResponse);
+        ResolverContextHolder.addData(ResolverContextHolder.ONLY_KEYS, onlyResponse);
 
         PsiTypeElement returnTypeElement = publicMethod.getReturnTypeElement();
         StructureAndCommentInfo returnStructureAndCommentInfo = structureAndCommentResolver.resolveFromReturnVal(returnTypeElement);
 
-        DataHolder.removeAll();
+        ResolverContextHolder.removeAll();
 
         T data = getDataByStructureAndCommentInfo(
                 project, publicMethod, commentInfo, interfaceClassName,

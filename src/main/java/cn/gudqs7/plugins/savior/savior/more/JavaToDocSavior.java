@@ -6,7 +6,8 @@ import cn.gudqs7.plugins.common.pojo.resolver.ResponseCodeInfo;
 import cn.gudqs7.plugins.common.pojo.resolver.StructureAndCommentInfo;
 import cn.gudqs7.plugins.common.util.FreeMarkerUtil;
 import cn.gudqs7.plugins.common.util.JsonUtil;
-import cn.gudqs7.plugins.common.util.PsiClassUtil;
+import cn.gudqs7.plugins.common.util.StringTool;
+import cn.gudqs7.plugins.common.util.jetbrain.PsiClassUtil;
 import cn.gudqs7.plugins.savior.pojo.FieldLevelInfo;
 import cn.gudqs7.plugins.savior.savior.base.AbstractSavior;
 import cn.gudqs7.plugins.savior.theme.Theme;
@@ -105,7 +106,7 @@ public class JavaToDocSavior extends AbstractSavior<Map<String, Object>> {
         List<ResponseCodeInfo> responseCodeInfoList = commentInfo.getResponseCodeInfoList();
 
         Map<String, Object> data = new HashMap<>(16);
-        data.put("interfaceName", replaceMd(interfaceName));
+        data.put("interfaceName", StringTool.replaceMd(interfaceName));
         data.put("interfaceNotes", notes);
         data.put("qualifiedMethodName", interfaceClassName + "#" + methodName);
         data.put("url", url);

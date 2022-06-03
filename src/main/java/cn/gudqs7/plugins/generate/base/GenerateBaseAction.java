@@ -1,7 +1,7 @@
 package cn.gudqs7.plugins.generate.base;
 
 import cn.gudqs7.plugins.common.base.action.intention.AbstractEditorIntentionAction;
-import cn.gudqs7.plugins.common.util.PsiUtil;
+import cn.gudqs7.plugins.common.util.jetbrain.PsiUtil;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;

@@ -1,7 +1,7 @@
 package cn.gudqs7.plugins.generate.setter;
 
-import cn.gudqs7.plugins.common.util.BaseTypeUtil;
-import cn.gudqs7.plugins.common.util.PsiUtil;
+import cn.gudqs7.plugins.common.util.jetbrain.ExceptionUtil;
+import cn.gudqs7.plugins.common.util.structure.BaseTypeUtil;
 import cn.gudqs7.plugins.generate.base.AbstractMethodListGenerate;
 import cn.gudqs7.plugins.generate.base.BaseVar;
 import com.intellij.openapi.project.Project;
@@ -40,7 +40,7 @@ public abstract class AbstractDefaultValGenerate extends AbstractMethodListGener
                     PsiClassReferenceType psiClassReferenceType = (PsiClassReferenceType) psiType;
                     PsiClass psiClass = psiClassReferenceType.resolve();
                     if (psiClass == null) {
-                        PsiUtil.handleSyntaxError(psiClassReferenceType.getCanonicalText());
+                        ExceptionUtil.handleSyntaxError(psiClassReferenceType.getCanonicalText());
                     }
                     String qualifiedName = psiClass.getQualifiedName();
                     String commonDefaultVal = BaseTypeUtil.getDefaultValStrByQname(qualifiedName);

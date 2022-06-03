@@ -1,8 +1,15 @@
 package cn.gudqs7.plugins.common.base.action;
 
 import cn.gudqs7.plugins.common.resolver.comment.AnnotationHolder;
-import cn.gudqs7.plugins.common.util.*;
-import com.intellij.openapi.actionSystem.*;
+import cn.gudqs7.plugins.common.util.ConfigHolder;
+import cn.gudqs7.plugins.common.util.WebEnvironmentUtil;
+import cn.gudqs7.plugins.common.util.jetbrain.ClipboardUtil;
+import cn.gudqs7.plugins.common.util.jetbrain.DialogUtil;
+import cn.gudqs7.plugins.common.util.jetbrain.ExceptionUtil;
+import com.intellij.openapi.actionSystem.AnActionEvent;
+import com.intellij.openapi.actionSystem.CommonDataKeys;
+import com.intellij.openapi.actionSystem.PlatformDataKeys;
+import com.intellij.openapi.actionSystem.UpdateInBackground;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiClass;
@@ -10,12 +17,10 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiMethod;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Map;
-
 /**
  * @author wq
  */
-public abstract class AbstractOnRightClickSavior extends AnAction implements UpdateInBackground {
+public abstract class AbstractOnRightClickSavior extends AbstractAction implements UpdateInBackground {
 
     @Override
     public void update(@NotNull AnActionEvent e) {
@@ -30,8 +35,8 @@ public abstract class AbstractOnRightClickSavior extends AnAction implements Upd
             return;
         }
 
-        PsiMethod psiMethod = ActionUtil.getPsiMethod(psiElement);
-        PsiClass psiClass = ActionUtil.getPsiClass(psiElement);
+        PsiMethod psiMethod = getPsiMethod(psiElement);
+        PsiClass psiClass = getPsiClass(psiElement);
         boolean isRightClickOnMethod = psiMethod != null;
         boolean isRightClickOnClass = psiClass != null;
 
@@ -61,9 +66,9 @@ public abstract class AbstractOnRightClickSavior extends AnAction implements Upd
                 return;
             }
 
-            PsiMethod psiMethod = ActionUtil.getPsiMethod(psiElement);
+            PsiMethod psiMethod = getPsiMethod(psiElement);
             boolean isRightClickOnMethod = psiMethod != null;
-            PsiClass psiClass = ActionUtil.getPsiClass(psiElement);
+            PsiClass psiClass = getPsiClass(psiElement);
             boolean isRightClickOnClass = psiClass != null;
 
             VirtualFile virtualFile = null;
@@ -75,8 +80,7 @@ public abstract class AbstractOnRightClickSavior extends AnAction implements Upd
             }
 
             if (virtualFile != null) {
-                Map<String, String> config = ConfigUtil.getConfig("docer-config.properties", project, virtualFile);
-                ConfigHolder.putConfig(config);
+                ConfigHolder.initConfig(project, virtualFile);
             }
 
             if (isRightClickOnMethod) {
@@ -88,9 +92,9 @@ public abstract class AbstractOnRightClickSavior extends AnAction implements Upd
                 handlePsiClass(project, psiClass);
             }
         } catch (Exception e1) {
-            ActionUtil.handleException(e1);
+            ExceptionUtil.handleException(e1);
         } finally {
-            ActionUtil.emptyIp();
+            WebEnvironmentUtil.emptyIp();
         }
     }
 
@@ -136,7 +140,7 @@ public abstract class AbstractOnRightClickSavior extends AnAction implements Upd
     protected void handlePsiClass(Project project, PsiClass psiClass) {
         String showContent = handlePsiClass0(project, psiClass);
         ClipboardUtil.setSysClipboardText(showContent);
-        ActionUtil.showDialog(project, getTip(), showContent);
+        DialogUtil.showDialog(project, getTip(), showContent);
     }
 
     /**
@@ -148,12 +152,12 @@ public abstract class AbstractOnRightClickSavior extends AnAction implements Upd
     protected void handlePsiMethod(Project project, PsiMethod psiMethod) {
         PsiClass containingClass = psiMethod.getContainingClass();
         if (containingClass == null) {
-            PsiUtil.handleSyntaxError(psiMethod.getName() + "'s Class");
+            ExceptionUtil.handleSyntaxError(psiMethod.getName() + "'s Class");
         }
         String psiClassName = containingClass.getQualifiedName();
         String docByMethod = handlePsiMethod0(project, psiMethod, psiClassName);
         ClipboardUtil.setSysClipboardText(docByMethod);
-        ActionUtil.showDialog(project, getTip(), docByMethod);
+        DialogUtil.showDialog(project, getTip(), docByMethod);
     }
 
     /**

@@ -1,6 +1,6 @@
 package cn.gudqs7.plugins.generate.setter;
 
-import cn.gudqs7.plugins.common.util.PsiClassUtil;
+import cn.gudqs7.plugins.common.util.jetbrain.PsiClassUtil;
 import cn.gudqs7.plugins.generate.base.BaseVar;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiClass;

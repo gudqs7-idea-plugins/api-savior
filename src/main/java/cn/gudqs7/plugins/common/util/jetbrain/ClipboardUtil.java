@@ -1,4 +1,4 @@
-package cn.gudqs7.plugins.common.util;
+package cn.gudqs7.plugins.common.util.jetbrain;
 
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
@@ -11,7 +11,6 @@ import java.awt.datatransfer.Transferable;
  * @date 2022/4/13
  */
 public class ClipboardUtil {
-
 
     /**
      * 从剪切板获得文字。

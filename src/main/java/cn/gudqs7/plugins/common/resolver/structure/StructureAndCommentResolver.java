@@ -6,7 +6,12 @@ import cn.gudqs7.plugins.common.enums.StructureType;
 import cn.gudqs7.plugins.common.pojo.resolver.CommentInfo;
 import cn.gudqs7.plugins.common.pojo.resolver.StructureAndCommentInfo;
 import cn.gudqs7.plugins.common.resolver.comment.AnnotationHolder;
-import cn.gudqs7.plugins.common.util.*;
+import cn.gudqs7.plugins.common.util.jetbrain.ExceptionUtil;
+import cn.gudqs7.plugins.common.util.jetbrain.PsiClassUtil;
+import cn.gudqs7.plugins.common.util.jetbrain.PsiUtil;
+import cn.gudqs7.plugins.common.util.structure.BaseTypeUtil;
+import cn.gudqs7.plugins.common.util.structure.FieldJumpUtil;
+import cn.gudqs7.plugins.common.util.structure.ResolverContextHolder;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.VirtualFileManager;
@@ -139,7 +144,7 @@ public class StructureAndCommentResolver implements IStructureAndCommentResolver
         }
         PsiClass psiClass = psiClassReferenceType.resolve();
         if (psiClass == null) {
-            PsiUtil.handleSyntaxError(psiClassReferenceType.getCanonicalText());
+            ExceptionUtil.handleSyntaxError(psiClassReferenceType.getCanonicalText());
         }
         //兼容第三方jar包
         psiClass = replacePsiClassIfFromJar(psiClass);
@@ -238,7 +243,7 @@ public class StructureAndCommentResolver implements IStructureAndCommentResolver
         if (parentPsiClassReferenceType != null) {
             PsiClass parentPsiClass = parentPsiClassReferenceType.resolve();
             if (parentPsiClass == null) {
-                PsiUtil.handleSyntaxError(parentPsiClassReferenceType.getCanonicalText());
+                ExceptionUtil.handleSyntaxError(parentPsiClassReferenceType.getCanonicalText());
             }
             String qualifiedName = parentPsiClass.getQualifiedName();
             String canonicalText = psiFieldType.getCanonicalText();
@@ -291,7 +296,7 @@ public class StructureAndCommentResolver implements IStructureAndCommentResolver
             PsiClassReferenceType psiClassReferenceType = (PsiClassReferenceType) psiFieldType;
             PsiClass resolveClass = psiClassReferenceType.resolve();
             if (resolveClass == null) {
-                PsiUtil.handleSyntaxError(psiClassReferenceType.getCanonicalText());
+                ExceptionUtil.handleSyntaxError(psiClassReferenceType.getCanonicalText());
             }
 
             PsiType[] parameters = psiClassReferenceType.getParameters();
@@ -387,11 +392,11 @@ public class StructureAndCommentResolver implements IStructureAndCommentResolver
     }
 
     private boolean handleHidden(String fieldName, PsiType psiFieldType, boolean oldVal) {
-        if (ParamFilter.isFieldNameNeedJump(fieldName)) {
+        if (FieldJumpUtil.isFieldNameNeedJump(fieldName)) {
             return true;
         }
         String typeQname = psiFieldType.getCanonicalText();
-        if (ParamFilter.isFieldTypeNeedJump(typeQname)) {
+        if (FieldJumpUtil.isFieldTypeNeedJump(typeQname)) {
             return true;
         }
         return oldVal;
@@ -409,13 +414,13 @@ public class StructureAndCommentResolver implements IStructureAndCommentResolver
 
     private boolean checkHiddenRequest(String fieldPrefix, String fieldName) {
         String fieldKey = fieldPrefix + fieldName;
-        List<String> hiddenRequest = DataHolder.getData(MapKeyConstant.HIDDEN_KEYS);
-        List<String> onlyRequest = DataHolder.getData(MapKeyConstant.ONLY_KEYS);
-        if (CollectionUtils.isNotEmpty(hiddenRequest)) {
-            return hiddenRequest.contains(fieldKey);
+        List<String> hiddenKeys = ResolverContextHolder.getData(ResolverContextHolder.HIDDEN_KEYS);
+        List<String> onlyKeys = ResolverContextHolder.getData(ResolverContextHolder.ONLY_KEYS);
+        if (CollectionUtils.isNotEmpty(hiddenKeys)) {
+            return hiddenKeys.contains(fieldKey);
         }
-        if (CollectionUtils.isNotEmpty(onlyRequest)) {
-            return !onlyRequest.contains(fieldKey);
+        if (CollectionUtils.isNotEmpty(onlyKeys)) {
+            return !onlyKeys.contains(fieldKey);
         }
         return false;
     }
