@@ -17,7 +17,7 @@ public class GotoApiAction extends SearchEverywhereBaseAction implements DumbAwa
     public GotoApiAction() {
         //we need to change the template presentation to show the proper text for the action in Settings | Keymap
         Presentation presentation = getTemplatePresentation();
-        presentation.setText("Go to Search Everywhere --> Api");
+        presentation.setText("Go to Search Api");
         presentation.setDescription("Quickly navigate to a Api by url");
         addTextOverride(ActionPlaces.MAIN_MENU, "Api");
     }
