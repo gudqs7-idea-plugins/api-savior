@@ -1,15 +1,15 @@
 package cn.gudqs7.plugins.savior.docer.savior.base;
 
+import cn.gudqs7.plugins.common.consts.MapKeyConstant;
+import cn.gudqs7.plugins.common.enums.MoreCommentTagEnum;
+import cn.gudqs7.plugins.common.pojo.resolver.CommentInfo;
+import cn.gudqs7.plugins.common.pojo.resolver.StructureAndCommentInfo;
+import cn.gudqs7.plugins.common.resolver.comment.AnnotationHolder;
+import cn.gudqs7.plugins.common.resolver.structure.StructureAndCommentResolver;
 import cn.gudqs7.plugins.common.util.DataHolder;
 import cn.gudqs7.plugins.common.util.PsiUtil;
-import cn.gudqs7.plugins.savior.docer.annotation.AnnotationHolder;
-import cn.gudqs7.plugins.savior.docer.constant.MapKeyConstant;
-import cn.gudqs7.plugins.savior.docer.enums.MoreCommentTagEnum;
-import cn.gudqs7.plugins.savior.docer.pojo.StructureAndCommentInfo;
-import cn.gudqs7.plugins.savior.docer.pojo.annotation.CommentInfo;
 import cn.gudqs7.plugins.savior.docer.reader.Java2ApiReader;
 import cn.gudqs7.plugins.savior.docer.reader.Java2JsonReader;
-import cn.gudqs7.plugins.savior.docer.resolver.StructureAndCommentResolver;
 import cn.gudqs7.plugins.savior.docer.theme.Theme;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;

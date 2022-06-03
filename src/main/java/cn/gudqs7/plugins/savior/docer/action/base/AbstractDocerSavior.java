@@ -1,5 +1,6 @@
 package cn.gudqs7.plugins.savior.docer.action.base;
 
+import cn.gudqs7.plugins.common.base.action.AbstractOnRightClickSavior;
 import cn.gudqs7.plugins.savior.docer.savior.more.JavaToDocSavior;
 import cn.gudqs7.plugins.savior.docer.theme.Theme;
 import com.intellij.openapi.actionSystem.AnActionEvent;

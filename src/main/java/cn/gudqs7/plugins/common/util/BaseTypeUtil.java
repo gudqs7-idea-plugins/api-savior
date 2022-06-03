@@ -1,8 +1,8 @@
 package cn.gudqs7.plugins.common.util;
 
-import cn.gudqs7.plugins.savior.docer.constant.CommentConst;
-import cn.gudqs7.plugins.savior.docer.enums.MoreCommentTagEnum;
-import cn.gudqs7.plugins.savior.docer.pojo.annotation.CommentInfo;
+import cn.gudqs7.plugins.common.consts.CommentConst;
+import cn.gudqs7.plugins.common.enums.MoreCommentTagEnum;
+import cn.gudqs7.plugins.common.pojo.resolver.CommentInfo;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiType;
 import lombok.Data;

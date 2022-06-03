@@ -1,6 +1,6 @@
 package cn.gudqs7.plugins.savior.docer.pojo;
 
-import cn.gudqs7.plugins.savior.docer.enums.FieldType;
+import cn.gudqs7.plugins.common.enums.FieldType;
 import lombok.Data;
 
 /**

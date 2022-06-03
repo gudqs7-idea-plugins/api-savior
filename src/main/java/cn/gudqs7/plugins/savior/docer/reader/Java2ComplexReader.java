@@ -1,11 +1,11 @@
 package cn.gudqs7.plugins.savior.docer.reader;
 
+import cn.gudqs7.plugins.common.base.reader.AbstractJsonReader;
+import cn.gudqs7.plugins.common.pojo.ReadOnlyMap;
+import cn.gudqs7.plugins.common.pojo.resolver.CommentInfo;
+import cn.gudqs7.plugins.common.pojo.resolver.StructureAndCommentInfo;
 import cn.gudqs7.plugins.savior.docer.pojo.ComplexInfo;
 import cn.gudqs7.plugins.savior.docer.pojo.FieldCommentInfo;
-import cn.gudqs7.plugins.savior.docer.pojo.ReadOnlyMap;
-import cn.gudqs7.plugins.savior.docer.pojo.StructureAndCommentInfo;
-import cn.gudqs7.plugins.savior.docer.pojo.annotation.CommentInfo;
-import cn.gudqs7.plugins.savior.docer.reader.base.AbstractJsonReader;
 import cn.gudqs7.plugins.savior.docer.theme.Theme;
 
 import java.util.HashMap;

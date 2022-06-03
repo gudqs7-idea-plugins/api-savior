@@ -1,9 +1,9 @@
 package cn.gudqs7.plugins.savior.docer.action.batch;
 
+import cn.gudqs7.plugins.common.base.action.AbstractBatchDocerSavior;
+import cn.gudqs7.plugins.common.consts.MapKeyConstant;
+import cn.gudqs7.plugins.common.pojo.resolver.CommentInfo;
 import cn.gudqs7.plugins.common.util.*;
-import cn.gudqs7.plugins.savior.docer.action.base.AbstractBatchDocerSavior;
-import cn.gudqs7.plugins.savior.docer.constant.MapKeyConstant;
-import cn.gudqs7.plugins.savior.docer.pojo.annotation.CommentInfo;
 import cn.gudqs7.plugins.savior.docer.savior.more.JavaToPostmanSavior;
 import cn.gudqs7.plugins.savior.docer.theme.ThemeHelper;
 import com.intellij.openapi.application.ApplicationManager;

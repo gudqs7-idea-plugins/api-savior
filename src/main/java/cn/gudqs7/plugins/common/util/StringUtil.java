@@ -1,6 +1,6 @@
 package cn.gudqs7.plugins.common.util;
 
-import cn.gudqs7.plugins.savior.docer.constant.CommentConst;
+import cn.gudqs7.plugins.common.consts.CommentConst;
 import org.apache.commons.lang3.StringUtils;
 
 /**

@@ -1,16 +1,16 @@
 package cn.gudqs7.plugins.savior.docer.savior.more;
 
+import cn.gudqs7.plugins.common.consts.MapKeyConstant;
+import cn.gudqs7.plugins.common.enums.MoreCommentTagEnum;
+import cn.gudqs7.plugins.common.pojo.resolver.CommentInfo;
+import cn.gudqs7.plugins.common.pojo.resolver.RequestMapping;
+import cn.gudqs7.plugins.common.pojo.resolver.StructureAndCommentInfo;
+import cn.gudqs7.plugins.common.resolver.comment.AnnotationHolder;
 import cn.gudqs7.plugins.common.util.FreeMarkerUtil;
 import cn.gudqs7.plugins.common.util.JsonUtil;
 import cn.gudqs7.plugins.common.util.PsiClassUtil;
 import cn.gudqs7.plugins.common.util.RestfulUtil;
-import cn.gudqs7.plugins.savior.docer.annotation.AnnotationHolder;
-import cn.gudqs7.plugins.savior.docer.constant.MapKeyConstant;
-import cn.gudqs7.plugins.savior.docer.enums.MoreCommentTagEnum;
 import cn.gudqs7.plugins.savior.docer.pojo.PostmanKvInfo;
-import cn.gudqs7.plugins.savior.docer.pojo.StructureAndCommentInfo;
-import cn.gudqs7.plugins.savior.docer.pojo.annotation.CommentInfo;
-import cn.gudqs7.plugins.savior.docer.pojo.annotation.RequestMapping;
 import cn.gudqs7.plugins.savior.docer.reader.Java2BulkReader;
 import cn.gudqs7.plugins.savior.docer.savior.base.AbstractSavior;
 import cn.gudqs7.plugins.savior.docer.theme.Theme;

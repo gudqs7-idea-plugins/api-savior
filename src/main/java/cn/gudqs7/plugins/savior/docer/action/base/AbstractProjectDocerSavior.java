@@ -1,8 +1,9 @@
 package cn.gudqs7.plugins.savior.docer.action.base;
 
+import cn.gudqs7.plugins.common.base.action.AbstractBatchDocerSavior;
+import cn.gudqs7.plugins.common.pojo.resolver.CommentInfo;
 import cn.gudqs7.plugins.common.util.ActionUtil;
 import cn.gudqs7.plugins.common.util.ClipboardUtil;
-import cn.gudqs7.plugins.savior.docer.pojo.annotation.CommentInfo;
 import cn.gudqs7.plugins.savior.docer.savior.more.JavaToDocSavior;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiClass;

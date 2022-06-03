@@ -1,6 +1,5 @@
 package cn.gudqs7.plugins.common.util;
 
-import cn.gudqs7.plugins.savior.generate.consant.GenerateConst;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
 import com.intellij.psi.impl.source.PsiClassReferenceType;
@@ -17,6 +16,10 @@ import static cn.gudqs7.plugins.common.util.PsiUtil.handleSyntaxError;
  * @date 2021/9/30
  */
 public class PsiClassUtil {
+
+    private static final String GET_METHOD_PREFIX = "get";
+    private static final String IS_METHOD_PREFIX = "is";
+    private static final String SET_METHOD_PREFIX = "set";
 
 
     // =================     PsiClass相关工具     ====================
@@ -132,11 +135,11 @@ public class PsiClassUtil {
     }
 
     public static boolean checkClassHasValidGetter(PsiClass psiClass) {
-        return checkClassHasValidMethod(psiClass, GenerateConst.GET_METHOD_PREFIX, GenerateConst.IS_METHOD_PREFIX);
+        return checkClassHasValidMethod(psiClass, GET_METHOD_PREFIX, IS_METHOD_PREFIX);
     }
 
     public static boolean checkClassHasValidSetter(PsiClass psiClass) {
-        return checkClassHasValidMethod(psiClass, GenerateConst.SET_METHOD_PREFIX);
+        return checkClassHasValidMethod(psiClass, SET_METHOD_PREFIX);
     }
 
     public static List<PsiMethod> getMethodByPrefix(PsiClass psiClass, String... prefixArray) {
@@ -164,11 +167,11 @@ public class PsiClassUtil {
     }
 
     public static List<PsiMethod> getGetterMethod(PsiClass psiClass) {
-        return getMethodByPrefix(psiClass, GenerateConst.GET_METHOD_PREFIX, GenerateConst.IS_METHOD_PREFIX);
+        return getMethodByPrefix(psiClass, GET_METHOD_PREFIX, IS_METHOD_PREFIX);
     }
 
     public static List<PsiMethod> getSetterMethod(PsiClass psiClass) {
-        return getMethodByPrefix(psiClass, GenerateConst.SET_METHOD_PREFIX);
+        return getMethodByPrefix(psiClass, SET_METHOD_PREFIX);
     }
 
     public static Map<String, PsiMethod> getMethodMap(List<PsiMethod> methodList) {

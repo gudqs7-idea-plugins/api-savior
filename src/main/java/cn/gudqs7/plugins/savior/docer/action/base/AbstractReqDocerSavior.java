@@ -1,13 +1,14 @@
 package cn.gudqs7.plugins.savior.docer.action.base;
 
+import cn.gudqs7.plugins.common.base.action.AbstractOnRightClickSavior;
+import cn.gudqs7.plugins.common.pojo.resolver.StructureAndCommentInfo;
+import cn.gudqs7.plugins.common.resolver.structure.StructureAndCommentResolver;
 import cn.gudqs7.plugins.common.util.*;
 import cn.gudqs7.plugins.savior.docer.pojo.FieldLevelInfo;
 import cn.gudqs7.plugins.savior.docer.pojo.PostmanKvInfo;
-import cn.gudqs7.plugins.savior.docer.pojo.StructureAndCommentInfo;
 import cn.gudqs7.plugins.savior.docer.reader.Java2ApiReader;
 import cn.gudqs7.plugins.savior.docer.reader.Java2BulkReader;
 import cn.gudqs7.plugins.savior.docer.reader.Java2JsonReader;
-import cn.gudqs7.plugins.savior.docer.resolver.StructureAndCommentResolver;
 import cn.gudqs7.plugins.savior.docer.theme.Theme;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.Project;

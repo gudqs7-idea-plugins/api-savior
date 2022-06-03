@@ -1,10 +1,10 @@
 package cn.gudqs7.plugins.savior.docer.action.batch;
 
+import cn.gudqs7.plugins.common.base.action.AbstractBatchDocerSavior;
+import cn.gudqs7.plugins.common.pojo.resolver.CommentInfo;
 import cn.gudqs7.plugins.common.util.FileUtil;
 import cn.gudqs7.plugins.common.util.FreeMarkerUtil;
 import cn.gudqs7.plugins.common.util.PsiClassUtil;
-import cn.gudqs7.plugins.savior.docer.action.base.AbstractBatchDocerSavior;
-import cn.gudqs7.plugins.savior.docer.pojo.annotation.CommentInfo;
 import cn.gudqs7.plugins.savior.docer.savior.more.JavaToDocSavior;
 import cn.gudqs7.plugins.savior.docer.theme.ThemeHelper;
 import com.intellij.openapi.progress.ProgressIndicator;

@@ -1,6 +1,6 @@
 package cn.gudqs7.plugins.savior.docer.action.restful;
 
-import cn.gudqs7.plugins.savior.docer.action.base.AbstractOnRightClickSavior;
+import cn.gudqs7.plugins.common.base.action.AbstractOnRightClickSavior;
 import cn.gudqs7.plugins.savior.docer.savior.more.JavaToCurlSavior;
 import cn.gudqs7.plugins.savior.docer.theme.ThemeHelper;
 import com.intellij.openapi.actionSystem.AnActionEvent;

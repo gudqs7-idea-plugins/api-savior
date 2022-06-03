@@ -1,15 +1,15 @@
 package cn.gudqs7.plugins.savior.docer.theme;
 
+import cn.gudqs7.plugins.common.consts.MapKeyConstant;
+import cn.gudqs7.plugins.common.enums.FieldType;
+import cn.gudqs7.plugins.common.pojo.resolver.CommentInfo;
+import cn.gudqs7.plugins.common.pojo.resolver.RequestMapping;
+import cn.gudqs7.plugins.common.pojo.resolver.StructureAndCommentInfo;
+import cn.gudqs7.plugins.common.resolver.comment.AnnotationHolder;
 import cn.gudqs7.plugins.common.util.JsonUtil;
 import cn.gudqs7.plugins.common.util.RestfulUtil;
-import cn.gudqs7.plugins.savior.docer.annotation.AnnotationHolder;
-import cn.gudqs7.plugins.savior.docer.constant.MapKeyConstant;
-import cn.gudqs7.plugins.savior.docer.enums.FieldType;
 import cn.gudqs7.plugins.savior.docer.enums.ThemeType;
 import cn.gudqs7.plugins.savior.docer.pojo.PostmanKvInfo;
-import cn.gudqs7.plugins.savior.docer.pojo.StructureAndCommentInfo;
-import cn.gudqs7.plugins.savior.docer.pojo.annotation.CommentInfo;
-import cn.gudqs7.plugins.savior.docer.pojo.annotation.RequestMapping;
 import cn.gudqs7.plugins.savior.docer.reader.Java2BulkReader;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiMethod;

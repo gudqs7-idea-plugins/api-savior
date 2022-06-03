@@ -6,9 +6,6 @@ package cn.gudqs7.plugins.savior.generate.consant;
  */
 public interface GenerateConst {
 
-    String GET_METHOD_PREFIX = "get";
-    String IS_METHOD_PREFIX = "is";
-    String SET_METHOD_PREFIX = "set";
 
     String GENERATE_GETTER = "Generate Getter";
     String GENERATE_SETTER = "Generate Setter";

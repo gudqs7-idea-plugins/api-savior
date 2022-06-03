@@ -1,8 +1,8 @@
 package cn.gudqs7.plugins.savior.docer.action.rpc;
 
+import cn.gudqs7.plugins.common.resolver.comment.AnnotationHolder;
 import cn.gudqs7.plugins.common.util.PsiClassUtil;
 import cn.gudqs7.plugins.savior.docer.action.base.AbstractDocerSavior;
-import cn.gudqs7.plugins.savior.docer.annotation.AnnotationHolder;
 import cn.gudqs7.plugins.savior.docer.theme.ThemeHelper;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.Project;

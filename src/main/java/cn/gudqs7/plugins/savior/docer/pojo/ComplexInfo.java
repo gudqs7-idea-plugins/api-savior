@@ -1,6 +1,7 @@
 package cn.gudqs7.plugins.savior.docer.pojo;
 
-import cn.gudqs7.plugins.savior.docer.pojo.annotation.CommentInfo;
+import cn.gudqs7.plugins.common.pojo.resolver.CommentInfo;
+import cn.gudqs7.plugins.common.pojo.resolver.StructureAndCommentInfo;
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;
 

@@ -1,13 +1,13 @@
 package cn.gudqs7.plugins.savior.docer.theme;
 
+import cn.gudqs7.plugins.common.pojo.resolver.CommentInfo;
+import cn.gudqs7.plugins.common.pojo.resolver.RequestMapping;
+import cn.gudqs7.plugins.common.pojo.resolver.StructureAndCommentInfo;
+import cn.gudqs7.plugins.common.resolver.comment.AnnotationHolder;
 import cn.gudqs7.plugins.common.util.ConfigHolder;
 import cn.gudqs7.plugins.common.util.FreeMarkerUtil;
 import cn.gudqs7.plugins.common.util.ParamFilter;
-import cn.gudqs7.plugins.savior.docer.annotation.AnnotationHolder;
 import cn.gudqs7.plugins.savior.docer.enums.ThemeType;
-import cn.gudqs7.plugins.savior.docer.pojo.StructureAndCommentInfo;
-import cn.gudqs7.plugins.savior.docer.pojo.annotation.CommentInfo;
-import cn.gudqs7.plugins.savior.docer.pojo.annotation.RequestMapping;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiMethod;
 import com.intellij.psi.PsiType;

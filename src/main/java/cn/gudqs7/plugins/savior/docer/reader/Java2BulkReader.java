@@ -1,13 +1,13 @@
 package cn.gudqs7.plugins.savior.docer.reader;
 
-import cn.gudqs7.plugins.savior.docer.constant.CommentConst;
-import cn.gudqs7.plugins.savior.docer.constant.MapKeyConstant;
-import cn.gudqs7.plugins.savior.docer.enums.FieldType;
+import cn.gudqs7.plugins.common.base.reader.AbstractJsonReader;
+import cn.gudqs7.plugins.common.consts.CommentConst;
+import cn.gudqs7.plugins.common.consts.MapKeyConstant;
+import cn.gudqs7.plugins.common.enums.FieldType;
+import cn.gudqs7.plugins.common.pojo.ReadOnlyMap;
+import cn.gudqs7.plugins.common.pojo.resolver.CommentInfo;
+import cn.gudqs7.plugins.common.pojo.resolver.StructureAndCommentInfo;
 import cn.gudqs7.plugins.savior.docer.pojo.PostmanKvInfo;
-import cn.gudqs7.plugins.savior.docer.pojo.ReadOnlyMap;
-import cn.gudqs7.plugins.savior.docer.pojo.StructureAndCommentInfo;
-import cn.gudqs7.plugins.savior.docer.pojo.annotation.CommentInfo;
-import cn.gudqs7.plugins.savior.docer.reader.base.AbstractJsonReader;
 import cn.gudqs7.plugins.savior.docer.theme.Theme;
 import org.apache.commons.lang3.StringUtils;
 
