@@ -1,7 +1,6 @@
 package cn.gudqs7.plugins.generate.convert;
 
-import cn.gudqs7.plugins.common.util.jetbrain.PsiClassUtil;
-import cn.gudqs7.plugins.common.util.jetbrain.PsiUtil;
+import cn.gudqs7.plugins.common.util.structure.PsiMethodUtil;
 import cn.gudqs7.plugins.generate.base.AbstractMethodListGenerate;
 import cn.gudqs7.plugins.generate.base.BaseVar;
 import com.intellij.psi.PsiClass;
@@ -30,7 +29,7 @@ public class GenerateConvert extends AbstractMethodListGenerate {
 
     @Override
     protected List<PsiMethod> getGenerateMethodListByClass(PsiClass psiClass) {
-        return PsiClassUtil.getSetterMethod(psiClass);
+        return PsiMethodUtil.getSetterMethod(psiClass);
     }
 
     @Override
@@ -45,7 +44,7 @@ public class GenerateConvert extends AbstractMethodListGenerate {
         if (parameters.length > 0) {
             String methodName = method.getName();
             String methodPrefix = "get";
-            boolean setterIsBoolean = PsiUtil.setterIsBoolType(method);
+            boolean setterIsBoolean = PsiMethodUtil.setterIsBoolType(method);
             if (setterIsBoolean) {
                 methodPrefix = "is";
             }
@@ -60,8 +59,8 @@ public class GenerateConvert extends AbstractMethodListGenerate {
     @NotNull
     private String getSetVal(String getMethodName) {
         PsiClass psiClassForGet = PsiTypesUtil.getPsiClass(varForGet.getVarType());
-        List<PsiMethod> methodList = PsiClassUtil.getGetterMethod(psiClassForGet);
-        Map<String, PsiMethod> methodMap = PsiClassUtil.getMethodMap(methodList);
+        List<PsiMethod> methodList = PsiMethodUtil.getGetterMethod(psiClassForGet);
+        Map<String, PsiMethod> methodMap = PsiMethodUtil.convertMethodListToMap(methodList);
         PsiMethod psiMethod = methodMap.get(getMethodName);
         String defaultVal = "null/* 源对象无此字段 */";
         if (psiMethod != null) {

@@ -1,6 +1,6 @@
 package cn.gudqs7.plugins.generate.setter.action;
 
-import cn.gudqs7.plugins.common.util.jetbrain.PsiClassUtil;
+import cn.gudqs7.plugins.common.util.structure.PsiMethodUtil;
 import cn.gudqs7.plugins.generate.base.BaseVar;
 import cn.gudqs7.plugins.generate.base.GenerateBase;
 import cn.gudqs7.plugins.generate.base.GenerateBaseAction;
@@ -20,7 +20,7 @@ public abstract class GenerateAllSetterAction extends GenerateBaseAction {
 
     @Override
     protected boolean checkVariableClass(PsiClass psiClass) {
-        return PsiClassUtil.checkClassHasValidSetter(psiClass);
+        return PsiMethodUtil.checkClassHasValidSetter(psiClass);
     }
 
     @Override

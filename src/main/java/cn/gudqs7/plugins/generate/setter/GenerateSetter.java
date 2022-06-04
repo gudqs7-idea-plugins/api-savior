@@ -1,6 +1,6 @@
 package cn.gudqs7.plugins.generate.setter;
 
-import cn.gudqs7.plugins.common.util.jetbrain.PsiClassUtil;
+import cn.gudqs7.plugins.common.util.structure.PsiMethodUtil;
 import cn.gudqs7.plugins.generate.base.BaseVar;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiClass;
@@ -25,7 +25,7 @@ public class GenerateSetter extends AbstractDefaultValGenerate {
     @Override
     @NotNull
     public List<PsiMethod> getGenerateMethodListByClass(PsiClass psiClass) {
-        return PsiClassUtil.getSetterMethod(psiClass);
+        return PsiMethodUtil.getSetterMethod(psiClass);
     }
 
     @Override

@@ -1,7 +1,7 @@
 package cn.gudqs7.plugins.generate.base;
 
 import cn.gudqs7.plugins.common.base.action.intention.AbstractEditorIntentionAction;
-import cn.gudqs7.plugins.common.util.jetbrain.PsiUtil;
+import cn.gudqs7.plugins.common.util.jetbrain.PsiTypeUtil;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
@@ -116,7 +116,7 @@ public abstract class GenerateBaseAction extends AbstractEditorIntentionAction {
                 generateBase.insertCodeByPsiType(elementDocument, psiDocumentManager, containingFile, splitText, insertOffset);
             }
         }
-        PsiUtil.clearGeneric();
+        PsiTypeUtil.clearGeneric();
     }
 
 }

@@ -1,6 +1,6 @@
 package cn.gudqs7.plugins.generate.base;
 
-import cn.gudqs7.plugins.common.util.jetbrain.PsiUtil;
+import cn.gudqs7.plugins.common.util.jetbrain.PsiTypeUtil;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiClassType;
 import com.intellij.psi.PsiMethod;
@@ -35,7 +35,7 @@ public abstract class AbstractMethodListGenerate implements GenerateBase {
         PsiClass psiClass = PsiTypesUtil.getPsiClass(varType);
         if (varType instanceof PsiClassType) {
             PsiClassType referenceType = (PsiClassType) varType;
-            PsiUtil.resolvePsiClassParameter(referenceType);
+            PsiTypeUtil.resolvePsiClassParameter(referenceType);
         }
         return getGenerateMethodListByClass(psiClass);
     }

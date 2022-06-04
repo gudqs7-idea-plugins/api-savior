@@ -1,6 +1,6 @@
 package cn.gudqs7.plugins.generate.convert.template;
 
-import cn.gudqs7.plugins.common.util.PsiExpressionUtil;
+import cn.gudqs7.plugins.common.util.jetbrain.PsiExpressionUtil;
 import cn.gudqs7.plugins.generate.base.BaseVar;
 import cn.gudqs7.plugins.generate.base.GenerateBase;
 import cn.gudqs7.plugins.generate.base.GenerateBaseTemplate;

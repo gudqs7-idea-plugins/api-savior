@@ -7,10 +7,10 @@ import cn.gudqs7.plugins.common.pojo.resolver.CommentInfo;
 import cn.gudqs7.plugins.common.pojo.resolver.StructureAndCommentInfo;
 import cn.gudqs7.plugins.common.resolver.comment.AnnotationHolder;
 import cn.gudqs7.plugins.common.util.jetbrain.ExceptionUtil;
-import cn.gudqs7.plugins.common.util.jetbrain.PsiClassUtil;
-import cn.gudqs7.plugins.common.util.jetbrain.PsiUtil;
+import cn.gudqs7.plugins.common.util.jetbrain.PsiTypeUtil;
 import cn.gudqs7.plugins.common.util.structure.BaseTypeUtil;
 import cn.gudqs7.plugins.common.util.structure.FieldJumpUtil;
+import cn.gudqs7.plugins.common.util.structure.PsiClassUtil;
 import cn.gudqs7.plugins.common.util.structure.ResolverContextHolder;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -99,9 +99,9 @@ public class StructureAndCommentResolver implements IStructureAndCommentResolver
         // 普通类型 或 List / Map / MultipartFile 时需展示
         String typeName = psiFieldType.getPresentableText();
         if (BaseTypeUtil.isBaseTypeOrObject(psiFieldType)
-                || PsiUtil.isPsiTypeFromMap(psiFieldType, project)
-                || PsiUtil.isPsiTypeFromCollection(psiFieldType, project)
-                || PsiUtil.isPsiTypeFromXxx(psiFieldType, project, AnnotationHolder.QNAME_OF_MULTIPART_FILE)
+                || PsiTypeUtil.isPsiTypeFromMap(psiFieldType, project)
+                || PsiTypeUtil.isPsiTypeFromCollection(psiFieldType, project)
+                || PsiTypeUtil.isPsiTypeFromXxx(psiFieldType, project, AnnotationHolder.QNAME_OF_MULTIPART_FILE)
         ) {
             return 1;
         }
@@ -149,7 +149,7 @@ public class StructureAndCommentResolver implements IStructureAndCommentResolver
         //兼容第三方jar包
         psiClass = replacePsiClassIfFromJar(psiClass);
         String qualifiedName = psiClass.getQualifiedName();
-        PsiUtil.resolvePsiClassParameter(psiClassReferenceType);
+        PsiTypeUtil.resolvePsiClassParameter(psiClassReferenceType);
         if (qualifiedName != null) {
             if (psiClassCache.containsKey(qualifiedName)) {
                 return null;
@@ -303,7 +303,7 @@ public class StructureAndCommentResolver implements IStructureAndCommentResolver
             if (parameters.length > 0) {
                 StringBuilder name = new StringBuilder();
                 for (PsiType parameter : parameters) {
-                    String realTypeName = PsiUtil.getRealPsiTypeName(parameter, project, "%s");
+                    String realTypeName = PsiTypeUtil.getRealPsiTypeName(parameter, project, "%s");
                     name.append(realTypeName).append(", ");
                 }
                 if (name.length() != 0) {
@@ -316,7 +316,7 @@ public class StructureAndCommentResolver implements IStructureAndCommentResolver
             }
 
 
-            PsiType realPsiType = PsiUtil.getRealPsiType(psiFieldType, project, null);
+            PsiType realPsiType = PsiTypeUtil.getRealPsiType(psiFieldType, project, null);
             if (realPsiType != null) {
                 String newTypeNameFormat = String.format(typeNameFormat, "%s");
                 return resolveByPsiType0(fieldTypeCode, fieldName, realPsiType, commentInfo, newTypeNameFormat, fieldPrefix, level);
@@ -328,37 +328,37 @@ public class StructureAndCommentResolver implements IStructureAndCommentResolver
             }
 
             // List
-            if (PsiUtil.isPsiTypeFromList(psiFieldType, project)) {
+            if (PsiTypeUtil.isPsiTypeFromList(psiFieldType, project)) {
                 return getStructureAndCommentInfoByCollection(fieldName, commentInfo, typeNameFormat, fieldPrefix, level,
                         structureAndCommentInfo, parameters, "List<%s>", FieldType.LIST);
             }
 
             // Set
-            if (PsiUtil.isPsiTypeFromSet(psiFieldType, project)) {
+            if (PsiTypeUtil.isPsiTypeFromSet(psiFieldType, project)) {
                 return getStructureAndCommentInfoByCollection(fieldName, commentInfo, typeNameFormat, fieldPrefix, level,
                         structureAndCommentInfo, parameters, "Set<%s>", FieldType.SET);
             }
 
             // Collection 放在后面判断, 优先级低一些
-            if (PsiUtil.isPsiTypeFromCollection(psiFieldType, project)) {
+            if (PsiTypeUtil.isPsiTypeFromCollection(psiFieldType, project)) {
                 return getStructureAndCommentInfoByCollection(fieldName, commentInfo, typeNameFormat, fieldPrefix, level,
                         structureAndCommentInfo, parameters, "Collection<%s>", FieldType.COLLECTION);
             }
 
             // 判断是否为 File
-            if (PsiUtil.isPsiTypeFromXxx(psiFieldType, project, AnnotationHolder.QNAME_OF_MULTIPART_FILE)) {
+            if (PsiTypeUtil.isPsiTypeFromXxx(psiFieldType, project, AnnotationHolder.QNAME_OF_MULTIPART_FILE)) {
                 structureAndCommentInfo.setFieldTypeCode(FieldType.FILE.getType());
                 structureAndCommentInfo.setOriginalFieldTypeCode(FieldType.FILE.getType());
             }
 
             // Map
-            if (PsiUtil.isPsiTypeFromMap(psiFieldType, project)) {
+            if (PsiTypeUtil.isPsiTypeFromMap(psiFieldType, project)) {
                 if (parameters.length > 1) {
                     PsiType keyType = parameters[0];
                     PsiType valueType = parameters[1];
                     String keyTypeName;
-                    if (PsiUtil.isPsiTypeFromParameter(keyType)) {
-                        keyType = PsiUtil.getRealPsiType(keyType, project, keyType);
+                    if (PsiTypeUtil.isPsiTypeFromParameter(keyType)) {
+                        keyType = PsiTypeUtil.getRealPsiType(keyType, project, keyType);
                     }
                     keyTypeName = keyType.getPresentableText();
                     String newTypeNameFormat = String.format(typeNameFormat, "Map<" + keyTypeName + ", %s>");
@@ -368,7 +368,8 @@ public class StructureAndCommentResolver implements IStructureAndCommentResolver
                 }
             }
 
-            if (!PsiUtil.isPsiTypeFromParameter(psiFieldType)) {
+            // FIXME 前面有 realPsiType != null 判断, 此处判断可去除
+            if (!PsiTypeUtil.isPsiTypeFromParameter(psiFieldType)) {
                 // 普通对象
                 String fieldPrefix0 = fieldPrefix + fieldName + ".";
                 if (MapKeyConstant.FIELD_PREFIX_INIT.equals(fieldPrefix)) {

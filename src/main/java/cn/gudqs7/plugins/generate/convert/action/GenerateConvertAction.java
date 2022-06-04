@@ -1,8 +1,9 @@
 package cn.gudqs7.plugins.generate.convert.action;
 
 import cn.gudqs7.plugins.common.util.StringTool;
-import cn.gudqs7.plugins.common.util.jetbrain.PsiClassUtil;
-import cn.gudqs7.plugins.common.util.jetbrain.PsiUtil;
+import cn.gudqs7.plugins.common.util.jetbrain.PsiTypeUtil;
+import cn.gudqs7.plugins.common.util.structure.PsiClassUtil;
+import cn.gudqs7.plugins.common.util.structure.PsiMethodUtil;
 import cn.gudqs7.plugins.generate.base.BaseVar;
 import cn.gudqs7.plugins.generate.base.GenerateBase;
 import cn.gudqs7.plugins.generate.base.GenerateBaseAction;
@@ -117,7 +118,7 @@ public class GenerateConvertAction extends GenerateBaseAction {
                 invokeByPsiMethod(generateBase, psiDocumentManager, containingFile, document, psiMethod);
             }
         }
-        PsiUtil.clearGeneric();
+        PsiTypeUtil.clearGeneric();
     }
 
     @Nls
@@ -143,11 +144,11 @@ public class GenerateConvertAction extends GenerateBaseAction {
             PsiType psiType = psiParameter.getType();
             PsiClass srcPsiClass = PsiClassUtil.getPsiClassByPsiType(psiType);
             if (srcPsiClass != null) {
-                srcClassHasValidGetter = PsiClassUtil.checkClassHasValidGetter(srcPsiClass);
+                srcClassHasValidGetter = PsiMethodUtil.checkClassHasValidGetter(srcPsiClass);
             }
             PsiClass dstPsiClass = PsiClassUtil.getPsiClassByPsiType(returnType);
             if (dstPsiClass != null) {
-                dstClassHasValidSetter = PsiClassUtil.checkClassHasValidSetter(dstPsiClass);
+                dstClassHasValidSetter = PsiMethodUtil.checkClassHasValidSetter(dstPsiClass);
             }
             // 当源对象有 Get 方法, 目标对象有 Set 方法, 即认为可以进行 Convert
             return srcClassHasValidGetter && dstClassHasValidSetter;

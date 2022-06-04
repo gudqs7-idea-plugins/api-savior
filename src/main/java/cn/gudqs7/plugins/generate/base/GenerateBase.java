@@ -2,7 +2,7 @@ package cn.gudqs7.plugins.generate.base;
 
 import cn.gudqs7.plugins.common.util.jetbrain.ExceptionUtil;
 import cn.gudqs7.plugins.common.util.jetbrain.PsiDocumentUtil;
-import cn.gudqs7.plugins.common.util.jetbrain.PsiUtil;
+import cn.gudqs7.plugins.common.util.jetbrain.PsiTypeUtil;
 import cn.gudqs7.plugins.common.util.structure.BaseTypeUtil;
 import com.intellij.codeInsight.template.Template;
 import com.intellij.codeInsight.template.TemplateManager;
@@ -74,7 +74,7 @@ public interface GenerateBase {
             if (parameters.length > 0) {
                 StringBuilder name = new StringBuilder();
                 for (PsiType parameter : parameters) {
-                    String realTypeName = PsiUtil.getRealPsiTypeName(parameter, project, "%s");
+                    String realTypeName = PsiTypeUtil.getRealPsiTypeName(parameter, project, "%s");
                     name.append(realTypeName).append(", ");
                 }
                 if (name.length() != 0) {
@@ -86,7 +86,7 @@ public interface GenerateBase {
             }
 
 
-            PsiType realPsiType = PsiUtil.getRealPsiType(psiFieldType, project, null);
+            PsiType realPsiType = PsiTypeUtil.getRealPsiType(psiFieldType, project, null);
             if (realPsiType != null) {
                 String realTypeName = realPsiType.getPresentableText();
                 String typeFormat = String.format(typeNameFormat, "%s");
@@ -94,32 +94,32 @@ public interface GenerateBase {
             }
 
             // List
-            if (PsiUtil.isPsiTypeFromList(psiFieldType, project)) {
+            if (PsiTypeUtil.isPsiTypeFromList(psiFieldType, project)) {
                 return getFieldTypeNameByCollection(newImportList, project, typeNameFormat, fieldTypeName, parameters, right,
                         "java.util.List", "List<%s>");
             }
 
             // Set
-            if (PsiUtil.isPsiTypeFromSet(psiFieldType, project)) {
+            if (PsiTypeUtil.isPsiTypeFromSet(psiFieldType, project)) {
                 return getFieldTypeNameByCollection(newImportList, project, typeNameFormat, fieldTypeName, parameters,
                         right, "java.util.Set", "Set<%s>");
             }
 
             // Collection
-            if (PsiUtil.isPsiTypeFromCollection(psiFieldType, project)) {
+            if (PsiTypeUtil.isPsiTypeFromCollection(psiFieldType, project)) {
                 return getFieldTypeNameByCollection(newImportList, project, typeNameFormat, fieldTypeName, parameters,
                         right, "java.util.Collection", "Collection<%s>");
             }
 
             // Map
-            if (PsiUtil.isPsiTypeFromMap(psiFieldType, project)) {
+            if (PsiTypeUtil.isPsiTypeFromMap(psiFieldType, project)) {
                 if (parameters.length > 1) {
                     newImportList.add("java.util.Map");
                     PsiType keyType = parameters[0];
                     PsiType valueType = parameters[1];
                     String keyTypeName;
-                    if (PsiUtil.isPsiTypeFromParameter(keyType)) {
-                        keyType = PsiUtil.getRealPsiType(keyType, project, keyType);
+                    if (PsiTypeUtil.isPsiTypeFromParameter(keyType)) {
+                        keyType = PsiTypeUtil.getRealPsiType(keyType, project, keyType);
                     }
                     keyTypeName = keyType.getPresentableText();
                     String typeFormat = String.format(typeNameFormat, "Map<" + keyTypeName + ", %s>");

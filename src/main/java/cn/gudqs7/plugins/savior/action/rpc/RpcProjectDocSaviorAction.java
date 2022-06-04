@@ -1,6 +1,6 @@
 package cn.gudqs7.plugins.savior.action.rpc;
 
-import cn.gudqs7.plugins.common.util.jetbrain.PsiClassUtil;
+import cn.gudqs7.plugins.common.util.structure.PsiClassUtil;
 import cn.gudqs7.plugins.savior.action.base.AbstractProjectDocerSavior;
 import cn.gudqs7.plugins.savior.savior.more.JavaToDocSavior;
 import cn.gudqs7.plugins.savior.theme.ThemeHelper;

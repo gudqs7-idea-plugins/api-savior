@@ -8,7 +8,7 @@ import cn.gudqs7.plugins.common.util.FileUtil;
 import cn.gudqs7.plugins.common.util.JsonUtil;
 import cn.gudqs7.plugins.common.util.api.PostmanApiUtil;
 import cn.gudqs7.plugins.common.util.jetbrain.ExceptionUtil;
-import cn.gudqs7.plugins.common.util.jetbrain.PsiClassUtil;
+import cn.gudqs7.plugins.common.util.structure.PsiClassUtil;
 import cn.gudqs7.plugins.savior.savior.more.JavaToPostmanSavior;
 import cn.gudqs7.plugins.savior.theme.ThemeHelper;
 import com.intellij.openapi.application.ApplicationManager;

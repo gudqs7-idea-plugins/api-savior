@@ -1,7 +1,7 @@
 package cn.gudqs7.plugins.generate.getter;
 
-import cn.gudqs7.plugins.common.util.jetbrain.PsiClassUtil;
 import cn.gudqs7.plugins.common.util.structure.BaseTypeUtil;
+import cn.gudqs7.plugins.common.util.structure.PsiMethodUtil;
 import cn.gudqs7.plugins.generate.base.AbstractMethodListGenerate;
 import cn.gudqs7.plugins.generate.base.BaseVar;
 import com.intellij.openapi.project.Project;
@@ -26,7 +26,7 @@ public class GenerateGetter extends AbstractMethodListGenerate {
 
     @Override
     protected List<PsiMethod> getGenerateMethodListByClass(PsiClass psiClass) {
-        return PsiClassUtil.getGetterMethod(psiClass);
+        return PsiMethodUtil.getGetterMethod(psiClass);
     }
 
     @Override

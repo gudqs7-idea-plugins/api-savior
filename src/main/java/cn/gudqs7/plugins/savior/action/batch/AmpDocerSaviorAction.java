@@ -3,7 +3,7 @@ package cn.gudqs7.plugins.savior.action.batch;
 import cn.gudqs7.plugins.common.base.action.AbstractBatchDocerSavior;
 import cn.gudqs7.plugins.common.pojo.resolver.CommentInfo;
 import cn.gudqs7.plugins.common.util.ConfigHolder;
-import cn.gudqs7.plugins.common.util.jetbrain.PsiClassUtil;
+import cn.gudqs7.plugins.common.util.structure.PsiClassUtil;
 import cn.gudqs7.plugins.savior.savior.more.JavaToAmpSavior;
 import cn.gudqs7.plugins.savior.theme.ThemeHelper;
 import com.intellij.openapi.actionSystem.AnActionEvent;

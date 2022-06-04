@@ -9,7 +9,7 @@ import cn.gudqs7.plugins.common.pojo.resolver.RequestMapping;
 import cn.gudqs7.plugins.common.pojo.resolver.ResponseCodeInfo;
 import cn.gudqs7.plugins.common.util.WebEnvironmentUtil;
 import cn.gudqs7.plugins.common.util.jetbrain.PsiAnnotationUtil;
-import cn.gudqs7.plugins.common.util.jetbrain.PsiUtil;
+import cn.gudqs7.plugins.common.util.jetbrain.PsiTypeUtil;
 import com.intellij.psi.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -254,7 +254,7 @@ public class PsiMethodAnnotationHolderImpl extends AbstractAnnotationHolder {
                                 parameterHasRequestBody = true;
                             }
                             PsiType psiType = parameter.getType();
-                            if (PsiUtil.isPsiTypeFromXxx(psiType, parameter.getProject(), QNAME_OF_MULTIPART_FILE)) {
+                            if (PsiTypeUtil.isPsiTypeFromXxx(psiType, parameter.getProject(), QNAME_OF_MULTIPART_FILE)) {
                                 parameterHasFile = true;
                             }
                         }

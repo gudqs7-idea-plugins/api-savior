@@ -9,7 +9,7 @@ import cn.gudqs7.plugins.common.util.WebEnvironmentUtil;
 import cn.gudqs7.plugins.common.util.jetbrain.ClipboardUtil;
 import cn.gudqs7.plugins.common.util.jetbrain.DialogUtil;
 import cn.gudqs7.plugins.common.util.jetbrain.ExceptionUtil;
-import cn.gudqs7.plugins.common.util.jetbrain.PsiUtil;
+import cn.gudqs7.plugins.common.util.structure.PackageInfoUtil;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.openapi.actionSystem.PlatformDataKeys;
@@ -327,9 +327,9 @@ public abstract class AbstractBatchDocerSavior extends AbstractAction implements
             }
 
             // 从 package-info.java 的注释中获取模块信息
-            PsiJavaFile psiJavaFile = PsiUtil.getPsiJavaFileByName(project, packageName, "package-info.java");
-            PsiComment packageComment = PsiUtil.getPackageComment(psiJavaFile);
-            String module = PsiUtil.getCommentTagByPsiComment(packageComment, MoreCommentTagEnum.MODULE.getTag());
+            PsiJavaFile psiJavaFile = PackageInfoUtil.getPackageInfoFile(project, packageName);
+            PsiComment packageComment = PackageInfoUtil.getPackageComment(psiJavaFile);
+            String module = PackageInfoUtil.getCommentTagByPsiComment(packageComment, MoreCommentTagEnum.MODULE.getTag());
             if (module != null) {
                 suffix = module;
             }
