@@ -185,9 +185,9 @@ public abstract class AbstractMapReader<B> extends AbstractReader<Map<String, Ob
     }
 
     public Object getBaseExampleVal(StructureAndCommentInfo structureAndCommentInfo) {
+        CommentInfo commentInfo = structureAndCommentInfo.getCommentInfo();
         try {
             Integer fieldTypeCode = structureAndCommentInfo.getOriginalFieldTypeCode();
-            CommentInfo commentInfo = structureAndCommentInfo.getCommentInfo();
             PsiType psiType = structureAndCommentInfo.getPsiType();
             if (FieldType.BASE.getType().equals(fieldTypeCode)) {
                 return BaseTypeUtil.getBaseDefaultVal(psiType, commentInfo);
@@ -196,7 +196,11 @@ public abstract class AbstractMapReader<B> extends AbstractReader<Map<String, Ob
                 return BaseTypeUtil.getInterfaceDefaultVal(qName, commentInfo);
             }
         } catch (Exception e) {
-            ExceptionUtil.handleException(e);
+            String fieldName = structureAndCommentInfo.getFieldName();
+            String example = commentInfo.getExample("[未设置]");
+            String errMsg = String.format("获取字段示例值时出错, 可能是字段类型转换失败! 字段名称: %s; 您设置的示例值:%s; ",
+                    fieldName, example);
+            ExceptionUtil.logException(e, errMsg);
             return null;
         }
     }

@@ -1,6 +1,5 @@
 package cn.gudqs7.plugins.common.util;
 
-import cn.gudqs7.plugins.common.util.jetbrain.ExceptionUtil;
 import cn.gudqs7.plugins.common.util.structure.BaseTypeParseUtil;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.LocalFileSystem;
@@ -8,6 +7,7 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.search.FilenameIndex;
 import com.intellij.psi.search.GlobalSearchScope;
+import lombok.SneakyThrows;
 
 import java.io.File;
 import java.util.HashMap;
@@ -92,38 +92,35 @@ public class ConfigHolder {
      * @param currentVirtualFile 与此文件同一个 src 下的优先
      * @return 配置信息
      */
+    @SneakyThrows
     public static Map<String, String> getConfig(Project project, VirtualFile currentVirtualFile) {
-        try {
-            String defaultConfigPath = project.getBasePath() + File.separator + CONFIG_FILE_PATH;
-            VirtualFile virtualFileByDefault = LocalFileSystem.getInstance().findFileByPath(defaultConfigPath);
-            if (virtualFileByDefault != null) {
+        String defaultConfigPath = project.getBasePath() + File.separator + CONFIG_FILE_PATH;
+        VirtualFile virtualFileByDefault = LocalFileSystem.getInstance().findFileByPath(defaultConfigPath);
+        if (virtualFileByDefault != null) {
+            Properties properties = new Properties();
+            properties.load(virtualFileByDefault.getInputStream());
+            return toMap(properties);
+        }
+        PsiFile[] filesByName = FilenameIndex.getFilesByName(project, CONFIG_FILE_PATH, GlobalSearchScope.projectScope(project));
+        if (filesByName.length > 0) {
+            Properties back = null;
+            for (PsiFile psiFile : filesByName) {
+                VirtualFile virtualFile = psiFile.getVirtualFile();
                 Properties properties = new Properties();
-                properties.load(virtualFileByDefault.getInputStream());
-                return toMap(properties);
-            }
-            PsiFile[] filesByName = FilenameIndex.getFilesByName(project, CONFIG_FILE_PATH, GlobalSearchScope.projectScope(project));
-            if (filesByName.length > 0) {
-                Properties back = null;
-                for (PsiFile psiFile : filesByName) {
-                    VirtualFile virtualFile = psiFile.getVirtualFile();
-                    Properties properties = new Properties();
-                    properties.load(virtualFile.getInputStream());
+                properties.load(virtualFile.getInputStream());
 
-                    String path = currentVirtualFile.getPath();
-                    String configFilePath = virtualFile.getPath();
-                    String projectBasePath1 = getProjectBasePath(path);
-                    String projectBasePath2 = getProjectBasePath(configFilePath);
-                    if (projectBasePath1.equals(projectBasePath2)) {
-                        return toMap(properties);
-                    }
-                    if (back == null) {
-                        back = properties;
-                    }
+                String path = currentVirtualFile.getPath();
+                String configFilePath = virtualFile.getPath();
+                String projectBasePath1 = getProjectBasePath(path);
+                String projectBasePath2 = getProjectBasePath(configFilePath);
+                if (projectBasePath1.equals(projectBasePath2)) {
+                    return toMap(properties);
                 }
-                return toMap(back);
+                if (back == null) {
+                    back = properties;
+                }
             }
-        } catch (Exception e) {
-            ExceptionUtil.handleException(e);
+            return toMap(back);
         }
         return null;
     }

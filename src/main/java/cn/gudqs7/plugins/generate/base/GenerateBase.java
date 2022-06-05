@@ -200,18 +200,14 @@ public interface GenerateBase {
      * @param editor             editor
      */
     default void insertCodeByPsiTypeWithTemplate(Document document, PsiDocumentManager psiDocumentManager, PsiFile containingFile, Editor editor) {
-        try {
-            HashSet<String> newImportList = new HashSet<>();
-            String insertCode = generateCode("", newImportList);
-            System.out.println("insertCodeByPsiTypeWithTemplate :: " + insertCode);
-            TemplateManager manager = TemplateManager.getInstance(containingFile.getProject());
-            Template template = manager.createTemplate("", "", insertCode + "$END$");
-            template.setToReformat(true);
-            manager.startTemplate(editor, template);
-            PsiDocumentUtil.addImportToFile(psiDocumentManager, (PsiJavaFile) containingFile, document, newImportList);
-        } catch (Throwable throwable) {
-            ExceptionUtil.handleException(throwable);
-        }
+        HashSet<String> newImportList = new HashSet<>();
+        String insertCode = generateCode("", newImportList);
+        System.out.println("insertCodeByPsiTypeWithTemplate :: " + insertCode);
+        TemplateManager manager = TemplateManager.getInstance(containingFile.getProject());
+        Template template = manager.createTemplate("", "", insertCode + "$END$");
+        template.setToReformat(true);
+        manager.startTemplate(editor, template);
+        PsiDocumentUtil.addImportToFile(psiDocumentManager, (PsiJavaFile) containingFile, document, newImportList);
     }
 
 

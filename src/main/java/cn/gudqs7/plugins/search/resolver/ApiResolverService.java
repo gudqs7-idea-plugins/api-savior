@@ -49,30 +49,31 @@ public class ApiResolverService {
             try {
                 navigationItemList.addAll(getServiceItemList(psiClass));
             } catch (Exception e) {
-                ExceptionUtil.handleException(e);
+                String classQname = psiClass.getQualifiedName();
+                ExceptionUtil.logException(e, String.format("扫描接口时出错, 接口类全限定名为: %s; 错误信息为: %s", classQname, e.getMessage()));
             }
         }
         return navigationItemList;
     }
 
-    protected List<ApiNavigationItem> getServiceItemList(PsiClass psiClass) {
+    protected List<ApiNavigationItem> getServiceItemList(@NotNull PsiClass psiClass) {
         List<ApiNavigationItem> navigationItemList = new ArrayList<>(2);
-        if (psiClass == null) {
-            return navigationItemList;
-        }
         Set<String> classPathSet = getClassRequestMappingPath(psiClass);
         List<MethodPathInfo> methodPathList = new ArrayList<>(32);
 
+        String classQname = psiClass.getQualifiedName();
         PsiMethod[] psiMethods = psiClass.getMethods();
         for (PsiMethod psiMethod : psiMethods) {
             try {
-                methodPathList.addAll(getMethodList0(psiMethod, AnnotationHolder.QNAME_OF_MAPPING, null));
-                methodPathList.addAll(getMethodList0(psiMethod, AnnotationHolder.QNAME_OF_GET_MAPPING, HttpMethod.GET));
-                methodPathList.addAll(getMethodList0(psiMethod, AnnotationHolder.QNAME_OF_POST_MAPPING, HttpMethod.POST));
-                methodPathList.addAll(getMethodList0(psiMethod, AnnotationHolder.QNAME_OF_PUT_MAPPING, HttpMethod.PUT));
-                methodPathList.addAll(getMethodList0(psiMethod, AnnotationHolder.QNAME_OF_DELETE_MAPPING, HttpMethod.DELETE));
+                methodPathList.addAll(getMethodList0(psiMethod, AnnotationHolder.QNAME_OF_MAPPING, null, psiClass));
+                methodPathList.addAll(getMethodList0(psiMethod, AnnotationHolder.QNAME_OF_GET_MAPPING, HttpMethod.GET, psiClass));
+                methodPathList.addAll(getMethodList0(psiMethod, AnnotationHolder.QNAME_OF_POST_MAPPING, HttpMethod.POST, psiClass));
+                methodPathList.addAll(getMethodList0(psiMethod, AnnotationHolder.QNAME_OF_PUT_MAPPING, HttpMethod.PUT, psiClass));
+                methodPathList.addAll(getMethodList0(psiMethod, AnnotationHolder.QNAME_OF_DELETE_MAPPING, HttpMethod.DELETE, psiClass));
             } catch (Exception e) {
-                ExceptionUtil.handleException(e);
+                String methodName = psiMethod.getName();
+                String methodQname = classQname + "#" + methodName;
+                ExceptionUtil.logException(e, String.format("扫描接口时出错, 方法为: %s; 错误信息为: %s", methodQname, e.getMessage()));
             }
         }
 
@@ -99,7 +100,7 @@ public class ApiResolverService {
     }
 
     @NotNull
-    private List<MethodPathInfo> getMethodList0(PsiMethod psiMethod, String qnameOfMapping, HttpMethod httpMethod) {
+    private List<MethodPathInfo> getMethodList0(@NotNull PsiMethod psiMethod, String qnameOfMapping, HttpMethod httpMethod, PsiClass psiClass) {
         List<MethodPathInfo> methodPathList = new ArrayList<>(8);
         PsiAnnotation methodMappingAnnotation = psiMethod.getAnnotation(qnameOfMapping);
         if (methodMappingAnnotation != null) {
@@ -114,13 +115,9 @@ public class ApiResolverService {
             }
             if (CollectionUtils.isNotEmpty(pathList)) {
                 for (String methodPath : pathList) {
+                    String psiClassName = psiClass.getName();
                     String psiMethodName = psiMethod.getName();
-                    String location = psiMethodName;
-                    PsiClass psiClass = psiMethod.getContainingClass();
-                    if (psiClass != null) {
-                        String psiClassName = psiClass.getName();
-                        location = psiClassName + "#" + psiMethodName;
-                    }
+                    String location = psiClassName + "#" + psiMethodName;
                     AnnotationHolder psiMethodHolder = AnnotationHolder.getPsiMethodHolder(psiMethod);
                     CommentInfo commentInfo = psiMethodHolder.getCommentInfo();
                     String description = commentInfo.getValue("");

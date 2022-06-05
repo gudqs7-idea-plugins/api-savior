@@ -1,7 +1,6 @@
 package cn.gudqs7.plugins.generate.convert.action;
 
 import cn.gudqs7.plugins.common.util.StringTool;
-import cn.gudqs7.plugins.common.util.jetbrain.PsiTypeUtil;
 import cn.gudqs7.plugins.common.util.structure.PsiClassUtil;
 import cn.gudqs7.plugins.common.util.structure.PsiMethodUtil;
 import cn.gudqs7.plugins.generate.base.BaseVar;
@@ -14,7 +13,6 @@ import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
 import com.intellij.psi.tree.IElementType;
-import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -37,7 +35,7 @@ public class GenerateConvertAction extends GenerateBaseAction {
     }
 
     @Override
-    public boolean isAvailable(@NotNull Project project, Editor editor, @NotNull PsiElement psiElement) {
+    protected boolean isAvailable0(@NotNull Project project, Editor editor, @NotNull PsiElement psiElement) {
         if (psiElement instanceof PsiJavaToken) {
             PsiJavaToken psiJavaToken = (PsiJavaToken) psiElement;
             IElementType tokenType = psiJavaToken.getTokenType();
@@ -89,14 +87,9 @@ public class GenerateConvertAction extends GenerateBaseAction {
     }
 
     @Override
-    public void invoke(@NotNull Project project, Editor editor, @NotNull PsiElement psiElement) throws IncorrectOperationException {
+    protected void invoke0(Project project, Editor editor, PsiElement psiElement, Document document, PsiDocumentManager psiDocumentManager) {
         GenerateBase generateBase = buildGenerate(psiElement);
-        PsiDocumentManager psiDocumentManager = PsiDocumentManager.getInstance(project);
         PsiFile containingFile = psiElement.getContainingFile();
-        Document document = psiDocumentManager.getDocument(containingFile);
-        if (document == null) {
-            return;
-        }
         if (psiElement instanceof PsiJavaToken) {
             PsiJavaToken psiJavaToken = (PsiJavaToken) psiElement;
             IElementType tokenType = psiJavaToken.getTokenType();
@@ -118,8 +111,8 @@ public class GenerateConvertAction extends GenerateBaseAction {
                 invokeByPsiMethod(generateBase, psiDocumentManager, containingFile, document, psiMethod);
             }
         }
-        PsiTypeUtil.clearGeneric();
     }
+
 
     @Nls
     @NotNull

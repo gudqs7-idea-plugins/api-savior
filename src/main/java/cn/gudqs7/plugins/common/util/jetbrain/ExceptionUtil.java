@@ -10,11 +10,22 @@ import java.io.StringWriter;
  */
 public class ExceptionUtil {
 
-    public static void handleException(Throwable throwable) {
+    public static void logException(Throwable throwable) {
+        logException(throwable, "");
+    }
+
+    public static void logException(Throwable throwable, String addition) {
         StringWriter writer = new StringWriter();
         throwable.printStackTrace(new PrintWriter(writer));
         String stackTrace = writer.getBuffer().toString();
-        NotificationUtil.showError("插件运行失败, 可通过 IDEA 右下角感叹号, 点击 Report To Gudqs7(或 Report And Clear All) 一键上报到 GitHub; 错误信息如下: " + stackTrace);
+        NotificationUtil.showError("插件运行失败, " + addition + "错误信息如下: " + stackTrace);
+    }
+
+    public static void handleException(Throwable throwable) {
+        String addition = "可通过 IDEA 右下角感叹号, 点击 Report To Gudqs7(或 Report And Clear All) 一键上报到 GitHub Issue; " +
+                "\n另外, 请在上报异常时, 填入您的联系信息, 或 issue 生成后点击进入页面留言以获得 issue 进展通知!" +
+                "\n";
+        logException(throwable, addition);
         throw Lombok.sneakyThrow(throwable);
     }
 

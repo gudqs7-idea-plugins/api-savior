@@ -5,16 +5,15 @@ import cn.gudqs7.plugins.common.pojo.resolver.CommentInfo;
 import cn.gudqs7.plugins.common.resolver.comment.AnnotationHolder;
 import cn.gudqs7.plugins.common.util.ConfigHolder;
 import cn.gudqs7.plugins.common.util.FileUtil;
-import cn.gudqs7.plugins.common.util.WebEnvironmentUtil;
 import cn.gudqs7.plugins.common.util.jetbrain.ClipboardUtil;
 import cn.gudqs7.plugins.common.util.jetbrain.DialogUtil;
 import cn.gudqs7.plugins.common.util.jetbrain.ExceptionUtil;
+import cn.gudqs7.plugins.common.util.jetbrain.IdeaApplicationUtil;
 import cn.gudqs7.plugins.common.util.structure.PackageInfoUtil;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.openapi.actionSystem.PlatformDataKeys;
 import com.intellij.openapi.actionSystem.UpdateInBackground;
-import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.progress.ProcessCanceledException;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.ProgressManager;
@@ -37,31 +36,25 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 public abstract class AbstractBatchDocerSavior extends AbstractAction implements UpdateInBackground {
 
-    public final String API_DOC_ROOT_DIR_NAME = "api-doc";
-
     @Override
-    public void update(@NotNull AnActionEvent e) {
+    public void update0(@NotNull AnActionEvent e) {
         Project project = e.getData(PlatformDataKeys.PROJECT);
         if (project == null) {
-            e.getPresentation().setVisible(false);
+            notVisible(e);
             return;
         }
         PsiElement psiElement = e.getData(CommonDataKeys.PSI_ELEMENT);
         PsiClass psiClass = getPsiClass(psiElement);
         PsiDirectory psiDirectory = getPsiDirectory(psiElement);
 
-        try {
-            VirtualFile virtualFile = getFirstPsiFile(e, project, psiElement, false);
-            if (virtualFile != null) {
-                initConfig(e, project, psiElement, virtualFile);
-            }
-            boolean update0 = isNotShow(e, project, psiElement, psiClass, psiDirectory);
-            if (update0) {
-                e.getPresentation().setVisible(false);
-                return;
-            }
-        } finally {
-            destroy(e, project, psiElement);
+        VirtualFile virtualFile = getFirstPsiFile(e, project, psiElement, false);
+        if (virtualFile != null) {
+            initConfig(e, project, psiElement, virtualFile);
+        }
+        boolean update0 = isNotShow(e, project, psiElement, psiClass, psiDirectory);
+        if (update0) {
+            notVisible(e);
+            return;
         }
 
         boolean isRightClickOnClass = psiClass != null;
@@ -82,131 +75,126 @@ public abstract class AbstractBatchDocerSavior extends AbstractAction implements
                 return;
             }
         }
-
-        e.getPresentation().setVisible(false);
+        notVisible(e);
     }
 
     @Override
-    public void actionPerformed(@NotNull AnActionEvent e) {
+    public void actionPerformed0(@NotNull AnActionEvent e) {
         Project project = e.getData(PlatformDataKeys.PROJECT);
         if (project == null) {
             return;
         }
         PsiElement psiElement = e.getData(CommonDataKeys.PSI_ELEMENT);
-        try {
-            PsiClass psiClass = getPsiClass(psiElement);
-            PsiDirectory psiDirectory = getPsiDirectory(psiElement);
+        PsiClass psiClass = getPsiClass(psiElement);
+        PsiDirectory psiDirectory = getPsiDirectory(psiElement);
 
-            Set<PsiClass> psiClassList = new TreeSet<>(
-                    Comparator.comparing(PsiClass::getQualifiedName)
-            );
+        Set<PsiClass> psiClassList = new TreeSet<>(
+                Comparator.comparing(PsiClass::getQualifiedName)
+        );
 
-            boolean isRightClickOnClass = psiClass != null;
-            if (isRightClickOnClass) {
-                if (handleRightClickOnClass(project, psiClass, psiClassList)) {
-                    return;
+        boolean isRightClickOnClass = psiClass != null;
+        if (isRightClickOnClass) {
+            if (handleRightClickOnClass(project, psiClass, psiClassList)) {
+                return;
+            }
+        }
+        psiClassList = getPsiClassList(e, project, psiDirectory, psiClassList);
+        if (!CollectionUtils.isEmpty(psiClassList)) {
+            PsiClass firstClass = new ArrayList<>(psiClassList).get(0);
+            initConfig(e, project, psiElement, firstClass.getContainingFile().getVirtualFile());
+            final Set<PsiClass> finalPsiClassList = psiClassList;
+
+            String dirRoot = "api-doc";
+            String dirPrefix = getDirPrefix();
+            Map<String, String> config = ConfigHolder.getConfig();
+            if (config != null) {
+                dirRoot = config.getOrDefault("dir.root", dirRoot);
+                String overrideDir = config.get("dir." + dirPrefix);
+                if (StringUtils.isNotBlank(overrideDir)) {
+                    dirRoot = overrideDir;
+                } else {
+                    dirRoot = dirRoot + File.separator + dirPrefix;
                 }
             }
-            psiClassList = getPsiClassList(e, project, psiDirectory, psiClassList);
-            if (!CollectionUtils.isEmpty(psiClassList)) {
-                PsiClass firstClass = new ArrayList<>(psiClassList).get(0);
-                initConfig(e, project, psiElement, firstClass.getContainingFile().getVirtualFile());
-                final Set<PsiClass> finalPsiClassList = psiClassList;
 
-                String dirRoot = "api-doc";
-                String dirPrefix = getDirPrefix();
-                Map<String, String> config = ConfigHolder.getConfig();
-                if (config != null) {
-                    dirRoot = config.getOrDefault("dir.root", dirRoot);
-                    String overrideDir = config.get("dir." + dirPrefix);
-                    if (StringUtils.isNotBlank(overrideDir)) {
-                        dirRoot = overrideDir;
-                    } else {
-                        dirRoot = dirRoot + File.separator + dirPrefix;
-                    }
-                }
+            String projectFilePath = project.getBasePath();
+            String docRootDirPath = projectFilePath + File.separator + dirRoot;
+            String title = getModelTitle();
+            AtomicBoolean hasCancelAtomic = new AtomicBoolean(false);
+            String finalDirRoot = dirRoot;
+            ProgressManager.getInstance().run(new Task.Modal(project, title, true) {
+                @Override
+                public void run(@NotNull ProgressIndicator indicator) {
+                    try {
+                        indicator.setIndeterminate(false);
+                        indicator.setText(getProcessorModelTitle());
+                        indicator.setText2(getProcessorModelSubTitle());
+                        indicator.setFraction(0.05f);
 
-                String projectFilePath = project.getBasePath();
-                String docRootDirPath = projectFilePath + File.separator + dirRoot;
-                String title = getModelTitle();
-                AtomicBoolean hasCancelAtomic = new AtomicBoolean(false);
-                String finalDirRoot = dirRoot;
-                ProgressManager.getInstance().run(new Task.Modal(project, title, true) {
-                    @Override
-                    public void run(@NotNull ProgressIndicator indicator) {
-                        try {
-                            indicator.setIndeterminate(false);
-                            indicator.setText(getProcessorModelTitle());
-                            indicator.setText2(getProcessorModelSubTitle());
-                            indicator.setFraction(0.05f);
-
-                            boolean runLoop = isRunLoop();
-                            if (runLoop) {
-                                // region loop
-                                float i = 1f;
-                                int size = finalPsiClassList.size();
-                                Map<String, Object> otherMap = new HashMap<>(8);
-                                runLoopBefore(project, indicator, hasCancelAtomic, finalPsiClassList, docRootDirPath, otherMap);
-                                for (PsiClass psiClass0 : finalPsiClassList) {
-                                    Thread.sleep(100);
-                                    if (indicator.isCanceled()) {
-                                        handleCancelTask(docRootDirPath, projectFilePath);
-                                        hasCancelAtomic.set(true);
-                                        return;
-                                    }
-                                    AtomicReference<CommentInfo> apiModelPropertyAtomic = new AtomicReference<>(null);
-                                    AtomicReference<String> moduleNameAtomic = new AtomicReference<>("");
-                                    ApplicationManager.getApplication().invokeAndWait(() -> {
-                                        AnnotationHolder psiClassHolder = AnnotationHolder.getPsiClassHolder(psiClass0);
-                                        CommentInfo commentInfo = psiClassHolder.getCommentInfo();
-                                        apiModelPropertyAtomic.set(commentInfo);
-                                        String packageName = getPackageNameByPsiClass(psiClass0);
-                                        String moduleName = getModuleName(project, packageName, psiClass0, commentInfo);
-                                        moduleNameAtomic.set(moduleName);
-                                    });
-                                    CommentInfo commentInfo = apiModelPropertyAtomic.get();
-                                    if (commentInfo == null || commentInfo.isHidden(false)) {
-                                        continue;
-                                    }
-
-                                    String moduleName = moduleNameAtomic.get();
-                                    String fileParentDir = finalDirRoot + File.separator + moduleName;
-                                    File parent = new File(projectFilePath, fileParentDir);
-                                    String fileName = getFileName(psiClass0, commentInfo);
-                                    String fullFileName = fileName + "." + getFileExtension();
-                                    float fraction = i++ / size;
-                                    runLoop(project, psiClass0, hasCancelAtomic, commentInfo, moduleName, fileName, parent, fileParentDir, fullFileName, otherMap, indicator, fraction);
+                        boolean runLoop = isRunLoop();
+                        if (runLoop) {
+                            // region loop
+                            float i = 1f;
+                            int size = finalPsiClassList.size();
+                            Map<String, Object> otherMap = new HashMap<>(8);
+                            runLoopBefore(project, indicator, hasCancelAtomic, finalPsiClassList, docRootDirPath, otherMap);
+                            for (PsiClass psiClass0 : finalPsiClassList) {
+                                Thread.sleep(100);
+                                if (indicator.isCanceled()) {
+                                    handleCancelTask(docRootDirPath, projectFilePath);
+                                    hasCancelAtomic.set(true);
+                                    return;
                                 }
-                                runLoopAfter(project, indicator, hasCancelAtomic, finalPsiClassList, docRootDirPath, otherMap);
-                                // endregion loop
-                            } else {
-                                runOnce(project, projectFilePath, docRootDirPath, finalPsiClassList, hasCancelAtomic, indicator);
+                                AtomicReference<CommentInfo> apiModelPropertyAtomic = new AtomicReference<>(null);
+                                AtomicReference<String> moduleNameAtomic = new AtomicReference<>("");
+
+                                IdeaApplicationUtil.invokeAndWait(() -> {
+                                    int iii = 3 / 0;
+                                    AnnotationHolder psiClassHolder = AnnotationHolder.getPsiClassHolder(psiClass0);
+                                    CommentInfo commentInfo = psiClassHolder.getCommentInfo();
+                                    apiModelPropertyAtomic.set(commentInfo);
+                                    String packageName = getPackageNameByPsiClass(psiClass0);
+                                    String moduleName = getModuleName(project, packageName, psiClass0, commentInfo);
+                                    moduleNameAtomic.set(moduleName);
+                                });
+                                CommentInfo commentInfo = apiModelPropertyAtomic.get();
+                                if (commentInfo == null || commentInfo.isHidden(false)) {
+                                    continue;
+                                }
+
+                                String moduleName = moduleNameAtomic.get();
+                                String fileParentDir = finalDirRoot + File.separator + moduleName;
+                                File parent = new File(projectFilePath, fileParentDir);
+                                String fileName = getFileName(psiClass0, commentInfo);
+                                String fullFileName = fileName + "." + getFileExtension();
+                                float fraction = i++ / size;
+                                runLoop(project, psiClass0, hasCancelAtomic, commentInfo, moduleName, fileName, parent, fileParentDir, fullFileName, otherMap, indicator, fraction);
                             }
-                            indicator.setText(getProcessFinishedModelTitle());
-                            indicator.setText2(getProcessFinishedModelSubTitle());
-                            indicator.setFraction(1f);
-                            refreshProject(projectFilePath);
-                            Thread.sleep(500);
-                        } catch (ProcessCanceledException canceledException) {
-                            hasCancelAtomic.set(true);
-                            handleCancelTask(docRootDirPath, projectFilePath);
-                        } catch (Throwable e1) {
-                            hasCancelAtomic.set(true);
-                            ExceptionUtil.handleException(e1);
+                            runLoopAfter(project, indicator, hasCancelAtomic, finalPsiClassList, docRootDirPath, otherMap);
+                            // endregion loop
+                        } else {
+                            runOnce(project, projectFilePath, docRootDirPath, finalPsiClassList, hasCancelAtomic, indicator);
                         }
+                        indicator.setText(getProcessFinishedModelTitle());
+                        indicator.setText2(getProcessFinishedModelSubTitle());
+                        indicator.setFraction(1f);
+                        refreshProject(projectFilePath);
+                        Thread.sleep(500);
+                    } catch (ProcessCanceledException canceledException) {
+                        hasCancelAtomic.set(true);
+                        handleCancelTask(docRootDirPath, projectFilePath);
+                    } catch (Throwable e1) {
+                        // 此处 catch 需保留, 因为不会这里抛出异常, 不会到外面的 catch
+                        hasCancelAtomic.set(true);
+                        ExceptionUtil.handleException(e1);
                     }
-                });
-                boolean hasCancel = hasCancelAtomic.get();
-                if (!hasCancel) {
-                    ClipboardUtil.setSysClipboardText(docRootDirPath);
-                    DialogUtil.showDialog(project, getDialogTip(), docRootDirPath);
                 }
+            });
+            boolean hasCancel = hasCancelAtomic.get();
+            if (!hasCancel) {
+                ClipboardUtil.setSysClipboardText(docRootDirPath);
+                DialogUtil.showDialog(project, getDialogTip(), docRootDirPath);
             }
-        } catch (Throwable e1) {
-            ExceptionUtil.handleException(e1);
-        } finally {
-            WebEnvironmentUtil.emptyIp();
-            destroy(e, project, psiElement);
         }
     }
 
@@ -218,7 +206,8 @@ public abstract class AbstractBatchDocerSavior extends AbstractAction implements
         ConfigHolder.initConfig(project, virtualFile);
     }
 
-    protected void destroy(AnActionEvent e, Project project, PsiElement psiElement) {
+    @Override
+    protected void destroy(AnActionEvent e) {
         ConfigHolder.removeConfig();
     }
 
@@ -413,14 +402,10 @@ public abstract class AbstractBatchDocerSavior extends AbstractAction implements
         indicator.setText2("文件写入中：" + fileParentDir + File.separator + fullFileName);
         indicator.setFraction(fraction);
 
-        ApplicationManager.getApplication().invokeAndWait(() -> {
-            try {
-                String fileContent = runLoop0(psiClass0, project, commentInfo, moduleName, fileName, fullFileName, otherMap);
-                if (StringUtils.isNotBlank(fileContent)) {
-                    FileUtil.writeStringToFile(fileContent, parent, fullFileName);
-                }
-            } catch (Exception e1) {
-                ExceptionUtil.handleException(e1);
+        IdeaApplicationUtil.invokeAndWait(() -> {
+            String fileContent = runLoop0(psiClass0, project, commentInfo, moduleName, fileName, fullFileName, otherMap);
+            if (StringUtils.isNotBlank(fileContent)) {
+                FileUtil.writeStringToFile(fileContent, parent, fullFileName);
             }
         });
     }
@@ -528,7 +513,6 @@ public abstract class AbstractBatchDocerSavior extends AbstractAction implements
             }
         }
     }
-
 
 
     private String getPackageNameByPsiClass(PsiClass psiClass0) {

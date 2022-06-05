@@ -1,8 +1,6 @@
 package cn.gudqs7.plugins.generate.base;
 
 import cn.gudqs7.plugins.common.base.postfix.template.AbstractPostfixTemplate;
-import cn.gudqs7.plugins.common.util.jetbrain.ExceptionUtil;
-import cn.gudqs7.plugins.common.util.jetbrain.PsiTypeUtil;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
@@ -39,25 +37,20 @@ public abstract class GenerateBaseTemplate extends AbstractPostfixTemplate {
     protected abstract GenerateBase buildGenerate(PsiElement psiElement, PsiFile containingFile, PsiDocumentManager psiDocumentManager, Document document);
 
     @Override
-    protected void expandForChooseExpression(@NotNull PsiElement psiElement, @NotNull Editor editor) {
-        try {
-            Project project = psiElement.getProject();
-            PsiFile containingFile = psiElement.getContainingFile();
-            PsiDocumentManager psiDocumentManager = PsiDocumentManager.getInstance(project);
-            Document document = psiDocumentManager.getDocument(containingFile);
-            if (document == null) {
-                return;
-            }
-            GenerateBase generateBase = buildGenerate(psiElement, containingFile, psiDocumentManager, document);
-            if (generateBase == null) {
-                return;
-            }
-            removeExpressionFromEditor(psiElement, editor);
-            generateBase.insertCodeByPsiTypeWithTemplate(document, psiDocumentManager, containingFile, editor);
-            PsiTypeUtil.clearGeneric();
-        } catch (Exception e) {
-            ExceptionUtil.handleException(e);
+    protected void expandForChooseExpression0(@NotNull PsiElement psiElement, @NotNull Editor editor) {
+        Project project = psiElement.getProject();
+        PsiFile containingFile = psiElement.getContainingFile();
+        PsiDocumentManager psiDocumentManager = PsiDocumentManager.getInstance(project);
+        Document document = psiDocumentManager.getDocument(containingFile);
+        if (document == null) {
+            return;
         }
+        GenerateBase generateBase = buildGenerate(psiElement, containingFile, psiDocumentManager, document);
+        if (generateBase == null) {
+            return;
+        }
+        removeExpressionFromEditor(psiElement, editor);
+        generateBase.insertCodeByPsiTypeWithTemplate(document, psiDocumentManager, containingFile, editor);
     }
 
 }

@@ -18,7 +18,6 @@ import cn.gudqs7.plugins.savior.theme.Theme;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
-import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiMethod;
@@ -62,11 +61,7 @@ public class JavaToOneApiSavior extends AbstractSavior<Void> {
             if (StringUtils.isBlank(actionName)) {
                 continue;
             }
-
-            ApplicationManager.getApplication().invokeAndWait(() -> {
-                generateAmpApi(project, interfaceClassName, method);
-            });
-
+            generateAmpApi(project, interfaceClassName, method);
         }
     }
 
@@ -225,24 +220,25 @@ public class JavaToOneApiSavior extends AbstractSavior<Void> {
     }
 
     private void showErrorTip(String actionName, String createRes, final String operate) {
+        String content = null;
         if (!createRes.startsWith("{")) {
-            String content = actionName + " " + operate + " error, cause by " + createRes;
-            NotificationUtil.showError(content);
-            return;
-        }
-        Map map = JsonUtil.fromJson(createRes, Map.class);
-        if (map != null) {
-            Object success = map.get("success");
-            if (success instanceof Boolean) {
-                Boolean success0 = (Boolean) success;
-                if (success0) {
-                    String content = actionName + " " + operate + " success!";
-                    NotificationUtil.showError(content);
-                } else {
-                    String content = actionName + " " + operate + " error, cause by " + createRes;
-                    NotificationUtil.showError(content);
+            content = actionName + " " + operate + " error, cause by " + createRes;
+        } else {
+            Map map = JsonUtil.fromJson(createRes, Map.class);
+            if (map != null) {
+                Object success = map.get("success");
+                if (success instanceof Boolean) {
+                    Boolean success0 = (Boolean) success;
+                    if (success0) {
+                        content = actionName + " " + operate + " success!";
+                    } else {
+                        content = actionName + " " + operate + " error, cause by " + createRes;
+                    }
                 }
             }
+        }
+        if (content != null) {
+            NotificationUtil.showError(content);
         }
     }
 

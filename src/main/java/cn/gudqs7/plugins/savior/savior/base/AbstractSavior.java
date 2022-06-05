@@ -6,7 +6,6 @@ import cn.gudqs7.plugins.common.pojo.resolver.StructureAndCommentInfo;
 import cn.gudqs7.plugins.common.resolver.comment.AnnotationHolder;
 import cn.gudqs7.plugins.common.resolver.structure.StructureAndCommentResolver;
 import cn.gudqs7.plugins.common.util.jetbrain.PsiAnnotationUtil;
-import cn.gudqs7.plugins.common.util.jetbrain.PsiTypeUtil;
 import cn.gudqs7.plugins.common.util.structure.ResolverContextHolder;
 import cn.gudqs7.plugins.savior.reader.Java2ApiReader;
 import cn.gudqs7.plugins.savior.reader.Java2MapReader;
@@ -135,13 +134,10 @@ public abstract class AbstractSavior<T> extends BaseSavior {
 
         ResolverContextHolder.removeAll();
 
-        T data = getDataByStructureAndCommentInfo(
+        return getDataByStructureAndCommentInfo(
                 project, publicMethod, commentInfo, interfaceClassName,
                 paramStructureAndCommentInfo, returnStructureAndCommentInfo, param
         );
-
-        PsiTypeUtil.clearGeneric();
-        return data;
     }
 
     /**

@@ -23,7 +23,7 @@ import org.jetbrains.annotations.NotNull;
 public abstract class AbstractOnRightClickSavior extends AbstractAction implements UpdateInBackground {
 
     @Override
-    public void update(@NotNull AnActionEvent e) {
+    public void update0(@NotNull AnActionEvent e) {
         Project project = e.getData(PlatformDataKeys.PROJECT);
         if (project == null) {
             notVisible(e);
@@ -55,7 +55,7 @@ public abstract class AbstractOnRightClickSavior extends AbstractAction implemen
     }
 
     @Override
-    public void actionPerformed(@NotNull AnActionEvent e) {
+    public void actionPerformed0(@NotNull AnActionEvent e) {
         try {
             Project project = e.getData(PlatformDataKeys.PROJECT);
             if (project == null) {
@@ -91,15 +91,9 @@ public abstract class AbstractOnRightClickSavior extends AbstractAction implemen
             if (isRightClickOnClass) {
                 handlePsiClass(project, psiClass);
             }
-        } catch (Exception e1) {
-            ExceptionUtil.handleException(e1);
         } finally {
             WebEnvironmentUtil.emptyIp();
         }
-    }
-
-    protected void notVisible(@NotNull AnActionEvent e) {
-        e.getPresentation().setVisible(false);
     }
 
     /**
@@ -126,7 +120,7 @@ public abstract class AbstractOnRightClickSavior extends AbstractAction implemen
      * 根据类信息判断是否应该展示
      *
      * @param psiClass 类
-     * @param project
+     * @param project  项目
      * @param e        e
      */
     protected abstract void checkPsiClass(PsiClass psiClass, Project project, AnActionEvent e);

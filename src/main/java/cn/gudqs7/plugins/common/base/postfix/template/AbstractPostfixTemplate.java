@@ -1,5 +1,7 @@
 package cn.gudqs7.plugins.common.base.postfix.template;
 
+import cn.gudqs7.plugins.common.util.jetbrain.ExceptionUtil;
+import cn.gudqs7.plugins.common.util.jetbrain.PsiTypeUtil;
 import com.intellij.codeInsight.template.postfix.templates.PostfixTemplateExpressionSelectorBase;
 import com.intellij.codeInsight.template.postfix.templates.PostfixTemplateWithExpressionSelector;
 import com.intellij.codeInsight.template.postfix.util.JavaPostfixTemplatesUtils;
@@ -24,7 +26,7 @@ public abstract class AbstractPostfixTemplate extends PostfixTemplateWithExpress
         this(templateName, example, isApplicable, AbstractPostfixTemplate::getExpressions);
     }
 
-    public AbstractPostfixTemplate(String templateName, String example, Function<PsiElement, Boolean> isApplicable, Function<PsiElement, PsiElement> expressionGetFn) {
+    public AbstractPostfixTemplate(String templateName, String example, Function<PsiElement, Boolean> hasExpressionFn, Function<PsiElement, PsiElement> expressionGetFn) {
         super(
                 templateName,
                 templateName,
@@ -32,7 +34,12 @@ public abstract class AbstractPostfixTemplate extends PostfixTemplateWithExpress
                 new PostfixTemplateExpressionSelectorBase(psiElement -> true) {
                     @Override
                     protected List<PsiElement> getNonFilteredExpressions(@NotNull PsiElement context, @NotNull Document document, int offset) {
-                        return ContainerUtil.createMaybeSingletonList(expressionGetFn.apply(context));
+                        try {
+                            return ContainerUtil.createMaybeSingletonList(expressionGetFn.apply(context));
+                        } catch (Throwable ex) {
+                            ExceptionUtil.handleException(ex);
+                            return null;
+                        }
                     }
 
                     @Override
@@ -42,7 +49,12 @@ public abstract class AbstractPostfixTemplate extends PostfixTemplateWithExpress
 
                     @Override
                     public boolean hasExpression(@NotNull PsiElement context, @NotNull Document copyDocument, int newOffset) {
-                        return isApplicable.apply(context);
+                        try {
+                            return hasExpressionFn.apply(context);
+                        } catch (Throwable ex) {
+                            ExceptionUtil.handleException(ex);
+                            return false;
+                        }
                     }
                 },
                 null
@@ -58,6 +70,26 @@ public abstract class AbstractPostfixTemplate extends PostfixTemplateWithExpress
     private static PsiElement getExpressions(PsiElement context) {
         return JavaPostfixTemplatesUtils.getTopmostExpression(context);
     }
+
+    @Override
+    protected void expandForChooseExpression(@NotNull PsiElement expression, @NotNull Editor editor) {
+        try {
+            expandForChooseExpression0(expression, editor);
+        } catch (Throwable e) {
+            ExceptionUtil.handleException(e);
+        } finally {
+            PsiTypeUtil.clearGeneric();
+            destroy(expression, editor);
+        }
+    }
+
+    /**
+     * 根据选中的元素生成代码
+     *
+     * @param expression 选中的元素
+     * @param editor     编辑器
+     */
+    protected abstract void expandForChooseExpression0(@NotNull PsiElement expression, @NotNull Editor editor);
 
     /**
      * 根据当前元素移除原有整行文本
@@ -78,5 +110,9 @@ public abstract class AbstractPostfixTemplate extends PostfixTemplateWithExpress
             endOffset = endOffset + 1;
         }
         document.deleteString(textRange.getStartOffset(), endOffset);
+    }
+
+    protected void destroy(PsiElement expression, Editor editor) {
+
     }
 }

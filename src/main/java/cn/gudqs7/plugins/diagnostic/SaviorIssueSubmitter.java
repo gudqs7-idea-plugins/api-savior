@@ -20,4 +20,10 @@ public class SaviorIssueSubmitter extends AbstractGithubErrorReportSubmitter {
     protected String getGithubToken() {
         return "dG9rZW4gZ2hwX2tUR3JpRDR0WFUxTjJPWk1hVm5DT2lRVllrMGt5ZTBDTTFTTA==";
     }
+
+    @Override
+    protected String getExampleIssueId() {
+        return "29";
+    }
+
 }

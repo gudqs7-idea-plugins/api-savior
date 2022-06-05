@@ -6,7 +6,6 @@ import cn.gudqs7.plugins.common.pojo.resolver.CommentInfo;
 import cn.gudqs7.plugins.common.pojo.resolver.StructureAndCommentInfo;
 import cn.gudqs7.plugins.common.resolver.comment.AnnotationHolder;
 import cn.gudqs7.plugins.common.util.ConfigHolder;
-import cn.gudqs7.plugins.common.util.jetbrain.ExceptionUtil;
 import cn.gudqs7.plugins.common.util.structure.PsiClassUtil;
 import cn.gudqs7.plugins.savior.pojo.ComplexInfo;
 import cn.gudqs7.plugins.savior.pojo.FieldCommentInfo;
@@ -20,6 +19,7 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiMethod;
+import lombok.SneakyThrows;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -38,6 +38,7 @@ public class JavaToAmpSavior extends AbstractSavior<Map<String, Object>> {
         java2ComplexReader = new Java2ComplexReader(theme);
     }
 
+    @SneakyThrows
     public String generateAmpScheme(PsiClass psiClass, Project project) {
         AnnotationHolder psiClassHolder = AnnotationHolder.getPsiClassHolder(psiClass);
         CommentInfo commentInfo = psiClassHolder.getCommentInfo();
@@ -75,14 +76,9 @@ public class JavaToAmpSavior extends AbstractSavior<Map<String, Object>> {
         root.put("apis", apis);
 
         ObjectMapper objectMapper = new ObjectMapper();
-        try {
-            String json = objectMapper.writeValueAsString(root);
-            JsonNode jsonNodeTree = objectMapper.readTree(json);
-            return new YAMLMapper().writeValueAsString(jsonNodeTree);
-        } catch (Exception e) {
-            ExceptionUtil.handleException(e);
-        }
-        return null;
+        String json = objectMapper.writeValueAsString(root);
+        JsonNode jsonNodeTree = objectMapper.readTree(json);
+        return new YAMLMapper().writeValueAsString(jsonNodeTree);
     }
 
     public Map<String, Object> generateAmpApi(Project project, String interfaceClassName, PsiMethod publicMethod) {

@@ -1,7 +1,6 @@
 package cn.gudqs7.plugins.generate.base;
 
 import cn.gudqs7.plugins.common.base.action.intention.AbstractEditorIntentionAction;
-import cn.gudqs7.plugins.common.util.jetbrain.PsiTypeUtil;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
@@ -67,7 +66,7 @@ public abstract class GenerateBaseAction extends AbstractEditorIntentionAction {
     }
 
     @Override
-    public boolean isAvailable(@NotNull Project project, Editor editor, @NotNull PsiElement element) {
+    protected boolean isAvailable0(@NotNull Project project, Editor editor, @NotNull PsiElement element) {
         GenerateBase generateBase = buildGenerate(element);
         // 只需确保该变量含有get方法即可
         PsiClass localVariableContainingClass = getLocalVariableContainingClass(element);
@@ -116,7 +115,6 @@ public abstract class GenerateBaseAction extends AbstractEditorIntentionAction {
                 generateBase.insertCodeByPsiType(elementDocument, psiDocumentManager, containingFile, splitText, insertOffset);
             }
         }
-        PsiTypeUtil.clearGeneric();
     }
 
 }

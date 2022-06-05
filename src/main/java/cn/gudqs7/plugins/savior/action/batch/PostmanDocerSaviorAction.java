@@ -7,11 +7,10 @@ import cn.gudqs7.plugins.common.util.ConfigHolder;
 import cn.gudqs7.plugins.common.util.FileUtil;
 import cn.gudqs7.plugins.common.util.JsonUtil;
 import cn.gudqs7.plugins.common.util.api.PostmanApiUtil;
-import cn.gudqs7.plugins.common.util.jetbrain.ExceptionUtil;
+import cn.gudqs7.plugins.common.util.jetbrain.IdeaApplicationUtil;
 import cn.gudqs7.plugins.common.util.structure.PsiClassUtil;
 import cn.gudqs7.plugins.savior.savior.more.JavaToPostmanSavior;
 import cn.gudqs7.plugins.savior.theme.ThemeHelper;
-import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiClass;
@@ -57,20 +56,15 @@ public class PostmanDocerSaviorAction extends AbstractBatchDocerSavior {
         indicator.setFraction(fraction);
 
         List<Map<String, Object>> itemList = itemListMap0.computeIfAbsent(moduleName, k -> new ArrayList<>(16));
-        ApplicationManager.getApplication().invokeAndWait(() -> {
-            try {
-                Map<String, Object> postmanItem = postmanSavior.generatePostmanItem(psiClass0, project);
-                if (postmanItem != null) {
-                    Object o = postmanItem.remove(MapKeyConstant.HOST_PORT);
-                    if (o instanceof String) {
-                        otherMap.put("hostAndPort", o);
-                    }
-                    otherMap.put("lastPostmanItem", postmanItem);
-                    itemList.add(postmanItem);
+        IdeaApplicationUtil.invokeAndWait(() -> {
+            Map<String, Object> postmanItem = postmanSavior.generatePostmanItem(psiClass0, project);
+            if (postmanItem != null) {
+                Object o = postmanItem.remove(MapKeyConstant.HOST_PORT);
+                if (o instanceof String) {
+                    otherMap.put("hostAndPort", o);
                 }
-            } catch (Exception e1) {
-                ExceptionUtil.handleException(e1);
-                hasCancelAtomic.set(true);
+                otherMap.put("lastPostmanItem", postmanItem);
+                itemList.add(postmanItem);
             }
         });
     }

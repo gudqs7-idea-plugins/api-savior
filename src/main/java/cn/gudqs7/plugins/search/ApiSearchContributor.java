@@ -2,6 +2,7 @@ package cn.gudqs7.plugins.search;
 
 import cn.gudqs7.plugins.common.enums.HttpMethod;
 import cn.gudqs7.plugins.common.util.IconUtil;
+import cn.gudqs7.plugins.common.util.jetbrain.ExceptionUtil;
 import cn.gudqs7.plugins.search.resolver.ApiNavigationItem;
 import cn.gudqs7.plugins.search.resolver.ApiResolverService;
 import com.intellij.ide.actions.SearchEverywherePsiRenderer;
@@ -19,6 +20,7 @@ import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.project.DumbService;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.ThrowableComputable;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.codeStyle.MinusculeMatcher;
 import com.intellij.psi.codeStyle.NameUtil;
@@ -82,7 +84,7 @@ public class ApiSearchContributor implements WeightedSearchEverywhereContributor
 
     @Override
     public boolean processSelectedItem(@NotNull ApiNavigationItem selected, int modifiers, @NotNull String searchText) {
-        PsiNavigateUtil.navigate((selected).getPsiElement());
+        PsiNavigateUtil.navigate(selected.getPsiElement());
         return true;
     }
 
@@ -93,32 +95,37 @@ public class ApiSearchContributor implements WeightedSearchEverywhereContributor
 
             @Override
             protected boolean customizeNonPsiElementLeftRenderer(ColoredListCellRenderer renderer, JList list, Object value, int index, boolean selected, boolean hasFocus) {
-                Color fgColor = list.getForeground();
-                Color bgColor = UIUtil.getListBackground();
-                SimpleTextAttributes nameAttributes = new SimpleTextAttributes(SimpleTextAttributes.STYLE_PLAIN, fgColor);
+                try {
+                    Color fgColor = list.getForeground();
+                    Color bgColor = UIUtil.getListBackground();
+                    SimpleTextAttributes nameAttributes = new SimpleTextAttributes(SimpleTextAttributes.STYLE_PLAIN, fgColor);
 
-                ItemMatchers itemMatchers = getItemMatchers(list, value);
-                ApiNavigationItem apiNavigationItem = (ApiNavigationItem) value;
-                String name = apiNavigationItem.getUrl();
-                String locationString = apiNavigationItem.getRightText();
+                    ItemMatchers itemMatchers = getItemMatchers(list, value);
+                    ApiNavigationItem apiNavigationItem = (ApiNavigationItem) value;
+                    String name = apiNavigationItem.getUrl();
+                    String locationString = apiNavigationItem.getRightText();
 
-                SpeedSearchUtil.appendColoredFragmentForMatcher(name, renderer, nameAttributes, itemMatchers.nameMatcher, bgColor, selected);
-                renderer.setIcon(IconUtil.getHttpMethodIcon(apiNavigationItem.getHttpMethod()));
+                    SpeedSearchUtil.appendColoredFragmentForMatcher(name, renderer, nameAttributes, itemMatchers.nameMatcher, bgColor, selected);
+                    renderer.setIcon(IconUtil.getHttpMethodIcon(apiNavigationItem.getHttpMethod()));
 
-                if (StringUtils.isNotEmpty(locationString)) {
-                    locationString = " [" + locationString + "]";
-                    FontMetrics fm = list.getFontMetrics(list.getFont());
-                    int maxWidth = list.getWidth() - fm.stringWidth(name) - myRightComponentWidth - 36;
-                    int fullWidth = fm.stringWidth(locationString);
-                    if (fullWidth < maxWidth) {
-                        SpeedSearchUtil.appendColoredFragmentForMatcher(locationString, renderer, SimpleTextAttributes.GRAYED_ATTRIBUTES, itemMatchers.nameMatcher, bgColor, selected);
-                    } else {
-                        int adjustedWidth = Math.max(locationString.length() * maxWidth / fullWidth - 1, 3);
-                        locationString = StringUtil.trimMiddle(locationString, adjustedWidth);
-                        SpeedSearchUtil.appendColoredFragmentForMatcher(locationString, renderer, SimpleTextAttributes.GRAYED_ATTRIBUTES, itemMatchers.nameMatcher, bgColor, selected);
+                    if (StringUtils.isNotEmpty(locationString)) {
+                        locationString = " [" + locationString + "]";
+                        FontMetrics fm = list.getFontMetrics(list.getFont());
+                        int maxWidth = list.getWidth() - fm.stringWidth(name) - myRightComponentWidth - 36;
+                        int fullWidth = fm.stringWidth(locationString);
+                        if (fullWidth < maxWidth) {
+                            SpeedSearchUtil.appendColoredFragmentForMatcher(locationString, renderer, SimpleTextAttributes.GRAYED_ATTRIBUTES, itemMatchers.nameMatcher, bgColor, selected);
+                        } else {
+                            int adjustedWidth = Math.max(locationString.length() * maxWidth / fullWidth - 1, 3);
+                            locationString = StringUtil.trimMiddle(locationString, adjustedWidth);
+                            SpeedSearchUtil.appendColoredFragmentForMatcher(locationString, renderer, SimpleTextAttributes.GRAYED_ATTRIBUTES, itemMatchers.nameMatcher, bgColor, selected);
+                        }
                     }
+                    return true;
+                } catch (Throwable ex) {
+                    ExceptionUtil.handleException(ex);
+                    return false;
                 }
-                return true;
             }
         };
     }
@@ -151,36 +158,42 @@ public class ApiSearchContributor implements WeightedSearchEverywhereContributor
 
     @Override
     public void fetchWeightedElements(@NotNull String pattern, @NotNull ProgressIndicator progressIndicator, @NotNull Processor<? super FoundItemDescriptor<ApiNavigationItem>> consumer) {
-        if (isDumbAware() || !shouldProvideElements(pattern)) {
-            return;
-        }
+        try {
+            if (isDumbAware() || !shouldProvideElements(pattern)) {
+                return;
+            }
 
-        MinusculeMatcher matcher = NameUtil.buildMatcher("*" + pattern + "*", NameUtil.MatchingCaseSensitivity.NONE);
-        Set<HttpMethod> httpMethodSet = new HashSet<>(myFilter.getSelectedElements());
-        boolean selectAll = httpMethodSet.size() == HttpMethod.values().length;
+            MinusculeMatcher matcher = NameUtil.buildMatcher("*" + pattern + "*", NameUtil.MatchingCaseSensitivity.NONE);
+            Set<HttpMethod> httpMethodSet = new HashSet<>(myFilter.getSelectedElements());
+            boolean selectAll = httpMethodSet.size() == HttpMethod.values().length;
 
-        // 从ALL -> URL Tab或快捷键进入时列表为空
-        if (navItemList == null) {
-            // 必须从read线程访问，耗时不能过长
-            ApplicationManager.getApplication().runReadAction(() -> {
-                navItemList = ApiResolverService.getInstance(myProject).getApiNavigationItemList();
-            });
-        }
-        if (navItemList != null) {
-            for (ApiNavigationItem restItem : navItemList) {
-                if (selectAll || httpMethodSet.contains(restItem.getHttpMethod())) {
-                    if (matcher.matches(restItem.getUrl()) || matcher.matches(restItem.getMethodPathInfo().getMethodDesc())) {
-                        if (!consumer.process(new FoundItemDescriptor<>(restItem, 0))) {
-                            return;
+            // 从ALL -> URL Tab或快捷键进入时列表为空
+            if (navItemList == null) {
+                // 必须从read线程访问，耗时不能过长
+                navItemList = ApplicationManager.getApplication().runReadAction(
+                        (ThrowableComputable<List<ApiNavigationItem>, Throwable>) () ->
+                                ApiResolverService.getInstance(myProject).getApiNavigationItemList()
+                );
+            }
+            if (navItemList != null) {
+                for (ApiNavigationItem restItem : navItemList) {
+                    if (selectAll || httpMethodSet.contains(restItem.getHttpMethod())) {
+                        if (matcher.matches(restItem.getUrl()) || matcher.matches(restItem.getMethodPathInfo().getMethodDesc())) {
+                            if (!consumer.process(new FoundItemDescriptor<>(restItem, 0))) {
+                                return;
+                            }
                         }
                     }
                 }
             }
+        } catch (Throwable ex) {
+            ExceptionUtil.handleException(ex);
         }
     }
 
     @Override
     public @NotNull List<AnAction> getActions(@NotNull Runnable onChanged) {
+        // 获取 Filter 的 action
         if (myProject == null || myFilter == null) {
             return Collections.emptyList();
         }
