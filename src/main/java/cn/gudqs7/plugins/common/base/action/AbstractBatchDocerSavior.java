@@ -149,7 +149,6 @@ public abstract class AbstractBatchDocerSavior extends AbstractAction implements
                                 AtomicReference<String> moduleNameAtomic = new AtomicReference<>("");
 
                                 IdeaApplicationUtil.invokeAndWait(() -> {
-                                    int iii = 3 / 0;
                                     AnnotationHolder psiClassHolder = AnnotationHolder.getPsiClassHolder(psiClass0);
                                     CommentInfo commentInfo = psiClassHolder.getCommentInfo();
                                     apiModelPropertyAtomic.set(commentInfo);
