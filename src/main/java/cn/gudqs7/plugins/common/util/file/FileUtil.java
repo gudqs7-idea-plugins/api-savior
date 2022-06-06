@@ -1,4 +1,4 @@
-package cn.gudqs7.plugins.common.util;
+package cn.gudqs7.plugins.common.util.file;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;

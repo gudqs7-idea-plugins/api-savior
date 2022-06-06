@@ -1,4 +1,4 @@
-package cn.gudqs7.plugins.common.util;
+package cn.gudqs7.plugins.common.util.file;
 
 import cn.gudqs7.plugins.common.consts.CommonConst;
 import freemarker.template.Configuration;

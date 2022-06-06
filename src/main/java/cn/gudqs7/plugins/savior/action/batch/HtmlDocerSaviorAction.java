@@ -2,15 +2,15 @@ package cn.gudqs7.plugins.savior.action.batch;
 
 import cn.gudqs7.plugins.common.base.action.AbstractBatchDocerSavior;
 import cn.gudqs7.plugins.common.pojo.resolver.CommentInfo;
-import cn.gudqs7.plugins.common.util.FileUtil;
-import cn.gudqs7.plugins.common.util.FreeMarkerUtil;
+import cn.gudqs7.plugins.common.util.file.FileUtil;
+import cn.gudqs7.plugins.common.util.file.FreeMarkerUtil;
+import cn.gudqs7.plugins.common.util.file.MarkdownUtil;
 import cn.gudqs7.plugins.common.util.structure.PsiClassUtil;
 import cn.gudqs7.plugins.savior.savior.more.JavaToDocSavior;
 import cn.gudqs7.plugins.savior.theme.ThemeHelper;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiClass;
-import com.youbenzi.mdtool.tool.MDTool;
 import lombok.Data;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -49,7 +49,7 @@ public class HtmlDocerSaviorAction extends AbstractBatchDocerSavior {
         for (String apiName : apiNameList) {
             categoryItemList.add(new CategoryItem(moduleName, fileName, moduleName + "/" + fullFileName + "#" + apiName, apiName));
         }
-        String markdown2Html = MDTool.markdown2Html(markdown);
+        String markdown2Html = MarkdownUtil.markdownToHtml(markdown);
         Map<String, Object> root = new HashMap<>(8);
         root.put("title", moduleName + "-" + fileName);
         root.put("markdownDoc", markdown2Html);

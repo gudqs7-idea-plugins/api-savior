@@ -1,11 +1,11 @@
-package com.youbenzi.mdtool.export;
+package cn.gudqs7.plugins.common.util.file;
 
+import com.youbenzi.mdtool.export.Decorator;
 import com.youbenzi.mdtool.markdown.BlockType;
 import com.youbenzi.mdtool.markdown.MDToken;
 import com.youbenzi.mdtool.markdown.TableCellAlign;
 import com.youbenzi.mdtool.markdown.bean.Block;
 import com.youbenzi.mdtool.markdown.bean.ValuePart;
-import com.youbenzi.mdtool.tool.MDTool;
 import com.youbenzi.mdtool.tool.Tools;
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -14,28 +14,14 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
 
+/**
+ * 在原来的基础上给 H1 添加了 id
+ *
+ * @author WQ
+ */
 public class HTMLDecorator implements Decorator {
 
     private StringBuilder content = new StringBuilder();
-
-    public static void main(String[] args) {
-        String content = "1. 列表1.1\n" + "2. 列表1.2\n" + "    * 列表2.1\n" + "    * 列表2.2\n" + "    * 列表2.3\n"
-                + "    * 列表2.4\n";
-//						+"3. 列表1.3\n"
-//						+"    * 列表2.1\n"
-//						+"    * 列表2.2\n"
-//						+"    * 列表2.3\n"
-//						+"    * 列表2.4\n"
-//						+"        * 列表3.1\n"
-//						+"        * 列表3.2\n"
-//						+"        * 列表3.3\n"
-//						+"        * 列表3.4\n"
-//						+"4. 列表1.4\n"
-//						+"* 列表1.4\n"
-//						+"* 列表1.4\n"
-//						+"* 列表1.4\n";
-        System.out.println(MDTool.markdown2Html(content));
-    }
 
     @Override
     public void beginWork(String outputFilePath) {

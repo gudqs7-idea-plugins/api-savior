@@ -1,6 +1,6 @@
 package cn.gudqs7.plugins.common.diagnostic;
 
-import cn.gudqs7.plugins.common.util.FreeMarkerUtil;
+import cn.gudqs7.plugins.common.util.file.FreeMarkerUtil;
 import cn.gudqs7.plugins.common.util.jetbrain.ExceptionUtil;
 import com.intellij.openapi.application.ApplicationNamesInfo;
 import com.intellij.openapi.application.ex.ApplicationInfoEx;

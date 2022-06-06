@@ -5,7 +5,6 @@ import cn.gudqs7.plugins.common.pojo.resolver.RequestMapping;
 import cn.gudqs7.plugins.common.pojo.resolver.StructureAndCommentInfo;
 import cn.gudqs7.plugins.common.resolver.comment.AnnotationHolder;
 import cn.gudqs7.plugins.common.util.ConfigHolder;
-import cn.gudqs7.plugins.common.util.FreeMarkerUtil;
 import cn.gudqs7.plugins.savior.enums.ThemeType;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiMethod;
@@ -45,7 +44,7 @@ public interface Theme {
             String methodTheme = config.get("docer.theme.method." + pathPrefix);
             if (StringUtils.isNotBlank(methodTheme)) {
                 String methodPath = pathPrefix + "/method-" + methodTheme + ".ftl";
-                InputStream inputStream = FreeMarkerUtil.class.getClassLoader().getResourceAsStream("template/ftl/" + methodPath);
+                InputStream inputStream = Theme.class.getClassLoader().getResourceAsStream("template/ftl/" + methodPath);
                 if (inputStream != null) {
                     return methodPath;
                 }
@@ -66,7 +65,7 @@ public interface Theme {
             String fieldTheme = config.get("docer.theme.field." + pathPrefix);
             if (StringUtils.isNotBlank(fieldTheme)) {
                 String fieldPath = pathPrefix + "/field-" + fieldTheme + ".ftl";
-                InputStream inputStream = FreeMarkerUtil.class.getClassLoader().getResourceAsStream("template/ftl/" + fieldPath);
+                InputStream inputStream = Theme.class.getClassLoader().getResourceAsStream("template/ftl/" + fieldPath);
                 if (inputStream != null) {
                     return fieldPath;
                 }
