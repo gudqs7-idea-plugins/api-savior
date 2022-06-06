@@ -1,8 +1,8 @@
 package cn.gudqs7.plugins.search;
 
 import cn.gudqs7.plugins.common.enums.HttpMethod;
-import cn.gudqs7.plugins.common.util.IconUtil;
 import cn.gudqs7.plugins.common.util.jetbrain.ExceptionUtil;
+import cn.gudqs7.plugins.search.icon.IconHolder;
 import cn.gudqs7.plugins.search.resolver.ApiNavigationItem;
 import cn.gudqs7.plugins.search.resolver.ApiResolverService;
 import com.intellij.ide.actions.SearchEverywherePsiRenderer;
@@ -106,7 +106,7 @@ public class ApiSearchContributor implements WeightedSearchEverywhereContributor
                     String locationString = apiNavigationItem.getRightText();
 
                     SpeedSearchUtil.appendColoredFragmentForMatcher(name, renderer, nameAttributes, itemMatchers.nameMatcher, bgColor, selected);
-                    renderer.setIcon(IconUtil.getHttpMethodIcon(apiNavigationItem.getHttpMethod()));
+                    renderer.setIcon(IconHolder.getHttpMethodIcon(apiNavigationItem.getHttpMethod()));
 
                     if (StringUtils.isNotEmpty(locationString)) {
                         locationString = " [" + locationString + "]";
