@@ -223,7 +223,7 @@ public class PsiMethodAnnotationHolderImpl extends AbstractAnnotationHolder {
             PsiAnnotation psiAnnotation = psiMethod.getContainingClass().getAnnotation(QNAME_OF_MAPPING);
             if (psiAnnotation != null) {
                 List<String> pathList = PsiAnnotationUtil.getAnnotationListValue(psiAnnotation, "value", null);
-                if (pathList == null) {
+                if (CollectionUtils.isEmpty(pathList)) {
                     pathList = PsiAnnotationUtil.getAnnotationListValue(psiAnnotation, "path", null);
                 }
                 if (CollectionUtils.isNotEmpty(pathList)) {

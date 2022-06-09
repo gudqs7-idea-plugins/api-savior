@@ -1,11 +1,10 @@
 package cn.gudqs7.plugins.common.util.jetbrain;
 
+import com.intellij.codeInsight.AnnotationUtil;
+import com.intellij.psi.JavaPsiFacade;
 import com.intellij.psi.PsiAnnotation;
 import com.intellij.psi.PsiAnnotationMemberValue;
-import com.intellij.psi.PsiArrayInitializerMemberValue;
 import com.intellij.psi.PsiReferenceExpression;
-import com.intellij.psi.impl.compiled.ClsArrayInitializerMemberValueImpl;
-import com.intellij.psi.impl.source.tree.java.PsiLiteralExpressionImpl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,29 +30,6 @@ public class PsiAnnotationUtil {
     }
 
     /**
-     * 获取数组类型的注解字段数据
-     *
-     * @param fieldAnnotation 注解本体
-     * @param attr            字段名称
-     * @param <T>             数组元素类型
-     * @param defaultVal      默认值
-     * @return 数组类型的注解字段数据
-     */
-    public static <T> List<T> getAnnotationListValue(PsiAnnotation fieldAnnotation, String attr, List<T> defaultVal) {
-        Object annotationValueByQname = getAnnotationValue(fieldAnnotation, attr, defaultVal);
-        if (annotationValueByQname == null) {
-            return null;
-        }
-        if (annotationValueByQname instanceof List) {
-            return (List<T>) annotationValueByQname;
-        } else {
-            List<T> list = new ArrayList<>();
-            list.add((T) annotationValueByQname);
-            return list;
-        }
-    }
-
-    /**
      * 获取注解字段数据
      *
      * @param fieldAnnotation 注解本体
@@ -66,6 +42,31 @@ public class PsiAnnotationUtil {
     }
 
     /**
+     * 获取数组类型的注解字段数据
+     *
+     * @param fieldAnnotation 注解本体
+     * @param attr            字段名称
+     * @param <T>             数组元素类型
+     * @param defaultVal      默认值
+     * @return 数组类型的注解字段数据
+     */
+    public static <T> List<T> getAnnotationListValue(PsiAnnotation fieldAnnotation, String attr, List<T> defaultVal) {
+        List<T> valList = new ArrayList<>();
+        PsiAnnotationMemberValue memberValue = fieldAnnotation.findAttributeValue(attr);
+        if (memberValue == null) {
+            return defaultVal;
+        }
+        List<PsiAnnotationMemberValue> psiAnnotationMemberValueList = AnnotationUtil.arrayAttributeValues(memberValue);
+        for (PsiAnnotationMemberValue psiAnnotationMemberValue : psiAnnotationMemberValueList) {
+            Object value = getValueByPsiAnnotationMemberValue(psiAnnotationMemberValue);
+            if (value != null) {
+                valList.add((T) value);
+            }
+        }
+        return valList;
+    }
+
+    /**
      * 获取注解字段数据
      *
      * @param fieldAnnotation 注解本体
@@ -75,58 +76,34 @@ public class PsiAnnotationUtil {
      * @return 注解字段数据
      */
     public static <T> T getAnnotationValue(PsiAnnotation fieldAnnotation, String attr, T defaultVal) {
-        PsiAnnotationMemberValue value = fieldAnnotation.findAttributeValue(attr);
-        if (value == null) {
+        PsiAnnotationMemberValue memberValue = fieldAnnotation.findAttributeValue(attr);
+        if (memberValue == null) {
             return defaultVal;
         }
-        Object valueByPsiAnnotationMemberValue = getValueByPsiAnnotationMemberValue(value);
-        if (valueByPsiAnnotationMemberValue != null) {
-            return (T) valueByPsiAnnotationMemberValue;
+        Object value = getValueByPsiAnnotationMemberValue(memberValue);
+        if (value != null) {
+            return (T) value;
         }
         return defaultVal;
     }
 
-    public static <T> T getValueByPsiAnnotationMemberValue(PsiAnnotationMemberValue value) {
-        if (value instanceof ClsArrayInitializerMemberValueImpl) {
-            ClsArrayInitializerMemberValueImpl clsArrayInitializerMemberValue = (ClsArrayInitializerMemberValueImpl) value;
-            return (T) new ArrayList<>();
-        }
-        if (value instanceof PsiLiteralExpressionImpl) {
-            PsiLiteralExpressionImpl expression = (PsiLiteralExpressionImpl) value;
-            Object expressionValue = expression.getValue();
-            if (expressionValue != null) {
-                return (T) expressionValue;
-            }
-        }
+    public static Object computeConstantExpression(PsiAnnotationMemberValue psiAnnotationMemberValue) {
+        return JavaPsiFacade.getInstance(psiAnnotationMemberValue.getProject()).getConstantEvaluationHelper().computeConstantExpression(psiAnnotationMemberValue);
+    }
+
+    public static Object getValueByPsiAnnotationMemberValue(PsiAnnotationMemberValue value) {
         if (value instanceof PsiReferenceExpression) {
             PsiReferenceExpression psiReferenceExpression = (PsiReferenceExpression) value;
             String text = psiReferenceExpression.getText();
             String prefixWithRequestMethod = "RequestMethod.";
             if (text.startsWith(prefixWithRequestMethod)) {
-                return (T) text.substring(prefixWithRequestMethod.length());
+                return text.substring(prefixWithRequestMethod.length());
             } else {
-                return (T) text;
+                return text;
             }
+        } else {
+            return computeConstantExpression(value);
         }
-        if (value instanceof PsiArrayInitializerMemberValue) {
-            PsiArrayInitializerMemberValue psiArrayInitializerMemberValue = (PsiArrayInitializerMemberValue) value;
-            PsiAnnotationMemberValue[] memberValues = psiArrayInitializerMemberValue.getInitializers();
-            if (memberValues.length > 0) {
-                List<Object> list = new ArrayList<>();
-                for (PsiAnnotationMemberValue memberValue : memberValues) {
-                    Object item = getValueByPsiAnnotationMemberValue(memberValue);
-                    if (item == null) {
-                        list.add(memberValue);
-                    } else {
-                        list.add(item);
-                    }
-                }
-                if (list.size() > 0) {
-                    return (T) list;
-                }
-            }
-        }
-        return null;
     }
 
 }
