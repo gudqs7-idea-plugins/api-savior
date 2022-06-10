@@ -5,6 +5,7 @@ import cn.gudqs7.plugins.common.pojo.resolver.CommentInfo;
 import cn.gudqs7.plugins.common.resolver.comment.AnnotationHolder;
 import cn.gudqs7.plugins.common.util.jetbrain.ExceptionUtil;
 import cn.gudqs7.plugins.common.util.jetbrain.PsiAnnotationUtil;
+import cn.gudqs7.plugins.search.pojo.RequestMappingAnnotationInfo;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
 import com.intellij.psi.impl.java.stubs.index.JavaAnnotationIndex;
@@ -41,6 +42,9 @@ public class ApiResolverService {
             for (PsiAnnotation psiAnnotation : psiAnnotations) {
                 PsiModifierList psiModifierList = (PsiModifierList) psiAnnotation.getParent();
                 PsiElement psiElement = psiModifierList.getParent();
+                if (psiElement == null) {
+                    continue;
+                }
                 PsiClass psiClass = (PsiClass) psiElement;
                 psiClassMap.put(psiClass.getQualifiedName(), psiClass);
             }
@@ -58,8 +62,22 @@ public class ApiResolverService {
 
     protected List<ApiNavigationItem> getServiceItemList(@NotNull PsiClass psiClass) {
         List<ApiNavigationItem> navigationItemList = new ArrayList<>(2);
-        Set<String> classPathSet = getClassRequestMappingPath(psiClass);
         List<MethodPathInfo> methodPathList = new ArrayList<>(32);
+
+        List<String> classParams = new ArrayList<>();
+        Set<String> classPathSet = new HashSet<>(32);
+        PsiAnnotation classRequestMappingAnnotation = psiClass.getAnnotation(AnnotationHolder.QNAME_OF_MAPPING);
+        // 可能类上不加 @RequestMapping, 则代表 path = "/"
+        if (classRequestMappingAnnotation != null) {
+            RequestMappingAnnotationInfo classRequestMappingInfo = PsiAnnotationUtil.getAnnotationInfoByPojo(classRequestMappingAnnotation, RequestMappingAnnotationInfo.class);
+            classPathSet.addAll(classRequestMappingInfo.getValueOrPath());
+            List<String> params = classRequestMappingInfo.getParams();
+            if (params != null) {
+                classParams.addAll(params);
+            }
+        } else {
+            classPathSet.add("/");
+        }
 
         String classQname = psiClass.getQualifiedName();
         PsiMethod[] psiMethods = psiClass.getMethods();
@@ -82,6 +100,7 @@ public class ApiResolverService {
                 PsiMethod psiMethod = methodPathInfo.getPsiMethod();
                 HttpMethod httpMethod = methodPathInfo.getHttpMethod();
                 String methodPath = methodPathInfo.getMethodPath();
+                List<String> methodParams = methodPathInfo.getParams();
 
                 if (!classPath.startsWith("/")) {
                     classPath = "/".concat(classPath);
@@ -92,7 +111,14 @@ public class ApiResolverService {
                 if (methodPath.startsWith("/")) {
                     methodPath = methodPath.substring(1);
                 }
-                String fullPath = classPath + methodPath;
+                // 获取 params 信息, 先从方法的注解取, 取不到则尝试类的注解
+                String param = "";
+                if (CollectionUtils.isNotEmpty(methodParams)) {
+                    param = "?" + String.join("&", methodParams);
+                } else if (CollectionUtils.isNotEmpty(classParams)) {
+                    param = "?" + String.join("&", classParams);
+                }
+                String fullPath = classPath + methodPath + param;
                 navigationItemList.add(new ApiNavigationItem(psiMethod, httpMethod, fullPath, methodPathInfo));
             }
         }
@@ -104,15 +130,16 @@ public class ApiResolverService {
         List<MethodPathInfo> methodPathList = new ArrayList<>(8);
         PsiAnnotation methodMappingAnnotation = psiMethod.getAnnotation(qnameOfMapping);
         if (methodMappingAnnotation != null) {
-            List<String> pathList = getRequestMappingPath(methodMappingAnnotation);
+            RequestMappingAnnotationInfo methodAnnotationInfoByPojo = PsiAnnotationUtil.getAnnotationInfoByPojo(methodMappingAnnotation, RequestMappingAnnotationInfo.class);
             if (httpMethod == null) {
-                List<String> methodList = PsiAnnotationUtil.getAnnotationListValue(methodMappingAnnotation, "method", null);
+                List<String> methodList = methodAnnotationInfoByPojo.getMethod();
                 if (CollectionUtils.isNotEmpty(methodList)) {
                     httpMethod = HttpMethod.of(methodList.get(0));
                 } else {
-                    httpMethod = HttpMethod.GET;
+                    httpMethod = HttpMethod.ALL;
                 }
             }
+            List<String> pathList = methodAnnotationInfoByPojo.getValueOrPath();
             if (CollectionUtils.isNotEmpty(pathList)) {
                 for (String methodPath : pathList) {
                     String psiClassName = psiClass.getName();
@@ -121,29 +148,12 @@ public class ApiResolverService {
                     AnnotationHolder psiMethodHolder = AnnotationHolder.getPsiMethodHolder(psiMethod);
                     CommentInfo commentInfo = psiMethodHolder.getCommentInfo();
                     String description = commentInfo.getValue("");
-                    methodPathList.add(new MethodPathInfo(psiMethod, httpMethod, methodPath, location, description));
+                    List<String> params = methodAnnotationInfoByPojo.getParams();
+                    methodPathList.add(new MethodPathInfo(psiMethod, httpMethod, methodPath, location, description, params));
                 }
             }
         }
         return methodPathList;
-    }
-
-    @NotNull
-    private Set<String> getClassRequestMappingPath(PsiClass psiClass) {
-        if (psiClass == null) {
-            return new HashSet<>(2);
-        }
-        Set<String> classPathSet = new HashSet<>(8);
-        PsiAnnotation requestMappingAnnotation = psiClass.getAnnotation(AnnotationHolder.QNAME_OF_MAPPING);
-        if (requestMappingAnnotation != null) {
-            List<String> pathList = getRequestMappingPath(requestMappingAnnotation);
-            if (CollectionUtils.isEmpty(pathList)) {
-                classPathSet.add("/");
-            } else {
-                classPathSet.addAll(pathList);
-            }
-        }
-        return classPathSet;
     }
 
     @Nullable

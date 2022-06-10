@@ -16,6 +16,7 @@ public class IconHolder {
     public static final Icon ICON_PUT = IconLoader.getIcon("/icons/method/put.svg", IconHolder.class);
     public static final Icon ICON_DELETE = IconLoader.getIcon("/icons/method/delete.svg", IconHolder.class);
     public static final Icon ICON_PATCH = IconLoader.getIcon("/icons/method/patch.svg", IconHolder.class);
+    public static final Icon ICON_ALL = IconLoader.getIcon("/icons/method/all.svg", IconHolder.class);
 
     public static Icon getHttpMethodIcon(HttpMethod httpMethod) {
         switch (httpMethod) {
@@ -27,6 +28,8 @@ public class IconHolder {
                 return IconHolder.ICON_DELETE;
             case PATCH:
                 return IconHolder.ICON_PATCH;
+            case ALL:
+                return IconHolder.ICON_ALL;
             default:
                 return IconHolder.ICON_GET;
         }

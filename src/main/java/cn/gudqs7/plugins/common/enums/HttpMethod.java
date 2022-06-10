@@ -14,6 +14,7 @@ public enum HttpMethod {
     PUT("PUT"),
     DELETE("DELETE"),
     PATCH("PATCH"),
+    ALL("ALL")
     ;
 
     public String getMethod() {
