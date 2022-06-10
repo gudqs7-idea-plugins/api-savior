@@ -7,7 +7,8 @@
 
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](CODE_OF_CONDUCT_CN.md)
 [![license](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
-[![GitHub release][release-img]][latest-release] [![Jetbrains Plugins][plugin-img]][plugin]
+[![GitHub release][release-img]][latest-release] 
+[![Jetbrains Plugins][plugin-img]][plugin]
 [![Version](http://phpstorm.espend.de/badge/16860/version)][plugin]  
 [![Downloads](http://phpstorm.espend.de/badge/16860/downloads)][plugin]
 [![Install Plugins][jet-img]][jet]  
