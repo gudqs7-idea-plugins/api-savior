@@ -172,7 +172,7 @@ public class GenerateConvertAction extends GenerateBaseAction {
     }
 
     private void invokeByPsiMethod(GenerateBase generateBase, PsiDocumentManager psiDocumentManager, PsiFile containingFile, Document document, PsiMethod psiMethod) {
-        String prefix = getPrefix(document, psiMethod);
+        String prefix = getPrefixWithBreakLine(document, psiMethod);
         Integer insertOffset = getInsertOffset(psiMethod);
         generateBase.insertCodeByPsiType(document, psiDocumentManager, containingFile, prefix, insertOffset);
     }
