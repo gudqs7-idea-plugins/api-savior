@@ -3,6 +3,7 @@ package cn.gudqs7.plugins.generate.postfix;
 import cn.gudqs7.plugins.generate.convert.template.GenerateConvertTemplate;
 import cn.gudqs7.plugins.generate.getter.template.GenerateAllGetterTemplate;
 import cn.gudqs7.plugins.generate.setter.template.GenerateAllSetterByBuilderTemplate;
+import cn.gudqs7.plugins.generate.setter.template.GenerateAllSetterWithChainTemplate;
 import cn.gudqs7.plugins.generate.setter.template.GenerateAllSetterWithDefaultValTemplate;
 import cn.gudqs7.plugins.generate.setter.template.GenerateAllSetterWithoutDefaultValTemplate;
 import com.intellij.codeInsight.template.postfix.templates.JavaPostfixTemplateProvider;
@@ -25,7 +26,8 @@ public class GeneratePostfixTemplateProvider extends JavaPostfixTemplateProvider
                 new GenerateAllGetterTemplate(),
                 new GenerateAllSetterWithoutDefaultValTemplate(),
                 new GenerateConvertTemplate(),
-                new GenerateAllSetterByBuilderTemplate()
+                new GenerateAllSetterByBuilderTemplate(),
+                new GenerateAllSetterWithChainTemplate()
         );
     }
 

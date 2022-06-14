@@ -1,0 +1,28 @@
+import lombok.Data;
+import lombok.experimental.Accessors;
+
+public class App {
+
+    public void test() {
+        Foo foo = new Foo();
+        <spot>foo</spot>$key
+    }
+
+}
+
+
+@Data
+@Accessors(chain = true)
+class Foo {
+
+    private Integer testInt;
+
+    private Long testLong;
+
+    private Float testFloat;
+
+    private Double testDouble;
+
+    private Boolean testBoolean;
+
+}

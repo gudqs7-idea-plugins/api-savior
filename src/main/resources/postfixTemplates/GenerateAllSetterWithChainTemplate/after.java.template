@@ -1,0 +1,32 @@
+import lombok.Data;
+import lombok.experimental.Accessors;
+
+public class App {
+
+    public void test() {
+        Foo foo = new Foo();
+        <spot>foo.setTestInt(0)
+                .setTestLong(0L)
+                .setTestFloat(0f)
+                .setTestDouble(0D)
+                .setTestBoolean(false);</spot>
+    }
+
+}
+
+
+@Data
+@Accessors(chain = true)
+class Foo {
+
+    private Integer testInt;
+
+    private Long testLong;
+
+    private Float testFloat;
+
+    private Double testDouble;
+
+    private Boolean testBoolean;
+
+}
