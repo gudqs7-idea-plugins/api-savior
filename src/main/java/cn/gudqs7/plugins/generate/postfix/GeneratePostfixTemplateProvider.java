@@ -6,8 +6,10 @@ import cn.gudqs7.plugins.generate.setter.template.GenerateAllSetterByBuilderTemp
 import cn.gudqs7.plugins.generate.setter.template.GenerateAllSetterWithChainTemplate;
 import cn.gudqs7.plugins.generate.setter.template.GenerateAllSetterWithDefaultValTemplate;
 import cn.gudqs7.plugins.generate.setter.template.GenerateAllSetterWithoutDefaultValTemplate;
-import com.intellij.codeInsight.template.postfix.templates.JavaPostfixTemplateProvider;
 import com.intellij.codeInsight.template.postfix.templates.PostfixTemplate;
+import com.intellij.codeInsight.template.postfix.templates.PostfixTemplateProvider;
+import com.intellij.openapi.editor.Editor;
+import com.intellij.psi.PsiFile;
 import com.intellij.util.containers.ContainerUtil;
 import org.jetbrains.annotations.NotNull;
 
@@ -16,7 +18,7 @@ import java.util.Set;
 /**
  * @author WQ
  */
-public class GeneratePostfixTemplateProvider extends JavaPostfixTemplateProvider {
+public class GeneratePostfixTemplateProvider implements PostfixTemplateProvider {
 
     private final Set<PostfixTemplate> templates;
 
@@ -35,5 +37,25 @@ public class GeneratePostfixTemplateProvider extends JavaPostfixTemplateProvider
     @Override
     public Set<PostfixTemplate> getTemplates() {
         return templates;
+    }
+
+    @Override
+    public boolean isTerminalSymbol(char currentChar) {
+        return false;
+    }
+
+    @Override
+    public void preExpand(@NotNull PsiFile file, @NotNull Editor editor) {
+
+    }
+
+    @Override
+    public void afterExpand(@NotNull PsiFile file, @NotNull Editor editor) {
+
+    }
+
+    @Override
+    public @NotNull PsiFile preCheck(@NotNull PsiFile copyFile, @NotNull Editor realEditor, int currentOffset) {
+        return copyFile;
     }
 }
