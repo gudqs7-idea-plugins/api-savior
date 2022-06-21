@@ -42,7 +42,7 @@ public enum MoreCommentTagEnum {
     private final String tag;
     private final boolean boolType;
 
-    MoreCommentTagEnum(java.lang.String tag) {
+    MoreCommentTagEnum(String tag) {
         this.tag = tag;
         this.boolType = false;
     }
