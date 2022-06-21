@@ -89,7 +89,15 @@ public abstract class AbstractBatchDocerSavior extends AbstractAction implements
         PsiDirectory psiDirectory = getPsiDirectory(psiElement);
 
         Set<PsiClass> psiClassList = new TreeSet<>(
-                Comparator.comparing(PsiClass::getQualifiedName)
+                (o1, o2) -> {
+                    String qName1 = o1.getQualifiedName();
+                    String qName2 = o2.getQualifiedName();
+                    if (Objects.equals(qName1, qName2) || qName1 == null || qName2 == null) {
+                        return 0;
+                    } else {
+                        return qName1.compareTo(qName2);
+                    }
+                }
         );
 
         boolean isRightClickOnClass = psiClass != null;

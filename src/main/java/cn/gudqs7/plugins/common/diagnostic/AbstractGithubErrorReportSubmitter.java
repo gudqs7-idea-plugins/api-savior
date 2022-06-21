@@ -73,11 +73,10 @@ public abstract class AbstractGithubErrorReportSubmitter extends AbstractErrorRe
     @SneakyThrows
     @Override
     protected String findIssueByMd5(String throwableMd5) {
-        Map<String, String> headers = null;
         String q = "repo:" + getGithubRepo() + " is:issue in:body " + throwableMd5;
         URLCodec urlCodec = new URLCodec(CommonConst.UTF8);
         String query = "q=" + urlCodec.encode(q) + "&page=1&per_page=1";
-        String result = HttpUtil.sendHttpWithBody(API_BASE_URL + "/search/issues?" + query, "GET", null, headers);
+        String result = HttpUtil.sendHttpWithBody(API_BASE_URL + "/search/issues?" + query, "GET", null, null);
         System.out.println("searchIssue res :: " + result);
         Map map = JsonUtil.fromJson(result, Map.class);
         List<Map<String, Object>> items = (List<Map<String, Object>>) map.get("items");

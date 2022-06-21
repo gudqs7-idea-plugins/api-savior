@@ -8,6 +8,7 @@ import cn.gudqs7.plugins.common.pojo.resolver.CommentInfoTag;
 import cn.gudqs7.plugins.common.pojo.resolver.RequestMapping;
 import cn.gudqs7.plugins.common.pojo.resolver.ResponseCodeInfo;
 import cn.gudqs7.plugins.common.util.WebEnvironmentUtil;
+import cn.gudqs7.plugins.common.util.jetbrain.ExceptionUtil;
 import cn.gudqs7.plugins.common.util.jetbrain.PsiAnnotationUtil;
 import cn.gudqs7.plugins.common.util.jetbrain.PsiTypeUtil;
 import com.intellij.psi.*;
@@ -220,7 +221,11 @@ public class PsiMethodAnnotationHolderImpl extends AbstractAnnotationHolder {
 
             // deal controller RequestMapping
             String controllerUrl = "/";
-            PsiAnnotation psiAnnotation = psiMethod.getContainingClass().getAnnotation(QNAME_OF_MAPPING);
+            PsiClass containingClass = psiMethod.getContainingClass();
+            if (containingClass == null) {
+                ExceptionUtil.handleSyntaxError(psiMethod.getName() + "'s Class");
+            }
+            PsiAnnotation psiAnnotation = containingClass.getAnnotation(QNAME_OF_MAPPING);
             if (psiAnnotation != null) {
                 List<String> pathList = PsiAnnotationUtil.getAnnotationListValue(psiAnnotation, "value", null);
                 if (CollectionUtils.isEmpty(pathList)) {
