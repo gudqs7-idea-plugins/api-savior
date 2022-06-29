@@ -1,6 +1,7 @@
 package cn.gudqs7.plugins.savior.savior.more;
 
 import cn.gudqs7.plugins.common.consts.CommonConst;
+import cn.gudqs7.plugins.common.consts.MapKeyConstant;
 import cn.gudqs7.plugins.common.enums.MoreCommentTagEnum;
 import cn.gudqs7.plugins.common.pojo.resolver.CommentInfo;
 import cn.gudqs7.plugins.common.pojo.resolver.StructureAndCommentInfo;
@@ -105,6 +106,8 @@ public class JavaToAmpSavior extends AbstractSavior<Map<String, Object>> {
 
         Map<String, Object> java2jsonMap = java2ComplexReader.read(paramStructureAndCommentInfo);
         Map<String, Object> returnJava2jsonMap = java2ComplexReader.read(returnStructureAndCommentInfo);
+        //noinspection unchecked
+        returnJava2jsonMap = (Map<String, Object>) returnJava2jsonMap.getOrDefault(MapKeyConstant.RETURN_FIELD_NAME, new HashMap<>());
 
         Map<String, Object> data = new LinkedHashMap<>(16);
         // 概述
