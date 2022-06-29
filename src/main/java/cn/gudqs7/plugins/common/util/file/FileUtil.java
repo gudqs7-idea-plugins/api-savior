@@ -30,7 +30,8 @@ public class FileUtil {
             return;
         }
         path = getRightFileName(path);
-        if (parent == null || !parent.isDirectory()) {
+        // 若 parent 不存在, 则 parent.isFile() 返回 false, 不影响代码运行 (反之判断是否为目录则有问题)
+        if (parent == null || parent.isFile()) {
             return;
         }
         try {

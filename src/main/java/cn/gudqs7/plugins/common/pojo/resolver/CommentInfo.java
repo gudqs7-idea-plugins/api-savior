@@ -10,7 +10,10 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 字段注解/注释
@@ -130,8 +133,12 @@ public class CommentInfo extends RequestMapping {
         List<String> list = otherTagMap.get(tagKey);
         if (CollectionUtils.isNotEmpty(list)) {
             for (String item : list) {
-                String[] hiddenInfoArray = item.split(splitRegex);
-                splitDataArray.addAll(Arrays.asList(hiddenInfoArray));
+                String[] itemArray = item.split(splitRegex);
+                for (String item0 : itemArray) {
+                    if (StringUtils.isNotBlank(item0)) {
+                        splitDataArray.add(item0.trim());
+                    }
+                }
             }
         }
         return splitDataArray;
