@@ -6,7 +6,7 @@ package cn.gudqs7.plugins.consts;
  */
 public class CommonIdConst {
 
-    public static final String NOTIFICATION_TIP_GROUP_ID = "Search Everywhere Api Tip";
-    public static final String NOTIFICATION_ERROR_GROUP_ID = "Search Everywhere Api Error";
+    public static final String NOTIFICATION_TIP_GROUP_ID = "Api Savior Tip";
+    public static final String NOTIFICATION_ERROR_GROUP_ID = "Api Savior Error";
 
 }
