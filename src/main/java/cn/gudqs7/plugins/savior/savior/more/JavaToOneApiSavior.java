@@ -48,6 +48,7 @@ public class JavaToOneApiSavior extends AbstractSavior<Void> {
         if (hidden) {
             return;
         }
+        String pid = commentInfo.getSingleStr(MoreCommentTagEnum.AMP_PID.getTag(), "");
 
         // 根据 @Order 注解 以及字母顺序, 从小到大排序
         PsiMethod[] methods = PsiClassUtil.getAllMethods(psiClass);
@@ -62,12 +63,16 @@ public class JavaToOneApiSavior extends AbstractSavior<Void> {
             if (StringUtils.isBlank(actionName)) {
                 continue;
             }
-            generateAmpApi(project, interfaceClassName, method);
+            generateAmpApi(project, interfaceClassName, method, pid);
         }
     }
 
-    public void generateAmpApi(Project project, String interfaceClassName, PsiMethod publicMethod) {
-        getDataByMethod(project, interfaceClassName, publicMethod, false);
+    public void generateAmpApi(Project project, String interfaceClassName, PsiMethod publicMethod, String pid) {
+        Map<String, Object> param = new HashMap<>(16);
+        if (StringUtils.isNotBlank(pid)) {
+            param.put("pid", pid);
+        }
+        getDataByMethod(project, interfaceClassName, publicMethod, param, false);
     }
 
     @Override
@@ -81,6 +86,7 @@ public class JavaToOneApiSavior extends AbstractSavior<Void> {
         String interfaceName = commentInfo.getValue(methodName);
         String actionName = commentInfo.getSingleStr(MoreCommentTagEnum.AMP_ACTION_NAME.getTag(), null);
         String dataSize = commentInfo.getSingleStr(MoreCommentTagEnum.AMP_DATA_SIZE.getTag(), "2");
+        String currentTag = commentInfo.getSingleStr(MoreCommentTagEnum.AMP_CURRENT_TAG.getTag(), "default");
         String projectCode = config.get("oneApi.projectCode");
         String catalogId = config.get("oneApi.catalogId");
         String cookie = config.get("oneApi.cookie");
@@ -88,6 +94,11 @@ public class JavaToOneApiSavior extends AbstractSavior<Void> {
         String updateTagUrl = config.get("oneApi.updateTagUrl");
         String noTag = config.getOrDefault("oneApi.noTag", "false");
         String noMain = config.getOrDefault("oneApi.noMain", "false");
+
+        String pid = param.getOrDefault("pid", "").toString();
+        if (StringUtils.isNotBlank(pid)) {
+            catalogId = pid;
+        }
 
         if (StringUtils.isBlank(actionName)
                 || StringUtils.isBlank(projectCode)
@@ -119,7 +130,7 @@ public class JavaToOneApiSavior extends AbstractSavior<Void> {
 
         if (!noMain0) {
             Map<String, Object> java2jsonMap = java2ComplexReader.read(paramStructureAndCommentInfo);
-            saveOrUpdateMain(java2jsonMap, returnJava2jsonMap, config, interfaceName, actionName, projectCode, catalogId, createUrl, defaultTagName, apiName, header);
+            saveOrUpdateMain(java2jsonMap, returnJava2jsonMap, config, interfaceName, actionName, projectCode, catalogId, createUrl, currentTag, apiName, header);
         }
         if (!noTag0) {
             updateTag(returnJava2jsonMap, config, actionName, projectCode, updateTagUrl, defaultTagName, apiName, header, dataSize);
@@ -242,7 +253,7 @@ public class JavaToOneApiSavior extends AbstractSavior<Void> {
             }
         }
         if (content != null) {
-            NotificationUtil.showError(content);
+            NotificationUtil.showTips(content);
         }
     }
 
@@ -279,7 +290,7 @@ public class JavaToOneApiSavior extends AbstractSavior<Void> {
             map.put(upperKey, getResultExample(config, mapValue, dataSize, needUpper));
         } else if (value instanceof List) {
             List list = (List) value;
-            if (list.size() == 1) {
+            if (list.size() >= 1) {
                 Object val = list.get(0);
                 if (StringUtils.isNotBlank(dataSize)) {
                     list.clear();

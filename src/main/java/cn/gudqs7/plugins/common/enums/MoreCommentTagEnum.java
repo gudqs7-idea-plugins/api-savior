@@ -35,6 +35,8 @@ public enum MoreCommentTagEnum {
     AMP_RW("Rw"),
     AMP_FIELD("AmpField"),
     AMP_DATA_SIZE("DataSize"),
+    AMP_CURRENT_TAG("currentTag"),
+    AMP_PID("AmpPid"),
     AMP_MOCK_VAL("mock-val"),
     AMP_MOCK_KEY("mock-key"),
     ;
