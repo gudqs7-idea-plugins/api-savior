@@ -1,6 +1,6 @@
 [release-img]: https://img.shields.io/github/release/docer-savior/docer-savior-idea-plugin.svg
 [latest-release]: https://github.com/docer-savior/docer-savior-idea-plugin/releases/latest
-[plugin-img]: https://img.shields.io/badge/plugin-Api%20Savior-orange.svg
+[plugin-img]: https://img.shields.io/badge/Idea%20Plugin-Api%20Savior-orange.svg
 [plugin]: https://plugins.jetbrains.com/plugin/16860
 [jet-img]: https://img.shields.io/badge/plugin-Install%20Plugin-4597ff.svg
 [jet]: http://localhost:63342/api/installPlugin?action=install&pluginId=gudqs7.github.io.doc-savior
