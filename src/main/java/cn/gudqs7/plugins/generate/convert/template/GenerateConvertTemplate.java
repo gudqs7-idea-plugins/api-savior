@@ -28,13 +28,17 @@ public class GenerateConvertTemplate extends GenerateBaseTemplate {
             String tokenTypeName = tokenType.toString();
             switch (tokenTypeName) {
                 case "SEMICOLON":
+                    // 即分号 ;
                     psiElement = psiElement.getPrevSibling();
                     break;
                 case "RPARENTH":
-                    psiElement = psiElement.getParent().getParent();
+                    // 即右括号 )
+                    PsiElement methodParamExpression = psiElement.getParent();
+                    if (methodParamExpression != null) {
+                        psiElement = methodParamExpression.getParent();
+                    }
                     break;
                 default:
-                    psiElement = psiElement.getParent().getParent();
                     break;
             }
         }

@@ -34,18 +34,38 @@ public class GenerateAllSetterByBuilderTemplate extends GenerateBaseTemplate {
             PsiJavaToken psiJavaToken = (PsiJavaToken) psiElement;
             IElementType tokenType = psiJavaToken.getTokenType();
             String tokenTypeName = tokenType.toString();
+            // PsiReferenceExpression:  Xxx.builder
+            PsiElement builderMethodReference = null;
             switch (tokenTypeName) {
                 case "RPARENTH":
-                    methodName = psiElement.getParent().getPrevSibling().getLastChild().getText();
-                    psiElement = psiElement.getParent().getPrevSibling().getFirstChild();
+                    // 即右括号 )
+                    // ()
+                    PsiElement methodParamExpression = psiElement.getParent();
+                    if (methodParamExpression != null) {
+                        builderMethodReference = methodParamExpression.getPrevSibling();
+                    }
                     break;
                 case "SEMICOLON":
-                    methodName = psiElement.getPrevSibling().getFirstChild().getLastChild().getText();
-                    psiElement = psiElement.getPrevSibling().getFirstChild().getFirstChild();
+                    // 即分号 ;
+                    PsiElement callExpressionElement = psiElement.getPrevSibling();
+                    if (callExpressionElement != null) {
+                        builderMethodReference = callExpressionElement.getFirstChild();
+                    }
                     break;
                 default:
-                    psiElement = psiElement.getParent().getParent();
                     break;
+            }
+            if (builderMethodReference != null) {
+                // builder
+                PsiElement methodIdentifier = builderMethodReference.getLastChild();
+                if (methodIdentifier != null) {
+                    methodName = methodIdentifier.getText();
+                }
+                // Xxx
+                PsiElement builderClassReference = builderMethodReference.getFirstChild();
+                if (builderClassReference != null) {
+                    psiElement = builderClassReference;
+                }
             }
         }
         return Pair.of(methodName, psiElement);
