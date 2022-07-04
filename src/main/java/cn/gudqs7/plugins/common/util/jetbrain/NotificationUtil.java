@@ -1,5 +1,6 @@
 package cn.gudqs7.plugins.common.util.jetbrain;
 
+import cn.gudqs7.plugins.consts.CommonIdConst;
 import com.intellij.notification.*;
 
 /**
@@ -10,15 +11,12 @@ import com.intellij.notification.*;
  */
 public class NotificationUtil {
 
-    private static final String NOTIFICATION_TIP_GROUP_ID = "Search Everywhere Api Tip";
-    private static final String NOTIFICATION_ERROR_GROUP_ID = "Search Everywhere Api Error";
-
     public static void showTips(String content) {
-        showNotification(NOTIFICATION_TIP_GROUP_ID, content, NotificationType.INFORMATION);
+        showNotification(CommonIdConst.NOTIFICATION_TIP_GROUP_ID, content, NotificationType.INFORMATION);
     }
 
     public static void showError(String content) {
-        showNotification(NOTIFICATION_ERROR_GROUP_ID, content, NotificationType.ERROR);
+        showNotification(CommonIdConst.NOTIFICATION_ERROR_GROUP_ID, content, NotificationType.ERROR);
     }
 
     private static void showNotification(String groupId, String content, NotificationType notificationType) {
