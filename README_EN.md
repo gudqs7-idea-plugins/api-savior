@@ -1,6 +1,6 @@
 [release-img]: https://img.shields.io/github/release/docer-savior/docer-savior-idea-plugin.svg
 [latest-release]: https://github.com/docer-savior/docer-savior-idea-plugin/releases/latest
-[plugin-img]: https://img.shields.io/badge/plugin-16860-orange.svg
+[plugin-img]: https://img.shields.io/badge/plugin-Api%20Savior-orange.svg
 [plugin]: https://plugins.jetbrains.com/plugin/16860
 [jet-img]: https://img.shields.io/badge/plugin-Install%20Plugin-4597ff.svg
 [jet]: http://localhost:63342/api/installPlugin?action=install&pluginId=gudqs7.github.io.doc-savior
@@ -15,7 +15,7 @@
 ---
 [Chinese 🇨🇳](./README.md)
 
-# What does Docer Savior do?
+# What does Api Savior do?
 
 - is an IDEA plugin that supports Java only.
 - Generate HTTP interface documentation, which supports markdown and html in format, in order to replace Swagger.
@@ -45,7 +45,7 @@ Download the zip package from the latest [Release][latest-release] page, then op
 ![zip](parts/imgs/install-plugin-from-disk.png)
 
 ### Marketplace Installation
-Open IDEA, go to Settings --> Plugins, select Marketplace, enter docer savior and click Install  
+Open IDEA, go to Settings --> Plugins, select Marketplace, enter api savior and click Install  
 ![Marketplace](parts/imgs/install-from-marketplace.png)
 
 ## 2. Open a Spring MVC or Dubbo project

@@ -1,6 +1,6 @@
 [release-img]: https://img.shields.io/github/release/docer-savior/docer-savior-idea-plugin.svg
 [latest-release]: https://github.com/docer-savior/docer-savior-idea-plugin/releases/latest
-[plugin-img]: https://img.shields.io/badge/plugin-16860-orange.svg
+[plugin-img]: https://img.shields.io/badge/plugin-Api%20Savior-orange.svg
 [plugin]: https://plugins.jetbrains.com/plugin/16860
 [jet-img]: https://img.shields.io/badge/plugin-Install%20Plugin-4597ff.svg
 [jet]: http://localhost:63342/api/installPlugin?action=install&pluginId=gudqs7.github.io.doc-savior
@@ -16,7 +16,7 @@
 ---
 [English 🇺🇸](./README_EN.md)
 
-# Docer Savior 是做什么的？
+# Api Savior 是做什么的？
 
 - 是一个 IDEA 插件，仅支持 Java 。
 - 生成 HTTP 接口文档，格式上支持 markdown、html，目的是取代 Swagger。
@@ -46,7 +46,7 @@
 ![zip](parts/imgs/install-plugin-from-disk.png)
 
 ### Marketplace 安装
-打开 IDEA，进入 Settings --> Plugins，选中 Marketplace，输入 docer savior 点击 Install  
+打开 IDEA，进入 Settings --> Plugins，选中 Marketplace，输入 api savior 点击 Install  
 ![Marketplace](parts/imgs/install-from-marketplace.png)
 
 ## 2.打开一个 Spring MVC 或 Dubbo 项目

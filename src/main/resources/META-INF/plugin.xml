@@ -41,7 +41,7 @@
     </extensions>
 
     <actions>
-        <group id="cn.gudqs.docer.savior" text="Docer Savior Group">
+        <group id="cn.gudqs.docer.savior" text="Api Savior Group">
             <add-to-group group-id="EditorPopupMenu" anchor="after" relative-to-action="ShowIntentionsGroup"/>
 
             <action id="cn.gudqs.docer.savior.req.rpc" class="cn.gudqs7.plugins.savior.action.rpc.RpcReqDocSaviorAction"
@@ -64,7 +64,7 @@
             </action>
         </group>
 
-        <group id="cn.gudqs.docer.savior.project" text="Docer Savior Project Group">
+        <group id="cn.gudqs.docer.savior.project" text="Api Savior Project Group">
             <add-to-group group-id="ProjectViewPopupMenu" anchor="after" relative-to-action="CutCopyPasteGroup"/>
 
             <action id="cn.gudqs.docer.savior.project.rpc" class="cn.gudqs7.plugins.savior.action.rpc.RpcProjectDocSaviorAction"
