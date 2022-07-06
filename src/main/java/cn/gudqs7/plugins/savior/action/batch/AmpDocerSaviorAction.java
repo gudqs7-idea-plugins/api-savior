@@ -1,8 +1,9 @@
 package cn.gudqs7.plugins.savior.action.batch;
 
 import cn.gudqs7.plugins.common.base.action.AbstractBatchDocerSavior;
+import cn.gudqs7.plugins.common.enums.PluginSettingEnum;
 import cn.gudqs7.plugins.common.pojo.resolver.CommentInfo;
-import cn.gudqs7.plugins.common.util.ConfigHolder;
+import cn.gudqs7.plugins.common.util.PluginSettingHelper;
 import cn.gudqs7.plugins.common.util.structure.PsiClassUtil;
 import cn.gudqs7.plugins.savior.savior.more.JavaToAmpSavior;
 import cn.gudqs7.plugins.savior.theme.ThemeHelper;
@@ -30,15 +31,7 @@ public class AmpDocerSaviorAction extends AbstractBatchDocerSavior {
 
     @Override
     protected boolean isNotShow(@NotNull AnActionEvent e, Project project, PsiElement psiElement, PsiClass psiClass, PsiDirectory psiDirectory) {
-        boolean flag = true;
-        Map<String, String> config = ConfigHolder.getConfig();
-        if (config != null) {
-            String ampEnable = config.get("amp.enable");
-            if ("true".equals(ampEnable)) {
-                flag = false;
-            }
-        }
-        return flag;
+        return !PluginSettingHelper.getConfigItem(PluginSettingEnum.AMP_ENABLE, false);
     }
 
     @Override

@@ -3,10 +3,11 @@ package cn.gudqs7.plugins.savior.savior.more;
 import cn.gudqs7.plugins.common.consts.CommonConst;
 import cn.gudqs7.plugins.common.consts.MapKeyConstant;
 import cn.gudqs7.plugins.common.enums.MoreCommentTagEnum;
+import cn.gudqs7.plugins.common.enums.PluginSettingEnum;
 import cn.gudqs7.plugins.common.pojo.resolver.CommentInfo;
 import cn.gudqs7.plugins.common.pojo.resolver.StructureAndCommentInfo;
 import cn.gudqs7.plugins.common.resolver.comment.AnnotationHolder;
-import cn.gudqs7.plugins.common.util.ConfigHolder;
+import cn.gudqs7.plugins.common.util.PluginSettingHelper;
 import cn.gudqs7.plugins.common.util.structure.PsiClassUtil;
 import cn.gudqs7.plugins.savior.pojo.ComplexInfo;
 import cn.gudqs7.plugins.savior.pojo.FieldCommentInfo;
@@ -88,8 +89,7 @@ public class JavaToAmpSavior extends AbstractSavior<Map<String, Object>> {
 
     @Override
     protected Map<String, Object> getDataByStructureAndCommentInfo(Project project, PsiMethod publicMethod, CommentInfo commentInfo, String interfaceClassName, StructureAndCommentInfo paramStructureAndCommentInfo, StructureAndCommentInfo returnStructureAndCommentInfo, Map<String, Object> param) {
-        Map<String, String> config = ConfigHolder.getConfig();
-        if (config == null) {
+        if (PluginSettingHelper.configNotExists()) {
             return null;
         }
 
@@ -125,27 +125,26 @@ public class JavaToAmpSavior extends AbstractSavior<Map<String, Object>> {
         // 是否弃用
         data.put("deprecated", false);
         // 网关配置
-        data.put("gatewayOptions", getGatewayOptions(config));
+        data.put("gatewayOptions", getGatewayOptions());
         // 后端配置
-        data.put("backendService", getBackendService(config, noHostUrl));
+        data.put("backendService", getBackendService(noHostUrl));
         // 策略配置
-        data.put("policies", getPolicies(config));
+        data.put("policies", getPolicies());
         // 参数配置
-        data.put("parameters", getParameters(config, java2jsonMap));
+        data.put("parameters", getParameters(java2jsonMap));
         // 返回值配置
-        data.put("responses", getResponses(config, returnJava2jsonMap));
+        data.put("responses", getResponses(returnJava2jsonMap));
         // 错误信息映射
-        data.put("errorMapping", getErrorMapping(config));
-        data.put("variables", getVariables(config, noHostUrl));
+        data.put("errorMapping", getErrorMapping());
+        data.put("variables", getVariables(noHostUrl));
         return data;
     }
 
-    private Map<String, Object> getVariables(Map<String, String> config, String url) {
+    private Map<String, Object> getVariables(String url) {
+        String dailyHost = PluginSettingHelper.getConfigItem(PluginSettingEnum.AMP_HOST_DAILY, "");
+        String preHost = PluginSettingHelper.getConfigItem(PluginSettingEnum.AMP_HOST_PRE, "");
+
         Map<String, Object> pre = new HashMap<>(8);
-
-        String dailyHost = config.get("amp.host.daily");
-        String preHost = config.get("amp.host.pre");
-
         pre.put("$.backendService.url", preHost + url);
         pre.put("$.backendService.httpsValidation", "__null__");
         pre.put("$.backendService.signKeyName", "__null__");
@@ -179,7 +178,7 @@ public class JavaToAmpSavior extends AbstractSavior<Map<String, Object>> {
         return variables;
     }
 
-    private Map<String, Object> getErrorMapping(Map<String, String> config) {
+    private Map<String, Object> getErrorMapping() {
         Map<String, Object> errorMapping = new HashMap<>(8);
         // 错误条件判断
         errorMapping.put("errorExpression", "code!=200");
@@ -189,8 +188,8 @@ public class JavaToAmpSavior extends AbstractSavior<Map<String, Object>> {
         return errorMapping;
     }
 
-    private Map<String, Object> getResponses(Map<String, String> config, Map<String, Object> resultJava2json) {
-        String dataMode = config.getOrDefault("amp.data.mode", "list");
+    private Map<String, Object> getResponses(Map<String, Object> resultJava2json) {
+        String dataMode = PluginSettingHelper.getConfigItem(PluginSettingEnum.AMP_DATA_MODE, "list");
         Map<String, Object> properties = getPropertiesByFieldMap(resultJava2json, dataMode, true);
         Map<String, Object> schema = new LinkedHashMap<>(2);
         schema.put("title", "Schema of Response");
@@ -203,11 +202,11 @@ public class JavaToAmpSavior extends AbstractSavior<Map<String, Object>> {
         return response;
     }
 
-    private List<Map<String, Object>> getParameters(Map<String, String> config, Map<String, Object> java2json) {
+    private List<Map<String, Object>> getParameters(Map<String, Object> java2json) {
         List<Map<String, Object>> parameterList = new ArrayList<>();
         Set<String> existsParam = new HashSet<>(8);
-        addParameterByConfig(existsParam, parameterList, config, "amp.param.system", "system");
-        addParameterByConfig(existsParam, parameterList, config, "amp.param.req", "formData");
+        addParameterByConfig(existsParam, parameterList, PluginSettingEnum.AMP_PARAM_SYSTEM, "system");
+        addParameterByConfig(existsParam, parameterList, PluginSettingEnum.AMP_PARAM_REQUEST, "formData");
 
         for (Map.Entry<String, Object> entry : java2json.entrySet()) {
             String key = entry.getKey();
@@ -263,7 +262,7 @@ public class JavaToAmpSavior extends AbstractSavior<Map<String, Object>> {
         return parameterList;
     }
 
-    private Map<String, Object> getPolicies(Map<String, String> config) {
+    private Map<String, Object> getPolicies() {
         Map<String, Object> rateLimitPolicy = new LinkedHashMap<>(2);
         // API频率
         rateLimitPolicy.put("apiRateLimit", 100);
@@ -276,9 +275,9 @@ public class JavaToAmpSavior extends AbstractSavior<Map<String, Object>> {
         return policies;
     }
 
-    private Map<String, Object> getBackendService(Map<String, String> config, String url) {
-        String preHost = config.get("amp.host.pro");
-        String appName = config.getOrDefault("amp.backendService.appName", "xxx");
+    private Map<String, Object> getBackendService(String url) {
+        String preHost = PluginSettingHelper.getConfigItem(PluginSettingEnum.AMP_HOST_PRO, "");
+        String appName = PluginSettingHelper.getConfigItem(PluginSettingEnum.AMP_BACK_APP_NAME, "xxx");
         Map<String, Object> backendService = new LinkedHashMap<>(8);
         backendService.put("protocol", "http");
         backendService.put("appName", appName);
@@ -291,7 +290,7 @@ public class JavaToAmpSavior extends AbstractSavior<Map<String, Object>> {
         return backendService;
     }
 
-    private Map<String, Object> getGatewayOptions(Map<String, String> config) {
+    private Map<String, Object> getGatewayOptions() {
         Map<String, Object> gatewayOptions = new LinkedHashMap<>(8);
         // 记录日志
         gatewayOptions.put("responseLog", true);
@@ -419,8 +418,8 @@ public class JavaToAmpSavior extends AbstractSavior<Map<String, Object>> {
         return response;
     }
 
-    private void addParameterByConfig(Set<String> existsParam, List<Map<String, Object>> parameterList, Map<String, String> config, String configKey, String in) {
-        String systemParamKey = config.get(configKey);
+    private void addParameterByConfig(Set<String> existsParam, List<Map<String, Object>> parameterList, PluginSettingEnum configKey, String in) {
+        String systemParamKey = PluginSettingHelper.getConfigItem(configKey);
         if (StringUtils.isNotBlank(systemParamKey)) {
             String[] systemKeyArray = systemParamKey.split(",");
             Set<String> systemKeySet = new HashSet<>(Arrays.asList(systemKeyArray));

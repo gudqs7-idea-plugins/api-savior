@@ -1,9 +1,10 @@
 package cn.gudqs7.plugins.common.base.action;
 
 import cn.gudqs7.plugins.common.enums.MoreCommentTagEnum;
+import cn.gudqs7.plugins.common.enums.PluginSettingEnum;
 import cn.gudqs7.plugins.common.pojo.resolver.CommentInfo;
 import cn.gudqs7.plugins.common.resolver.comment.AnnotationHolder;
-import cn.gudqs7.plugins.common.util.ConfigHolder;
+import cn.gudqs7.plugins.common.util.PluginSettingHelper;
 import cn.gudqs7.plugins.common.util.file.FileUtil;
 import cn.gudqs7.plugins.common.util.jetbrain.ClipboardUtil;
 import cn.gudqs7.plugins.common.util.jetbrain.DialogUtil;
@@ -112,17 +113,13 @@ public abstract class AbstractBatchDocerSavior extends AbstractAction implements
             initConfig(e, project, psiElement, firstClass.getContainingFile().getVirtualFile());
             final Set<PsiClass> finalPsiClassList = psiClassList;
 
-            String dirRoot = "api-doc";
             String dirPrefix = getDirPrefix();
-            Map<String, String> config = ConfigHolder.getConfig();
-            if (config != null) {
-                dirRoot = config.getOrDefault("dir.root", dirRoot);
-                String overrideDir = config.get("dir." + dirPrefix);
-                if (StringUtils.isNotBlank(overrideDir)) {
-                    dirRoot = overrideDir;
-                } else {
-                    dirRoot = dirRoot + File.separator + dirPrefix;
-                }
+            String dirRoot = PluginSettingHelper.getConfigItem(PluginSettingEnum.DIR_ROOT, "api-doc");
+            String overrideDir = PluginSettingHelper.getConfigItem(PluginSettingEnum.PREFIX_DIR.getSettingKey() + dirPrefix);
+            if (StringUtils.isNotBlank(overrideDir)) {
+                dirRoot = overrideDir;
+            } else {
+                dirRoot = dirRoot + File.separator + dirPrefix;
             }
 
             String projectFilePath = project.getBasePath();
@@ -205,12 +202,12 @@ public abstract class AbstractBatchDocerSavior extends AbstractAction implements
     }
 
     protected void initConfig(AnActionEvent e, Project project, PsiElement psiElement, VirtualFile virtualFile) {
-        ConfigHolder.initConfig(project, virtualFile);
+        PluginSettingHelper.initConfig(project, virtualFile);
     }
 
     @Override
     protected void destroy(AnActionEvent e) {
-        ConfigHolder.removeConfig();
+        PluginSettingHelper.clearConfigCache();
     }
 
     private VirtualFile getFirstPsiFile(@NotNull AnActionEvent e, Project project, PsiElement psiElement, boolean isFromArray) {

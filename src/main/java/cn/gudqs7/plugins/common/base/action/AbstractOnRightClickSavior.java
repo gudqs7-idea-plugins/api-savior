@@ -1,7 +1,7 @@
 package cn.gudqs7.plugins.common.base.action;
 
 import cn.gudqs7.plugins.common.resolver.comment.AnnotationHolder;
-import cn.gudqs7.plugins.common.util.ConfigHolder;
+import cn.gudqs7.plugins.common.util.PluginSettingHelper;
 import cn.gudqs7.plugins.common.util.WebEnvironmentUtil;
 import cn.gudqs7.plugins.common.util.jetbrain.ClipboardUtil;
 import cn.gudqs7.plugins.common.util.jetbrain.DialogUtil;
@@ -80,7 +80,7 @@ public abstract class AbstractOnRightClickSavior extends AbstractAction implemen
             }
 
             if (virtualFile != null) {
-                ConfigHolder.initConfig(project, virtualFile);
+                PluginSettingHelper.initConfig(project, virtualFile);
             }
 
             if (isRightClickOnMethod) {

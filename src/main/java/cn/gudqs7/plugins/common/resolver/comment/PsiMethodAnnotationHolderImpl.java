@@ -3,10 +3,12 @@ package cn.gudqs7.plugins.common.resolver.comment;
 import cn.gudqs7.plugins.common.consts.CommonConst;
 import cn.gudqs7.plugins.common.enums.CommentTagEnum;
 import cn.gudqs7.plugins.common.enums.MoreCommentTagEnum;
+import cn.gudqs7.plugins.common.enums.PluginSettingEnum;
 import cn.gudqs7.plugins.common.pojo.resolver.CommentInfo;
 import cn.gudqs7.plugins.common.pojo.resolver.CommentInfoTag;
 import cn.gudqs7.plugins.common.pojo.resolver.RequestMapping;
 import cn.gudqs7.plugins.common.pojo.resolver.ResponseCodeInfo;
+import cn.gudqs7.plugins.common.util.PluginSettingHelper;
 import cn.gudqs7.plugins.common.util.WebEnvironmentUtil;
 import cn.gudqs7.plugins.common.util.jetbrain.ExceptionUtil;
 import cn.gudqs7.plugins.common.util.jetbrain.PsiAnnotationUtil;
@@ -277,6 +279,10 @@ public class PsiMethodAnnotationHolderImpl extends AbstractAnnotationHolder {
     }
 
     private String getHostPrefix() {
+        String urlPrefix = PluginSettingHelper.getConfigItem(PluginSettingEnum.DEFAULT_URL_PREFIX);
+        if (StringUtils.isNotBlank(urlPrefix)) {
+            return urlPrefix + "/";
+        }
         String hostPrefix = "http://%s:%s/";
         String ip = WebEnvironmentUtil.getIp();
         String port = "8080";

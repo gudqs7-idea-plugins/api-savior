@@ -1,5 +1,6 @@
 package cn.gudqs7.plugins.common.util;
 
+import cn.gudqs7.plugins.common.enums.PluginSettingEnum;
 import cn.gudqs7.plugins.common.util.structure.BaseTypeParseUtil;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.LocalFileSystem;
@@ -19,48 +20,137 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * @author wq
  */
-public class ConfigHolder {
+public class PluginSettingHelper {
 
     private static final String CONFIG_FILE_PATH = "docer-config.properties";
-    private static VirtualFile configFile;
-
     private static final Map<String, String> CONFIG = new ConcurrentHashMap<>(16);
 
-    public static void putConfig(Map<String, String> config) {
+    private static VirtualFile configFile;
+
+    /**
+     * 将配置保存到缓存
+     *
+     * @param config 配置
+     */
+    public static void saveConfigToCache(Map<String, String> config) {
         if (config != null) {
             CONFIG.putAll(config);
         }
     }
 
-    public static void removeConfig() {
+    /**
+     * 清除配置缓存
+     */
+    public static void clearConfigCache() {
         CONFIG.clear();
     }
 
-    public static Map<String, String> getConfig() {
-        return CONFIG;
-    }
-
+    /**
+     * 配置是否存在
+     *
+     * @return boolean
+     */
     public static boolean configExists() {
-        return CONFIG.isEmpty();
+        return !CONFIG.isEmpty();
     }
 
-    public static String getConfigItem(String key) {
-        return CONFIG.get(key);
+    /**
+     * 配置是否不存在
+     *
+     * @return boolean
+     */
+    public static boolean configNotExists() {
+        return !configExists();
     }
 
-    public static String getConfigItem(String key, String defaultVal) {
-        String configItem = getConfigItem(key);
-        if (configItem != null) {
-            return configItem;
+    /**
+     * 获取配置项
+     *
+     * @param pluginSettingEnum 插件设置枚举
+     * @return {@link T}
+     */
+    public static <T> T getConfigItem(PluginSettingEnum pluginSettingEnum) {
+        return getConfigItem(pluginSettingEnum, null);
+    }
+
+    /**
+     * 获取配置项
+     *
+     * @param pluginSettingEnum 插件设置枚举
+     * @param defaultVal        默认值
+     * @return {@link T}
+     */
+    public static <T> T getConfigItem(PluginSettingEnum pluginSettingEnum, T defaultVal) {
+        if (pluginSettingEnum == null) {
+            return defaultVal;
         }
-        return defaultVal;
+        String settingKey = pluginSettingEnum.getSettingKey();
+        switch (pluginSettingEnum.getType()) {
+            case BOOL:
+                boolean defaultBool = false;
+                if (defaultVal instanceof Boolean) {
+                    defaultBool = (boolean) defaultVal;
+                }
+                return (T) getConfigItemBool(settingKey, defaultBool);
+            case STRING:
+                String defaultStr = null;
+                if (defaultVal instanceof String) {
+                    defaultStr = (String) defaultVal;
+                }
+                return (T) getConfigItem(settingKey, defaultStr);
+            case INTEGER:
+                Integer defaultInt = null;
+                if (defaultVal instanceof Integer) {
+                    defaultInt = (Integer) defaultVal;
+                }
+                return (T) getConfigItemInt(settingKey, defaultInt);
+            default:
+                return defaultVal;
+        }
     }
 
-    public static Boolean getConfigItemBool(String key) {
+    /**
+     * 获取配置项
+     *
+     * @param key 关键
+     * @return {@link String}
+     */
+    public static String getConfigItem(String key) {
+        return getConfigItem(key, null);
+    }
+
+    /**
+     * 获取配置项
+     *
+     * @param key        关键
+     * @param defaultVal 默认值
+     * @return {@link String}
+     */
+    public static String getConfigItem(String key, String defaultVal) {
+        if (configNotExists()) {
+            return defaultVal;
+        }
+        return CONFIG.getOrDefault(key, defaultVal);
+    }
+
+    /**
+     * 获取配置项bool
+     *
+     * @param key 关键
+     * @return boolean
+     */
+    public static boolean getConfigItemBool(String key) {
         return getConfigItemBool(key, false);
     }
 
-    public static Boolean getConfigItemBool(String key, Boolean defaultVal) {
+    /**
+     * 获取配置项bool
+     *
+     * @param key        关键
+     * @param defaultVal 默认值
+     * @return boolean
+     */
+    public static Boolean getConfigItemBool(String key, boolean defaultVal) {
         String configItem = getConfigItem(key);
         if (configItem != null) {
             return BaseTypeParseUtil.parseBoolean(configItem, defaultVal);
@@ -68,13 +158,32 @@ public class ConfigHolder {
         return defaultVal;
     }
 
+    /**
+     * 获取配置项int
+     *
+     * @param key 关键
+     * @return {@link Integer}
+     */
     public static Integer getConfigItemInt(String key) {
+        return getConfigItemInt(key, null);
+    }
+
+    /**
+     * 获取配置项int
+     *
+     * @param key        关键
+     * @param defaultVal 默认值
+     * @return {@link Integer}
+     */
+    public static Integer getConfigItemInt(String key, Integer defaultVal) {
         String configItem = getConfigItem(key);
         if (configItem != null) {
-            return BaseTypeParseUtil.parseInt(configItem);
+            return BaseTypeParseUtil.parseInt(configItem, defaultVal);
         }
-        return null;
+        return defaultVal;
     }
+
+    // region init config
 
     /**
      * 初始化配置信息
@@ -83,8 +192,8 @@ public class ConfigHolder {
      * @param currentVirtualFile 与此文件同一个 src 下的优先
      */
     public static void initConfig(Project project, VirtualFile currentVirtualFile) {
-        Map<String, String> config = getConfig(project, currentVirtualFile);
-        putConfig(config);
+        Map<String, String> config = getConfigFromFile(project, currentVirtualFile);
+        saveConfigToCache(config);
     }
 
     /**
@@ -95,7 +204,7 @@ public class ConfigHolder {
      * @return 配置信息
      */
     @SneakyThrows
-    public static Map<String, String> getConfig(Project project, VirtualFile currentVirtualFile) {
+    public static Map<String, String> getConfigFromFile(Project project, VirtualFile currentVirtualFile) {
         if (configFile != null && configFile.exists()) {
             return toMap();
         }
@@ -148,4 +257,5 @@ public class ConfigHolder {
         return "";
     }
 
+    // endregion init config
 }

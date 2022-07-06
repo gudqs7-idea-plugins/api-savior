@@ -1,10 +1,11 @@
 package cn.gudqs7.plugins.savior.theme;
 
+import cn.gudqs7.plugins.common.enums.PluginSettingEnum;
 import cn.gudqs7.plugins.common.pojo.resolver.CommentInfo;
 import cn.gudqs7.plugins.common.pojo.resolver.RequestMapping;
 import cn.gudqs7.plugins.common.pojo.resolver.StructureAndCommentInfo;
 import cn.gudqs7.plugins.common.resolver.comment.AnnotationHolder;
-import cn.gudqs7.plugins.common.util.ConfigHolder;
+import cn.gudqs7.plugins.common.util.PluginSettingHelper;
 import cn.gudqs7.plugins.savior.enums.ThemeType;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiMethod;
@@ -39,15 +40,12 @@ public interface Theme {
      */
     default String getMethodPath() {
         String pathPrefix = getPathPrefix();
-        Map<String, String> config = ConfigHolder.getConfig();
-        if (config != null) {
-            String methodTheme = config.get("docer.theme.method." + pathPrefix);
-            if (StringUtils.isNotBlank(methodTheme)) {
-                String methodPath = pathPrefix + "/method-" + methodTheme + ".ftl";
-                InputStream inputStream = Theme.class.getClassLoader().getResourceAsStream("template/ftl/" + methodPath);
-                if (inputStream != null) {
-                    return methodPath;
-                }
+        String methodTheme = PluginSettingHelper.getConfigItem(PluginSettingEnum.PREFIX_THEME_METHOD.getSettingKey() + pathPrefix);
+        if (StringUtils.isNotBlank(methodTheme)) {
+            String methodPath = pathPrefix + "/method-" + methodTheme + ".ftl";
+            InputStream inputStream = Theme.class.getClassLoader().getResourceAsStream("template/ftl/" + methodPath);
+            if (inputStream != null) {
+                return methodPath;
             }
         }
         return pathPrefix + "/method.ftl";
@@ -60,15 +58,12 @@ public interface Theme {
      */
     default String getFieldPath() {
         String pathPrefix = getPathPrefix();
-        Map<String, String> config = ConfigHolder.getConfig();
-        if (config != null) {
-            String fieldTheme = config.get("docer.theme.field." + pathPrefix);
-            if (StringUtils.isNotBlank(fieldTheme)) {
-                String fieldPath = pathPrefix + "/field-" + fieldTheme + ".ftl";
-                InputStream inputStream = Theme.class.getClassLoader().getResourceAsStream("template/ftl/" + fieldPath);
-                if (inputStream != null) {
-                    return fieldPath;
-                }
+        String fieldTheme = PluginSettingHelper.getConfigItem(PluginSettingEnum.PREFIX_THEME_FIELD.getSettingKey() + pathPrefix);
+        if (StringUtils.isNotBlank(fieldTheme)) {
+            String fieldPath = pathPrefix + "/field-" + fieldTheme + ".ftl";
+            InputStream inputStream = Theme.class.getClassLoader().getResourceAsStream("template/ftl/" + fieldPath);
+            if (inputStream != null) {
+                return fieldPath;
             }
         }
         return pathPrefix + "/field.ftl";

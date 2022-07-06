@@ -2,9 +2,10 @@ package cn.gudqs7.plugins.savior.action.batch;
 
 import cn.gudqs7.plugins.common.base.action.AbstractBatchDocerSavior;
 import cn.gudqs7.plugins.common.consts.MapKeyConstant;
+import cn.gudqs7.plugins.common.enums.PluginSettingEnum;
 import cn.gudqs7.plugins.common.pojo.resolver.CommentInfo;
-import cn.gudqs7.plugins.common.util.ConfigHolder;
 import cn.gudqs7.plugins.common.util.JsonUtil;
+import cn.gudqs7.plugins.common.util.PluginSettingHelper;
 import cn.gudqs7.plugins.common.util.api.PostmanApiUtil;
 import cn.gudqs7.plugins.common.util.file.FileUtil;
 import cn.gudqs7.plugins.common.util.jetbrain.IdeaApplicationUtil;
@@ -76,29 +77,24 @@ public class PostmanDocerSaviorAction extends AbstractBatchDocerSavior {
             return;
         }
         String hostAndPort = otherMap.getOrDefault("hostAndPort", "").toString();
-        Map<String, String> config = ConfigHolder.getConfig();
 
         String projectName = project.getName();
         String postmanName = projectName;
-        boolean postmanEnalbe = false;
         boolean postmanOverride = true;
         String postmanKey = null;
-        if (config != null) {
-            String name = config.get("postman.name");
-            if (StringUtils.isNotBlank(name)) {
-                postmanName = name;
+
+        String name = PluginSettingHelper.getConfigItem(PluginSettingEnum.POSTMAN_NAME);
+        if (StringUtils.isNotBlank(name)) {
+            postmanName = name;
+        }
+        boolean postmanEnable = PluginSettingHelper.getConfigItem(PluginSettingEnum.POSTMAN_ENABLE, false);
+        if (postmanEnable) {
+            postmanOverride = PluginSettingHelper.getConfigItem(PluginSettingEnum.POSTMAN_OVERRIDE, true);
+            if (!postmanOverride) {
+                SimpleDateFormat format = new SimpleDateFormat("MM-dd_HH-mm");
+                postmanName = postmanName + "-" + format.format(new Date());
             }
-            String enable = config.get("postman.enable");
-            postmanEnalbe = "true".equals(enable);
-            if (postmanEnalbe) {
-                String override = config.get("postman.override");
-                postmanOverride = "true".equals(override);
-                if (!postmanOverride) {
-                    SimpleDateFormat format = new SimpleDateFormat("MM-dd_HH-mm");
-                    postmanName = postmanName + "-" + format.format(new Date());
-                }
-                postmanKey = config.get("postman.key");
-            }
+            postmanKey = PluginSettingHelper.getConfigItem(PluginSettingEnum.POSTMAN_KEY);
         }
 
         List<Map<String, Object>> itemList = new ArrayList<>(16);
@@ -149,7 +145,7 @@ public class PostmanDocerSaviorAction extends AbstractBatchDocerSavior {
         File parent = new File(docRootDirPath);
         FileUtil.writeStringToFile(json, parent, postmanName + ".postman_collection.json");
 
-        if (postmanEnalbe && StringUtils.isNotBlank(postmanKey)) {
+        if (postmanEnable && StringUtils.isNotBlank(postmanKey)) {
             Map<String, Object> collection = new HashMap<>(2);
             collection.put("collection", postmanObj);
             String collectionJson = JsonUtil.toJson(collection);

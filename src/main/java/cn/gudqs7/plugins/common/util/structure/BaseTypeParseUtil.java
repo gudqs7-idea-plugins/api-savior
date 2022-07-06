@@ -14,11 +14,11 @@ public class BaseTypeParseUtil {
         }
     }
 
-    public static Integer parseInt(String value) {
+    public static Integer parseInt(String value, Integer defaultVal) {
         try {
             return Integer.parseInt(value);
         } catch (Exception ignored) {
-            return null;
+            return defaultVal;
         }
     }
 }

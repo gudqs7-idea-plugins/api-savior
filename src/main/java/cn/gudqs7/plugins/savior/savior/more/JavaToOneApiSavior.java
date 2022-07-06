@@ -3,11 +3,12 @@ package cn.gudqs7.plugins.savior.savior.more;
 import cn.gudqs7.plugins.common.consts.CommonConst;
 import cn.gudqs7.plugins.common.consts.MapKeyConstant;
 import cn.gudqs7.plugins.common.enums.MoreCommentTagEnum;
+import cn.gudqs7.plugins.common.enums.PluginSettingEnum;
 import cn.gudqs7.plugins.common.pojo.resolver.CommentInfo;
 import cn.gudqs7.plugins.common.pojo.resolver.StructureAndCommentInfo;
 import cn.gudqs7.plugins.common.resolver.comment.AnnotationHolder;
-import cn.gudqs7.plugins.common.util.ConfigHolder;
 import cn.gudqs7.plugins.common.util.JsonUtil;
+import cn.gudqs7.plugins.common.util.PluginSettingHelper;
 import cn.gudqs7.plugins.common.util.api.HttpUtil;
 import cn.gudqs7.plugins.common.util.jetbrain.NotificationUtil;
 import cn.gudqs7.plugins.common.util.structure.PsiClassUtil;
@@ -77,8 +78,7 @@ public class JavaToOneApiSavior extends AbstractSavior<Void> {
 
     @Override
     protected Void getDataByStructureAndCommentInfo(Project project, PsiMethod publicMethod, CommentInfo commentInfo, String interfaceClassName, StructureAndCommentInfo paramStructureAndCommentInfo, StructureAndCommentInfo returnStructureAndCommentInfo, Map<String, Object> param) {
-        Map<String, String> config = ConfigHolder.getConfig();
-        if (config == null) {
+        if (PluginSettingHelper.configNotExists()) {
             return null;
         }
 
@@ -87,13 +87,13 @@ public class JavaToOneApiSavior extends AbstractSavior<Void> {
         String actionName = commentInfo.getSingleStr(MoreCommentTagEnum.AMP_ACTION_NAME.getTag(), null);
         String dataSize = commentInfo.getSingleStr(MoreCommentTagEnum.AMP_DATA_SIZE.getTag(), "2");
         String currentTag = commentInfo.getSingleStr(MoreCommentTagEnum.AMP_CURRENT_TAG.getTag(), "default");
-        String projectCode = config.get("oneApi.projectCode");
-        String catalogId = config.get("oneApi.catalogId");
-        String cookie = config.get("oneApi.cookie");
-        String createUrl = config.get("oneApi.createUrl");
-        String updateTagUrl = config.get("oneApi.updateTagUrl");
-        String noTag = config.getOrDefault("oneApi.noTag", "false");
-        String noMain = config.getOrDefault("oneApi.noMain", "false");
+        String projectCode = PluginSettingHelper.getConfigItem(PluginSettingEnum.ONE_API_PROJECT_CODE);
+        String catalogId = PluginSettingHelper.getConfigItem(PluginSettingEnum.ONE_API_CATALOG_ID);
+        String cookie = PluginSettingHelper.getConfigItem(PluginSettingEnum.ONE_API_COOKIE);
+        String createUrl = PluginSettingHelper.getConfigItem(PluginSettingEnum.ONE_API_API_URL);
+        String updateTagUrl = PluginSettingHelper.getConfigItem(PluginSettingEnum.ONE_API_TAG_URL);
+        boolean noTag = PluginSettingHelper.getConfigItem(PluginSettingEnum.ONE_API_NO_TAG, false);
+        boolean noMain = PluginSettingHelper.getConfigItem(PluginSettingEnum.ONE_API_NO_MAIN, false);
 
         String pid = param.getOrDefault("pid", "").toString();
         if (StringUtils.isNotBlank(pid)) {
@@ -117,10 +117,7 @@ public class JavaToOneApiSavior extends AbstractSavior<Void> {
         header.put("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.84 Safari/537.36");
         header.put("cookie", cookie);
 
-        boolean noMain0 = "true".equals(noMain);
-        boolean noTag0 = "true".equals(noTag);
-
-        if (noMain0 && noTag0) {
+        if (noMain && noTag) {
             return null;
         }
 
@@ -128,18 +125,18 @@ public class JavaToOneApiSavior extends AbstractSavior<Void> {
         //noinspection unchecked
         returnJava2jsonMap = (Map<String, Object>) returnJava2jsonMap.getOrDefault(MapKeyConstant.RETURN_FIELD_NAME, new HashMap<>());
 
-        if (!noMain0) {
+        if (!noMain) {
             Map<String, Object> java2jsonMap = java2ComplexReader.read(paramStructureAndCommentInfo);
-            saveOrUpdateMain(java2jsonMap, returnJava2jsonMap, config, interfaceName, actionName, projectCode, catalogId, createUrl, currentTag, apiName, header);
+            saveOrUpdateMain(java2jsonMap, returnJava2jsonMap, interfaceName, actionName, projectCode, catalogId, createUrl, currentTag, apiName, header);
         }
-        if (!noTag0) {
-            updateTag(returnJava2jsonMap, config, actionName, projectCode, updateTagUrl, defaultTagName, apiName, header, dataSize);
+        if (!noTag) {
+            updateTag(returnJava2jsonMap, actionName, projectCode, updateTagUrl, defaultTagName, apiName, header, dataSize);
         }
         return null;
     }
 
-    private void updateTag(Map<String, Object> resultJava2json, Map<String, String> config, String actionName, String projectCode, String updateTagUrl, String defaultTagName, String apiName, Map<String, String> header, String dataSize) {
-        Map<String, Object> data = getResultExample(config, resultJava2json, dataSize, true);
+    private void updateTag(Map<String, Object> resultJava2json, String actionName, String projectCode, String updateTagUrl, String defaultTagName, String apiName, Map<String, String> header, String dataSize) {
+        Map<String, Object> data = getResultExample(resultJava2json, dataSize, true);
         Map<String, Object> tagResponse = new LinkedHashMap<>(8);
         tagResponse.put("successResponse", true);
         tagResponse.put("code", "200");
@@ -202,9 +199,9 @@ public class JavaToOneApiSavior extends AbstractSavior<Void> {
         }));
     }
 
-    private void saveOrUpdateMain(Map<String, Object> java2json, Map<String, Object> resultJava2json, Map<String, String> config, String interfaceName, String actionName, String projectCode, String catalogId, String createUrl, String defaultTagName, String apiName, Map<String, String> header) {
-        List<Map<String, Object>> requestParamList = getRequestParamList(config, java2json);
-        List<Map<String, Object>> responseParamList = getResponseParamList(config, resultJava2json);
+    private void saveOrUpdateMain(Map<String, Object> java2json, Map<String, Object> resultJava2json, String interfaceName, String actionName, String projectCode, String catalogId, String createUrl, String defaultTagName, String apiName, Map<String, String> header) {
+        List<Map<String, Object>> requestParamList = getRequestParamList(java2json);
+        List<Map<String, Object>> responseParamList = getResponseParamList(resultJava2json);
         Map<String, Object> creator = new LinkedHashMap<>(32);
         creator.put("workNo", "SYSTEM");
         creator.put("name", "SYSTEM");
@@ -258,19 +255,19 @@ public class JavaToOneApiSavior extends AbstractSavior<Void> {
     }
 
     @NotNull
-    private Map<String, Object> getResultExample(Map<String, String> config, Map<String, Object> resultJava2json, String dataSize, boolean needUpper) {
+    private Map<String, Object> getResultExample(Map<String, Object> resultJava2json, String dataSize, boolean needUpper) {
         Map<String, Object> map = new LinkedHashMap<>(8);
 
         for (Map.Entry<String, Object> entry : resultJava2json.entrySet()) {
             String key = entry.getKey();
             Object value = entry.getValue();
-            getMapByVal(config, dataSize, map, key, value, needUpper);
+            getMapByVal(dataSize, map, key, value, needUpper);
         }
 
         return map;
     }
 
-    private void getMapByVal(Map<String, String> config, String dataSize, Map<String, Object> map, String key, Object value, boolean needUpper) {
+    private void getMapByVal(String dataSize, Map<String, Object> map, String key, Object value, boolean needUpper) {
         String upperKey = key;
         if (needUpper) {
             upperKey = key.substring(0, 1).toUpperCase() + key.substring(1);
@@ -287,7 +284,7 @@ public class JavaToOneApiSavior extends AbstractSavior<Void> {
             map.put(upperKey, value);
         } else if (value instanceof Map) {
             Map<String, Object> mapValue = (Map<String, Object>) value;
-            map.put(upperKey, getResultExample(config, mapValue, dataSize, needUpper));
+            map.put(upperKey, getResultExample(mapValue, dataSize, needUpper));
         } else if (value instanceof List) {
             List list = (List) value;
             if (list.size() >= 1) {
@@ -297,7 +294,7 @@ public class JavaToOneApiSavior extends AbstractSavior<Void> {
                     int dataSize0 = Integer.parseInt(dataSize);
                     for (int i = 0; i < dataSize0; i++) {
                         Map<String, Object> map0 = new LinkedHashMap<>(8);
-                        getMapByVal(config, dataSize, map0, key, val, false);
+                        getMapByVal(dataSize, map0, key, val, false);
                         if (map0.keySet().size() > 0) {
                             String afterKey = new ArrayList<>(map0.keySet()).get(0);
                             Object afterVal = map0.get(afterKey);
@@ -316,7 +313,7 @@ public class JavaToOneApiSavior extends AbstractSavior<Void> {
     }
 
     @NotNull
-    private List<Map<String, Object>> getResponseParamList(Map<String, String> config, Map<String, Object> resultJava2json) {
+    private List<Map<String, Object>> getResponseParamList(Map<String, Object> resultJava2json) {
         List<Map<String, Object>> responseList = new ArrayList<>();
         Map<String, Object> properties = new LinkedHashMap<>(2);
         for (Map.Entry<String, Object> entry : resultJava2json.entrySet()) {
@@ -364,10 +361,10 @@ public class JavaToOneApiSavior extends AbstractSavior<Void> {
     }
 
     @NotNull
-    private List<Map<String, Object>> getRequestParamList(Map<String, String> config, Map<String, Object> java2json) {
+    private List<Map<String, Object>> getRequestParamList(Map<String, Object> java2json) {
         Set<String> existsParam = initExistsParam();
         List<Map<String, Object>> requestParamList = new ArrayList<>();
-        addParameterByConfig(existsParam, requestParamList, config, "oneApi.param.req");
+        addParameterByConfig(existsParam, requestParamList, PluginSettingEnum.ONE_API_PARAM_REQ);
 
         for (Map.Entry<String, Object> entry : java2json.entrySet()) {
             String key = entry.getKey();
@@ -429,9 +426,9 @@ public class JavaToOneApiSavior extends AbstractSavior<Void> {
         return param;
     }
 
-    private void addParameterByConfig(Set<String> existsParam, List<Map<String, Object>> parameterList, Map<String, String> config, String configKey) {
-        String systemParamKey = config.get(configKey);
+    private void addParameterByConfig(Set<String> existsParam, List<Map<String, Object>> parameterList, PluginSettingEnum configKey) {
         Set<String> systemKeySet = new HashSet<>();
+        String systemParamKey = PluginSettingHelper.getConfigItem(configKey);
         if (StringUtils.isNotBlank(systemParamKey)) {
             String[] systemKeyArray = systemParamKey.split(",");
             systemKeySet.addAll(Arrays.asList(systemKeyArray));

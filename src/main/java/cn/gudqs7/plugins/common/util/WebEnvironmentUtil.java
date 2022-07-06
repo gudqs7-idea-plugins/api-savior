@@ -1,5 +1,6 @@
 package cn.gudqs7.plugins.common.util;
 
+import cn.gudqs7.plugins.common.enums.PluginSettingEnum;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFile;
@@ -29,13 +30,10 @@ public class WebEnvironmentUtil {
             return ip;
         }
         try {
-            Map<String, String> config = ConfigHolder.getConfig();
-            if (config != null) {
-                String defaultIp = config.get("default.ip");
-                if (defaultIp != null) {
-                    ip = defaultIp;
-                    return ip;
-                }
+            String defaultIp = PluginSettingHelper.getConfigItem(PluginSettingEnum.DEFAULT_IP);
+            if (StringUtils.isNotBlank(defaultIp)) {
+                ip = defaultIp;
+                return ip;
             }
             String hostAddress = InetAddress.getLocalHost().getHostAddress();
             Enumeration<NetworkInterface> networkInterfaces = NetworkInterface.getNetworkInterfaces();
@@ -50,6 +48,7 @@ public class WebEnvironmentUtil {
                     }
                     if (inetAddress.isSiteLocalAddress()) {
                         hostAddress = hostAddress0;
+                        break;
                     }
                 }
             }

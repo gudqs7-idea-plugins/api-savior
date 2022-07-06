@@ -2,8 +2,9 @@ package cn.gudqs7.plugins.common.util.structure;
 
 import cn.gudqs7.plugins.common.consts.CommonConst;
 import cn.gudqs7.plugins.common.enums.MoreCommentTagEnum;
+import cn.gudqs7.plugins.common.enums.PluginSettingEnum;
 import cn.gudqs7.plugins.common.pojo.resolver.CommentInfo;
-import cn.gudqs7.plugins.common.util.ConfigHolder;
+import cn.gudqs7.plugins.common.util.PluginSettingHelper;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiType;
 import lombok.Data;
@@ -282,14 +283,7 @@ public class BaseTypeUtil {
     }
 
     private static boolean notUsingRandom() {
-        Map<String, String> config = ConfigHolder.getConfig();
-        if (config != null) {
-            String notUsingRandom = config.get("default.notUsingRandom");
-            if ("true".equals(notUsingRandom)) {
-                return true;
-            }
-        }
-        return false;
+        return PluginSettingHelper.getConfigItem(PluginSettingEnum.DEFAULT_NOT_RANDOM, false);
     }
 
     private static String randomDate(CommentInfo commentInfo) {
