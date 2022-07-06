@@ -56,7 +56,7 @@ public class PostmanDocerSaviorAction extends AbstractBatchDocerSavior {
         indicator.setFraction(fraction);
 
         List<Map<String, Object>> itemList = itemListMap0.computeIfAbsent(moduleName, k -> new ArrayList<>(16));
-        IdeaApplicationUtil.invokeAndWait(() -> {
+        IdeaApplicationUtil.runReadAction(() -> {
             Map<String, Object> postmanItem = postmanSavior.generatePostmanItem(psiClass0, project);
             if (postmanItem != null) {
                 Object o = postmanItem.remove(MapKeyConstant.HOST_PORT);

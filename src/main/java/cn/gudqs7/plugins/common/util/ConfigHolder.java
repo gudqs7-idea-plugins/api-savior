@@ -10,6 +10,7 @@ import com.intellij.psi.search.GlobalSearchScope;
 import lombok.SneakyThrows;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -21,6 +22,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ConfigHolder {
 
     private static final String CONFIG_FILE_PATH = "docer-config.properties";
+    private static VirtualFile configFile;
 
     private static final Map<String, String> CONFIG = new ConcurrentHashMap<>(16);
 
@@ -94,38 +96,42 @@ public class ConfigHolder {
      */
     @SneakyThrows
     public static Map<String, String> getConfig(Project project, VirtualFile currentVirtualFile) {
+        if (configFile != null && configFile.exists()) {
+            return toMap();
+        }
         String defaultConfigPath = project.getBasePath() + File.separator + CONFIG_FILE_PATH;
         VirtualFile virtualFileByDefault = LocalFileSystem.getInstance().findFileByPath(defaultConfigPath);
         if (virtualFileByDefault != null) {
-            Properties properties = new Properties();
-            properties.load(virtualFileByDefault.getInputStream());
-            return toMap(properties);
+            configFile = virtualFileByDefault;
+            return toMap();
         }
         PsiFile[] filesByName = FilenameIndex.getFilesByName(project, CONFIG_FILE_PATH, GlobalSearchScope.projectScope(project));
         if (filesByName.length > 0) {
-            Properties back = null;
+            VirtualFile back = null;
             for (PsiFile psiFile : filesByName) {
                 VirtualFile virtualFile = psiFile.getVirtualFile();
-                Properties properties = new Properties();
-                properties.load(virtualFile.getInputStream());
 
                 String path = currentVirtualFile.getPath();
                 String configFilePath = virtualFile.getPath();
                 String projectBasePath1 = getProjectBasePath(path);
                 String projectBasePath2 = getProjectBasePath(configFilePath);
                 if (projectBasePath1.equals(projectBasePath2)) {
-                    return toMap(properties);
+                    configFile = virtualFile;
+                    return toMap();
                 }
                 if (back == null) {
-                    back = properties;
+                    back = virtualFile;
                 }
             }
-            return toMap(back);
+            configFile = back;
+            return toMap();
         }
         return null;
     }
 
-    private static Map<String, String> toMap(Properties properties) {
+    private static Map<String, String> toMap() throws IOException {
+        Properties properties = new Properties();
+        properties.load(configFile.getInputStream());
         Map<String, String> map = new HashMap<>(8);
         for (Object key : properties.keySet()) {
             Object val = properties.get(key);

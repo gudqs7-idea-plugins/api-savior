@@ -147,16 +147,11 @@ public abstract class AbstractBatchDocerSavior extends AbstractAction implements
                             Map<String, Object> otherMap = new HashMap<>(8);
                             runLoopBefore(project, indicator, hasCancelAtomic, finalPsiClassList, docRootDirPath, otherMap);
                             for (PsiClass psiClass0 : finalPsiClassList) {
-                                Thread.sleep(100);
-                                if (indicator.isCanceled()) {
-                                    handleCancelTask(docRootDirPath, projectFilePath);
-                                    hasCancelAtomic.set(true);
-                                    return;
-                                }
+                                indicator.checkCanceled();
                                 AtomicReference<CommentInfo> apiModelPropertyAtomic = new AtomicReference<>(null);
                                 AtomicReference<String> moduleNameAtomic = new AtomicReference<>("");
 
-                                IdeaApplicationUtil.invokeAndWait(() -> {
+                                IdeaApplicationUtil.runReadAction(() -> {
                                     AnnotationHolder psiClassHolder = AnnotationHolder.getPsiClassHolder(psiClass0);
                                     CommentInfo commentInfo = psiClassHolder.getCommentInfo();
                                     apiModelPropertyAtomic.set(commentInfo);
@@ -409,7 +404,7 @@ public abstract class AbstractBatchDocerSavior extends AbstractAction implements
         indicator.setText2("文件写入中：" + fileParentDir + File.separator + fullFileName);
         indicator.setFraction(fraction);
 
-        IdeaApplicationUtil.invokeAndWait(() -> {
+        IdeaApplicationUtil.runReadAction(() -> {
             String fileContent = runLoop0(psiClass0, project, commentInfo, moduleName, fileName, fullFileName, otherMap);
             if (StringUtils.isNotBlank(fileContent)) {
                 FileUtil.writeStringToFile(fileContent, parent, fullFileName);

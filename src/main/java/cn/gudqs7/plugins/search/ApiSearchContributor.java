@@ -103,13 +103,12 @@ public class ApiSearchContributor implements WeightedSearchEverywhereContributor
                     ItemMatchers itemMatchers = getItemMatchers(list, value);
                     ApiNavigationItem apiNavigationItem = (ApiNavigationItem) value;
                     String name = apiNavigationItem.getUrl();
-                    String locationString = apiNavigationItem.getRightText();
+                    String locationString = " " + apiNavigationItem.getRightText();
 
                     SpeedSearchUtil.appendColoredFragmentForMatcher(name, renderer, nameAttributes, itemMatchers.nameMatcher, bgColor, selected);
                     renderer.setIcon(IconHolder.getHttpMethodIcon(apiNavigationItem.getHttpMethod()));
 
                     if (StringUtils.isNotEmpty(locationString)) {
-                        locationString = " [" + locationString + "]";
                         FontMetrics fm = list.getFontMetrics(list.getFont());
                         int maxWidth = list.getWidth() - fm.stringWidth(name) - myRightComponentWidth - 36;
                         int fullWidth = fm.stringWidth(locationString);

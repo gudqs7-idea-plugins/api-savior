@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * @author wq
@@ -34,9 +35,10 @@ public class ApiNavigationItem {
         }
     }
 
+    @NotNull
     public String getRightText() {
         if (StringUtils.isNotBlank(methodPathInfo.getMethodDesc())) {
-            return methodPathInfo.getLocation() + "#" + methodPathInfo.getMethodDesc();
+            return methodPathInfo.getMethodDesc() + " " + methodPathInfo.getLocation();
         } else {
             return methodPathInfo.getLocation();
         }

@@ -51,7 +51,7 @@ public class OneApiDocerSaviorAction extends AbstractBatchDocerSavior {
         indicator.setText2("处理中：" + moduleName + " - " + commentInfo.getItemName(psiClass0.getName()));
         indicator.setFraction(fraction);
 
-        IdeaApplicationUtil.invokeAndWait(() -> {
+        IdeaApplicationUtil.runReadAction(() -> {
             javaToOneApiSavior.generateOneApi(psiClass0, project);
         });
     }

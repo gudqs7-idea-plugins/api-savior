@@ -1,6 +1,7 @@
 package cn.gudqs7.plugins.common.util.jetbrain;
 
 import cn.gudqs7.plugins.common.base.error.CanIgnoreException;
+import com.intellij.openapi.progress.ProcessCanceledException;
 import lombok.Lombok;
 
 import java.io.PrintWriter;
@@ -23,6 +24,9 @@ public class ExceptionUtil {
     }
 
     public static void handleException(Throwable throwable) {
+        if (throwable instanceof ProcessCanceledException) {
+            throw Lombok.sneakyThrow(throwable);
+        }
         if (throwable instanceof CanIgnoreException) {
             logException(throwable, "");
         } else {
