@@ -1,6 +1,19 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf8">
 
 <pre>
+<strong>Release v2.3.5</strong>
+    1.perf: Search Api 时凸显接口注释(往前移)
+    2:perf: 优化配置文件读取, 缓存配置文件对象, 不存在时才更新, 避免多次搜索
+    3:perf: 使用 ReadAction 优化部分进度条卡顿问题
+    4:perf: 配置文件获取优化, 不通过 Map 获取, 而是通过统一的接口, 方便以后改造及扩展 & 收拢所有配置项到 PluginSettingEnum
+    5:fix:  修复在方法上使用 Generate Convert 时, 内部类作为返回值时, 实例化对象语句缺失前缀导致的语法错误
+
+    English：
+    1.perf: Highlight interface annotations when Searching Api (move forward)
+    2:perf: Optimize configuration file reading, cache configuration file objects, update only when they do not exist, avoid multiple searches
+    3:perf: Use ReadAction to optimize some progress bar stuck problems
+    4:perf: The configuration file is optimized, not obtained through Map, but through a unified interface, which is convenient for future transformation and expansion & collects all configuration items to PluginSettingEnum
+    5:fix: fix syntax error caused by missing prefix of instantiated object statement when using Generate Convert on method with inner class as return value
 <strong>Release v2.3.4</strong>
     1:fix issue #55 #54 (修复后缀 .allbuilder 处理不当导致的 NPE 异常)
 
