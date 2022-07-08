@@ -4,8 +4,8 @@ import cn.gudqs7.plugins.common.consts.CommonConst;
 import cn.gudqs7.plugins.common.enums.MoreCommentTagEnum;
 import cn.gudqs7.plugins.common.pojo.resolver.CommentInfo;
 import cn.gudqs7.plugins.common.pojo.resolver.CommentInfoTag;
-import cn.gudqs7.plugins.common.util.jetbrain.PsiAnnotationUtil;
 import cn.gudqs7.plugins.common.util.structure.BaseTypeParseUtil;
+import cn.gudqs7.plugins.common.util.structure.PsiAnnotationUtil;
 import com.intellij.psi.PsiAnnotation;
 import org.apache.commons.lang3.StringUtils;
 

@@ -5,7 +5,7 @@ import cn.gudqs7.plugins.common.pojo.resolver.CommentInfo;
 import cn.gudqs7.plugins.common.pojo.resolver.StructureAndCommentInfo;
 import cn.gudqs7.plugins.common.resolver.comment.AnnotationHolder;
 import cn.gudqs7.plugins.common.resolver.structure.StructureAndCommentResolver;
-import cn.gudqs7.plugins.common.util.jetbrain.PsiAnnotationUtil;
+import cn.gudqs7.plugins.common.util.structure.PsiAnnotationUtil;
 import cn.gudqs7.plugins.common.util.structure.ResolverContextHolder;
 import cn.gudqs7.plugins.savior.reader.Java2ApiReader;
 import cn.gudqs7.plugins.savior.reader.Java2MapReader;

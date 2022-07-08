@@ -1,4 +1,4 @@
-package cn.gudqs7.plugins.common.util.jetbrain;
+package cn.gudqs7.plugins.common.util.structure;
 
 import com.intellij.psi.PsiExpression;
 import com.intellij.psi.PsiMethodCallExpression;

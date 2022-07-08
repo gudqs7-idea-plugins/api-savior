@@ -4,7 +4,7 @@ import cn.gudqs7.plugins.common.enums.HttpMethod;
 import cn.gudqs7.plugins.common.pojo.resolver.CommentInfo;
 import cn.gudqs7.plugins.common.resolver.comment.AnnotationHolder;
 import cn.gudqs7.plugins.common.util.jetbrain.ExceptionUtil;
-import cn.gudqs7.plugins.common.util.jetbrain.PsiAnnotationUtil;
+import cn.gudqs7.plugins.common.util.structure.PsiAnnotationUtil;
 import cn.gudqs7.plugins.search.pojo.RequestMappingAnnotationInfo;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
