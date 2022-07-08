@@ -12,7 +12,7 @@ import cn.gudqs7.plugins.common.util.PluginSettingHelper;
 import cn.gudqs7.plugins.common.util.WebEnvironmentUtil;
 import cn.gudqs7.plugins.common.util.jetbrain.ExceptionUtil;
 import cn.gudqs7.plugins.common.util.jetbrain.PsiAnnotationUtil;
-import cn.gudqs7.plugins.common.util.jetbrain.PsiTypeUtil;
+import cn.gudqs7.plugins.common.util.structure.PsiTypeUtil;
 import com.intellij.psi.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;

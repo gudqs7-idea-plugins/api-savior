@@ -1,13 +1,18 @@
-package cn.gudqs7.plugins.common.util.jetbrain;
+package cn.gudqs7.plugins.common.util.structure;
 
+import cn.gudqs7.plugins.common.util.jetbrain.ExceptionUtil;
+import cn.gudqs7.plugins.common.util.jetbrain.PsiSearchUtil;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
 import com.intellij.psi.impl.source.PsiClassReferenceType;
 import com.intellij.psi.search.GlobalSearchScope;
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * 泛型, PsiType, PsiClass 相关类型判断工具类
@@ -248,6 +253,47 @@ public class PsiTypeUtil {
         boolean assignableFromXxx = xxxType.isAssignableFrom(psiType);
         boolean isXxxType = psiClass.isInheritor(xxxClass, true);
         return assignableFromXxx || isXxxType;
+    }
+
+    /**
+     * 得到类名
+     *
+     * @param psiType      psi类型
+     * @param contextClass 上下文类, 若内部类恰好位于此类, 则可不添加前缀
+     * @return {@link String}
+     */
+    @Nullable
+    public static String getClassName(@NotNull PsiType psiType, PsiClass contextClass) {
+        if (psiType instanceof PsiClassReferenceType) {
+            PsiClassReferenceType classReferenceType = (PsiClassReferenceType) psiType;
+            PsiClass psiClass = classReferenceType.resolve();
+            if (psiClass == null || psiClass.getName() == null) {
+                return null;
+            }
+            String contextClassName = null;
+            if (contextClass != null) {
+                contextClassName = contextClass.getQualifiedName();
+            }
+            // 若上下文位于此类, 则不需要拼接前缀
+            if (Objects.equals(contextClassName, psiClass.getQualifiedName())) {
+                return null;
+            }
+            StringBuilder className = new StringBuilder(psiClass.getName());
+            while (true) {
+                PsiClass containingClass = psiClass.getContainingClass();
+                if (containingClass == null) {
+                    break;
+                }
+                // 若当前上下文类与之相等, 则可忽略此类型, 并跳出循环
+                if (Objects.equals(contextClassName, containingClass.getQualifiedName())) {
+                    break;
+                }
+                className.insert(0, containingClass.getName() + ".");
+                psiClass = containingClass;
+            }
+            return className.toString();
+        }
+        return null;
     }
 
     private static PsiType getRealPsiType0(String ownerQname, int index, Project project, PsiType defaultVal) {

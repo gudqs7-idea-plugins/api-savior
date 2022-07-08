@@ -1,6 +1,5 @@
 package cn.gudqs7.plugins.common.util.structure;
 
-import cn.gudqs7.plugins.common.util.jetbrain.PsiTypeUtil;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
 import com.intellij.psi.impl.source.PsiClassReferenceType;

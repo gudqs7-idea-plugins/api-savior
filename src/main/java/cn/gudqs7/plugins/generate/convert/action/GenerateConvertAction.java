@@ -165,7 +165,7 @@ public class GenerateConvertAction extends GenerateBaseAction {
             BaseVar varForGet = new BaseVar();
             varForGet.setVarName(psiParameter.getName());
             varForGet.setVarType(srcPsiType);
-            return new GenerateConvertForMethod(varForSet, varForGet);
+            return new GenerateConvertForMethod(varForSet, varForGet, psiMethod);
         } else {
             return null;
         }

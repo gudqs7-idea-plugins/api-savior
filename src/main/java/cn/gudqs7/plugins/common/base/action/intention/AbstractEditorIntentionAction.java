@@ -3,7 +3,7 @@ package cn.gudqs7.plugins.common.base.action.intention;
 import cn.gudqs7.plugins.common.base.action.intention.helper.CodeInsertHelper;
 import cn.gudqs7.plugins.common.base.action.intention.helper.CodeInsertHelperFactory;
 import cn.gudqs7.plugins.common.util.jetbrain.ExceptionUtil;
-import cn.gudqs7.plugins.common.util.jetbrain.PsiTypeUtil;
+import cn.gudqs7.plugins.common.util.structure.PsiTypeUtil;
 import com.intellij.codeInsight.intention.PsiElementBaseIntentionAction;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;

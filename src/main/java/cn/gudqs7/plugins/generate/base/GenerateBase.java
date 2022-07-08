@@ -2,8 +2,8 @@ package cn.gudqs7.plugins.generate.base;
 
 import cn.gudqs7.plugins.common.util.jetbrain.ExceptionUtil;
 import cn.gudqs7.plugins.common.util.jetbrain.PsiDocumentUtil;
-import cn.gudqs7.plugins.common.util.jetbrain.PsiTypeUtil;
 import cn.gudqs7.plugins.common.util.structure.BaseTypeUtil;
+import cn.gudqs7.plugins.common.util.structure.PsiTypeUtil;
 import com.intellij.codeInsight.template.Template;
 import com.intellij.codeInsight.template.TemplateManager;
 import com.intellij.openapi.editor.Document;

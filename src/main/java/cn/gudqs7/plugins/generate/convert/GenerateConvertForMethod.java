@@ -1,6 +1,9 @@
 package cn.gudqs7.plugins.generate.convert;
 
+import cn.gudqs7.plugins.common.util.structure.PsiTypeUtil;
 import cn.gudqs7.plugins.generate.base.BaseVar;
+import com.intellij.psi.PsiClass;
+import com.intellij.psi.PsiMethod;
 import com.intellij.psi.PsiType;
 
 import java.util.HashSet;
@@ -11,8 +14,11 @@ import java.util.HashSet;
  */
 public class GenerateConvertForMethod extends GenerateConvert {
 
-    public GenerateConvertForMethod(BaseVar varForSet, BaseVar varForGet) {
+    private PsiMethod psiMethod;
+
+    public GenerateConvertForMethod(BaseVar varForSet, BaseVar varForGet, PsiMethod psiMethod) {
         super(varForSet, varForGet);
+        this.psiMethod = psiMethod;
     }
 
     @Override
@@ -22,12 +28,13 @@ public class GenerateConvertForMethod extends GenerateConvert {
         }
         String varName = baseVar.getVarName();
         PsiType psiType = baseVar.getVarType();
-        String typeName = psiType.getPresentableText();
-//        if (splitText.startsWith("\n")) {
-//            builder.append(splitText.substring(1));
-//        }
+        PsiClass contextClass = psiMethod.getContainingClass();
+        String className = PsiTypeUtil.getClassName(psiType, contextClass);
+        if (className == null) {
+            className = psiType.getPresentableText();
+        }
         builder.append(splitText);
-        builder.append(typeName).append(" ").append(varName).append(" = ").append("new ").append(typeName).append("();").append(splitText);
+        builder.append(className).append(" ").append(varName).append(" = ").append("new ").append(className).append("();").append(splitText);
     }
 
     @Override

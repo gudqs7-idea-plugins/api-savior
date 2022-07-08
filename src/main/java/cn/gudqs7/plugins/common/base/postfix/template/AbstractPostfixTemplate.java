@@ -1,7 +1,7 @@
 package cn.gudqs7.plugins.common.base.postfix.template;
 
 import cn.gudqs7.plugins.common.util.jetbrain.ExceptionUtil;
-import cn.gudqs7.plugins.common.util.jetbrain.PsiTypeUtil;
+import cn.gudqs7.plugins.common.util.structure.PsiTypeUtil;
 import com.intellij.codeInsight.template.postfix.templates.PostfixTemplateExpressionSelectorBase;
 import com.intellij.codeInsight.template.postfix.templates.PostfixTemplateWithExpressionSelector;
 import com.intellij.codeInsight.template.postfix.util.JavaPostfixTemplatesUtils;

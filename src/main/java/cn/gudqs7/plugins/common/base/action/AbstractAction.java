@@ -2,7 +2,7 @@ package cn.gudqs7.plugins.common.base.action;
 
 import cn.gudqs7.plugins.common.util.WebEnvironmentUtil;
 import cn.gudqs7.plugins.common.util.jetbrain.ExceptionUtil;
-import cn.gudqs7.plugins.common.util.jetbrain.PsiTypeUtil;
+import cn.gudqs7.plugins.common.util.structure.PsiTypeUtil;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.psi.*;
