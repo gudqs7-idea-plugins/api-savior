@@ -2,6 +2,7 @@ package cn.gudqs7.plugins.common.util.jetbrain;
 
 import cn.gudqs7.plugins.common.base.error.CanIgnoreException;
 import com.intellij.openapi.progress.ProcessCanceledException;
+import com.intellij.openapi.project.IndexNotReadyException;
 import lombok.Lombok;
 
 import java.io.PrintWriter;
@@ -24,7 +25,7 @@ public class ExceptionUtil {
     }
 
     public static void handleException(Throwable throwable) {
-        if (throwable instanceof ProcessCanceledException) {
+        if (needIgnoredIdeaException(throwable)) {
             throw Lombok.sneakyThrow(throwable);
         }
         if (throwable instanceof CanIgnoreException) {
@@ -36,6 +37,11 @@ public class ExceptionUtil {
             logException(throwable, addition);
             throw Lombok.sneakyThrow(throwable);
         }
+    }
+
+    private static boolean needIgnoredIdeaException(Throwable throwable) {
+        return throwable instanceof ProcessCanceledException
+                || throwable instanceof IndexNotReadyException;
     }
 
     public static void handleSyntaxError(String code) throws RuntimeException {

@@ -284,7 +284,8 @@ public class JavaToOneApiSavior extends AbstractSavior<Void> {
             map.put(upperKey, value);
         } else if (value instanceof Map) {
             Map<String, Object> mapValue = (Map<String, Object>) value;
-            map.put(upperKey, getResultExample(mapValue, dataSize, needUpper));
+            // only first level need upper
+            map.put(upperKey, getResultExample(mapValue, dataSize, false));
         } else if (value instanceof List) {
             List list = (List) value;
             if (list.size() >= 1) {
