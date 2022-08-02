@@ -47,16 +47,19 @@ public class ApiSearchContributor implements WeightedSearchEverywhereContributor
 
     private final AnActionEvent actionEvent;
     private final Project myProject;
-    private final PersistentSearchEverywhereContributorFilter<HttpMethod> myFilter;
+    private PersistentSearchEverywhereContributorFilter<HttpMethod> myFilter;
     private List<ApiNavigationItem> navItemList;
 
     public ApiSearchContributor(@NotNull AnActionEvent event) {
         this.actionEvent = event;
         myProject = event.getRequiredData(CommonDataKeys.PROJECT);
-        myFilter = new PersistentSearchEverywhereContributorFilter<>(
-                Arrays.asList(HttpMethod.values()), MethodFilterConfiguration.getInstance(myProject),
-                Enum::name, httpMethod -> null
-        );
+        MethodFilterConfiguration methodFilterConfiguration = MethodFilterConfiguration.getInstance(myProject);
+        if (methodFilterConfiguration != null) {
+            myFilter = new PersistentSearchEverywhereContributorFilter<>(
+                    Arrays.asList(HttpMethod.values()), methodFilterConfiguration,
+                    Enum::name, httpMethod -> null
+            );
+        }
     }
 
     @NotNull
@@ -163,7 +166,12 @@ public class ApiSearchContributor implements WeightedSearchEverywhereContributor
             }
 
             MinusculeMatcher matcher = NameUtil.buildMatcher("*" + pattern + "*", NameUtil.MatchingCaseSensitivity.NONE);
-            Set<HttpMethod> httpMethodSet = new HashSet<>(myFilter.getSelectedElements());
+            Set<HttpMethod> httpMethodSet = new HashSet<>();
+            if (myFilter == null) {
+                httpMethodSet.addAll(Arrays.asList(HttpMethod.values()));
+            } else {
+                httpMethodSet.addAll(myFilter.getSelectedElements());
+            }
             boolean selectAll = httpMethodSet.size() == HttpMethod.values().length;
 
             // 从ALL -> URL Tab或快捷键进入时列表为空
