@@ -5,6 +5,7 @@ import cn.gudqs7.plugins.generate.base.BaseVar;
 import cn.gudqs7.plugins.generate.base.GenerateBase;
 import cn.gudqs7.plugins.generate.base.GenerateBaseTemplate;
 import cn.gudqs7.plugins.generate.convert.GenerateConvert;
+import cn.gudqs7.plugins.generate.convert.GenerateConvertForDst;
 import com.intellij.openapi.editor.Document;
 import com.intellij.psi.*;
 import com.intellij.psi.tree.IElementType;
@@ -21,6 +22,20 @@ public class GenerateConvertTemplate extends GenerateBaseTemplate {
     private static boolean isApplicable0(PsiElement psiElement) {
         if (psiElement == null) {
             return false;
+        }
+        if (psiElement instanceof PsiIdentifier) {
+            PsiElement parent = psiElement.getParent();
+            if (parent instanceof PsiReferenceExpression) {
+                PsiReferenceExpression expression = (PsiReferenceExpression) parent;
+                if (expression.getType() != null) {
+                    return true;
+                }
+            }
+        }
+        if (psiElement instanceof PsiExpression) {
+            PsiExpression psiExpression = (PsiExpression) psiElement;
+            PsiType psiType = psiExpression.getType();
+            return psiType != null;
         }
         if (psiElement instanceof PsiJavaToken) {
             PsiJavaToken psiJavaToken = (PsiJavaToken) psiElement;
@@ -53,6 +68,17 @@ public class GenerateConvertTemplate extends GenerateBaseTemplate {
 
     @Override
     protected GenerateBase buildGenerate(PsiElement psiElement, PsiFile containingFile, PsiDocumentManager psiDocumentManager, Document document) {
+        if (psiElement instanceof PsiExpression) {
+            PsiExpression psiExpression = (PsiExpression) psiElement;
+            PsiType psiType = psiExpression.getType();
+            String varName = psiExpression.getText();
+            if (psiType != null) {
+                BaseVar baseVar = new BaseVar();
+                baseVar.setVarName(varName);
+                baseVar.setVarType(psiType);
+                return new GenerateConvertForDst(baseVar, null);
+            }
+        }
         if (psiElement instanceof PsiMethodCallExpression) {
             PsiMethodCallExpression callExpression = (PsiMethodCallExpression) psiElement;
             PsiType psiTypeForSet = PsiExpressionUtil.getPsiTypeByMethodCallExpression(callExpression);

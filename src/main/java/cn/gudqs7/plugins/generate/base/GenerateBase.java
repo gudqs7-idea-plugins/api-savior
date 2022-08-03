@@ -6,6 +6,7 @@ import cn.gudqs7.plugins.common.util.structure.BaseTypeUtil;
 import cn.gudqs7.plugins.common.util.structure.PsiTypeUtil;
 import com.intellij.codeInsight.template.Template;
 import com.intellij.codeInsight.template.TemplateManager;
+import com.intellij.codeInsight.template.impl.Variable;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
@@ -13,6 +14,7 @@ import com.intellij.psi.*;
 import com.intellij.psi.impl.source.PsiClassReferenceType;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -200,11 +202,41 @@ public interface GenerateBase {
      * @param editor             editor
      */
     default void insertCodeByPsiTypeWithTemplate(Document document, PsiDocumentManager psiDocumentManager, PsiFile containingFile, Editor editor) {
+        insertCodeByPsiTypeWithTemplate(document, psiDocumentManager, containingFile, editor, getTemplateVariables());
+    }
+
+    /**
+     * 得到模板变量
+     * 子类可重写以传递模版变量
+     *
+     * @return {@link Variable[]}
+     */
+    @Nullable
+    default Variable[] getTemplateVariables() {
+        return null;
+    }
+
+    /**
+     * 插入code通过ψ类型与模板
+     * 根据 psiType 生成 code 并通过 Template 插入
+     *
+     * @param document           文档
+     * @param psiDocumentManager 文档管理器
+     * @param containingFile     当前文件
+     * @param editor             editor
+     * @param variableArray      模版变量数组
+     */
+    default void insertCodeByPsiTypeWithTemplate(Document document, PsiDocumentManager psiDocumentManager, PsiFile containingFile, Editor editor, Variable... variableArray) {
         HashSet<String> newImportList = new HashSet<>();
         String insertCode = generateCode("", newImportList);
         System.out.println("insertCodeByPsiTypeWithTemplate :: " + insertCode);
         TemplateManager manager = TemplateManager.getInstance(containingFile.getProject());
         Template template = manager.createTemplate("", "", insertCode + "$END$");
+        if (variableArray != null && variableArray.length > 0) {
+            for (Variable variable : variableArray) {
+                template.addVariable(variable);
+            }
+        }
         template.setToReformat(true);
         manager.startTemplate(editor, template);
         PsiDocumentUtil.addImportToFile(psiDocumentManager, (PsiJavaFile) containingFile, document, newImportList);

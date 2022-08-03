@@ -35,7 +35,7 @@ public class GenerateConvert extends AbstractMethodListGenerate {
     @Override
     @NotNull
     public String generateCodeByMethod(Set<String> newImportList, PsiMethod method) {
-        if (baseVar == null || varForGet == null) {
+        if (baseVar == null) {
             return "";
         }
         String generateName = baseVar.getVarName();
@@ -57,7 +57,7 @@ public class GenerateConvert extends AbstractMethodListGenerate {
     }
 
     @NotNull
-    private String getSetVal(String getMethodName) {
+    protected String getSetVal(String getMethodName) {
         PsiClass psiClassForGet = PsiTypesUtil.getPsiClass(varForGet.getVarType());
         List<PsiMethod> methodList = PsiMethodUtil.getGetterMethod(psiClassForGet, false);
         Map<String, PsiMethod> methodMap = PsiMethodUtil.convertMethodListToMap(methodList);
