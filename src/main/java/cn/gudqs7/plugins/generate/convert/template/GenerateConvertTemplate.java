@@ -68,17 +68,6 @@ public class GenerateConvertTemplate extends GenerateBaseTemplate {
 
     @Override
     protected GenerateBase buildGenerate(PsiElement psiElement, PsiFile containingFile, PsiDocumentManager psiDocumentManager, Document document) {
-        if (psiElement instanceof PsiExpression) {
-            PsiExpression psiExpression = (PsiExpression) psiElement;
-            PsiType psiType = psiExpression.getType();
-            String varName = psiExpression.getText();
-            if (psiType != null) {
-                BaseVar baseVar = new BaseVar();
-                baseVar.setVarName(varName);
-                baseVar.setVarType(psiType);
-                return new GenerateConvertForDst(baseVar, null);
-            }
-        }
         if (psiElement instanceof PsiMethodCallExpression) {
             PsiMethodCallExpression callExpression = (PsiMethodCallExpression) psiElement;
             PsiType psiTypeForSet = PsiExpressionUtil.getPsiTypeByMethodCallExpression(callExpression);
@@ -99,6 +88,17 @@ public class GenerateConvertTemplate extends GenerateBaseTemplate {
             varForGet.setVarName(nameForGet);
             varForGet.setVarType(psiTypeForGet);
             return new GenerateConvert(varForSet, varForGet);
+        }
+        if (psiElement instanceof PsiExpression) {
+            PsiExpression psiExpression = (PsiExpression) psiElement;
+            PsiType psiType = psiExpression.getType();
+            String varName = psiExpression.getText();
+            if (psiType != null) {
+                BaseVar baseVar = new BaseVar();
+                baseVar.setVarName(varName);
+                baseVar.setVarType(psiType);
+                return new GenerateConvertForDst(baseVar, null);
+            }
         }
         return null;
     }
