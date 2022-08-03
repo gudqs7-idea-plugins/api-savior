@@ -1,11 +1,9 @@
 package cn.gudqs7.plugins.generate.postfix;
 
 import cn.gudqs7.plugins.generate.convert.template.GenerateConvertTemplate;
+import cn.gudqs7.plugins.generate.getter.template.GenerateAllGetterNoSuperClassTemplate;
 import cn.gudqs7.plugins.generate.getter.template.GenerateAllGetterTemplate;
-import cn.gudqs7.plugins.generate.setter.template.GenerateAllSetterByBuilderTemplate;
-import cn.gudqs7.plugins.generate.setter.template.GenerateAllSetterWithChainTemplate;
-import cn.gudqs7.plugins.generate.setter.template.GenerateAllSetterWithDefaultValTemplate;
-import cn.gudqs7.plugins.generate.setter.template.GenerateAllSetterWithoutDefaultValTemplate;
+import cn.gudqs7.plugins.generate.setter.template.*;
 import com.intellij.codeInsight.template.postfix.templates.PostfixTemplate;
 import com.intellij.codeInsight.template.postfix.templates.PostfixTemplateProvider;
 import com.intellij.openapi.editor.Editor;
@@ -24,12 +22,14 @@ public class GeneratePostfixTemplateProvider implements PostfixTemplateProvider 
 
     public GeneratePostfixTemplateProvider() {
         templates = ContainerUtil.newHashSet(
-                new GenerateAllSetterWithDefaultValTemplate(),
                 new GenerateAllGetterTemplate(),
+                new GenerateAllGetterNoSuperClassTemplate(),
+                new GenerateAllSetterWithDefaultValTemplate(),
+                new GenerateAllSetterNoSuperClassTemplate(),
                 new GenerateAllSetterWithoutDefaultValTemplate(),
-                new GenerateConvertTemplate(),
                 new GenerateAllSetterByBuilderTemplate(),
-                new GenerateAllSetterWithChainTemplate()
+                new GenerateAllSetterWithChainTemplate(),
+                new GenerateConvertTemplate()
         );
     }
 

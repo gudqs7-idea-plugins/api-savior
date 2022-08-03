@@ -20,13 +20,20 @@ import java.util.Set;
  */
 public class GenerateGetter extends AbstractMethodListGenerate {
 
+    private final boolean noSuperClass;
+
     public GenerateGetter(BaseVar baseVar) {
+        this(baseVar, false);
+    }
+
+    public GenerateGetter(BaseVar baseVar, boolean noSuperClass) {
         super(baseVar);
+        this.noSuperClass = noSuperClass;
     }
 
     @Override
     protected List<PsiMethod> getGenerateMethodListByClass(PsiClass psiClass) {
-        return PsiMethodUtil.getGetterMethod(psiClass);
+        return PsiMethodUtil.getGetterMethod(psiClass, noSuperClass);
     }
 
     @Override

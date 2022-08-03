@@ -26,7 +26,7 @@ public class GenerateBuilder extends AbstractDefaultValGenerate {
     @Override
     @NotNull
     public List<PsiMethod> getGenerateMethodListByClass(PsiClass psiClass) {
-        return PsiMethodUtil.getSetterMethod(psiClass);
+        return PsiMethodUtil.getSetterMethod(psiClass, false);
     }
 
     @Override

@@ -18,14 +18,21 @@ import java.util.Set;
  */
 public class GenerateSetter extends AbstractDefaultValGenerate {
 
+    private final boolean noSupperClass;
+
     public GenerateSetter(boolean generateDefaultVal, BaseVar baseVar) {
+        this(generateDefaultVal, baseVar, false);
+    }
+
+    public GenerateSetter(boolean generateDefaultVal, BaseVar baseVar, boolean noSupperClass) {
         super(generateDefaultVal, baseVar);
+        this.noSupperClass = noSupperClass;
     }
 
     @Override
     @NotNull
     public List<PsiMethod> getGenerateMethodListByClass(PsiClass psiClass) {
-        return PsiMethodUtil.getSetterMethod(psiClass);
+        return PsiMethodUtil.getSetterMethod(psiClass, noSupperClass);
     }
 
     @Override

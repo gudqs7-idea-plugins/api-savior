@@ -43,23 +43,25 @@ public class PsiMethodUtil {
     /**
      * 返回类的所有 getter
      *
-     * @param psiClass 类
+     * @param psiClass     类
+     * @param noSuperClass 是否不包含父类的数据
      * @return 类的所有 getter
      */
     @NotNull
-    public static List<PsiMethod> getGetterMethod(PsiClass psiClass) {
-        return getMethodByPrefix(psiClass, GET_METHOD_PREFIX, IS_METHOD_PREFIX);
+    public static List<PsiMethod> getGetterMethod(PsiClass psiClass, boolean noSuperClass) {
+        return getMethodByPrefix(psiClass, noSuperClass, GET_METHOD_PREFIX, IS_METHOD_PREFIX);
     }
 
     /**
      * 返回类的所有 setter
      *
-     * @param psiClass 类
+     * @param psiClass      类
+     * @param noSuperClass  是否不包含父类的数据
      * @return 类的所有 setter
      */
     @NotNull
-    public static List<PsiMethod> getSetterMethod(PsiClass psiClass) {
-        return getMethodByPrefix(psiClass, SET_METHOD_PREFIX);
+    public static List<PsiMethod> getSetterMethod(PsiClass psiClass, boolean noSuperClass) {
+        return getMethodByPrefix(psiClass, noSuperClass, SET_METHOD_PREFIX);
     }
 
     /**
@@ -139,14 +141,19 @@ public class PsiMethodUtil {
     /**
      * 返回类的指定前缀的方法
      *
-     * @param psiClass    类
-     * @param prefixArray 指定前缀集合
+     * @param psiClass      类
+     * @param noSuperClass  是否不包含父类的数据
+     * @param prefixArray   指定前缀集合
      * @return 方法列表
      */
     @NotNull
-    private static List<PsiMethod> getMethodByPrefix(PsiClass psiClass, String... prefixArray) {
+    private static List<PsiMethod> getMethodByPrefix(PsiClass psiClass, boolean noSuperClass, String... prefixArray) {
         List<PsiMethod> methodList = new ArrayList<>();
         Set<String> methodNameSet = new HashSet<>();
+        if (noSuperClass) {
+            addMethodToList(methodList, methodNameSet, psiClass, prefixArray);
+            return methodList;
+        }
         while (PsiClassUtil.isNotSystemClass(psiClass)) {
             addMethodToList(methodList, methodNameSet, psiClass, prefixArray);
             psiClass = psiClass.getSuperClass();
