@@ -62,7 +62,9 @@ public class GenerateConvert extends AbstractMethodListGenerate {
         List<PsiMethod> methodList = PsiMethodUtil.getGetterMethod(psiClassForGet);
         Map<String, PsiMethod> methodMap = PsiMethodUtil.convertMethodListToMap(methodList);
         PsiMethod psiMethod = methodMap.get(getMethodName);
-        String defaultVal = "null/* 源对象无此字段 */";
+        // 若源对象无此字段(即无相应的 getter), 则仍保留此 set 语句, 但 set 的值为 null
+        // 主要是考虑到目标对象是我们关注的, 理论上目标对象的所有字段都应该是有用的, 因此要保留!
+        String defaultVal = "null";
         if (psiMethod != null) {
             defaultVal = getGetterCode(psiMethod);
         }
