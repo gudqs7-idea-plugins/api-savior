@@ -4,7 +4,7 @@ plugins {
 }
 
 group 'cn.gudqs7.idea.plugins'
-version '2.3.6'
+version '2.5.0'
 
 repositories {
     mavenCentral()
