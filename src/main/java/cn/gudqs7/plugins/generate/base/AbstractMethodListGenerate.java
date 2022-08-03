@@ -55,6 +55,7 @@ public abstract class AbstractMethodListGenerate implements GenerateBase {
         }
 
         StringBuilder builder = new StringBuilder();
+        splitText = changeSplitText(splitText);
         beforeAppend(builder, splitText, newImportList);
         for (PsiMethod method : methodList) {
             String codeByMethod = generateCodeByMethod(method, splitText, newImportList);
@@ -62,6 +63,10 @@ public abstract class AbstractMethodListGenerate implements GenerateBase {
         }
         afterAppend(builder, splitText, newImportList);
         return builder.toString();
+    }
+
+    protected String changeSplitText(String splitText) {
+        return splitText;
     }
 
     protected void beforeAppend(StringBuilder builder, String splitText, HashSet<String> newImportList) {

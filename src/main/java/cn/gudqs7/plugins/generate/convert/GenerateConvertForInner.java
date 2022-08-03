@@ -12,11 +12,22 @@ import java.util.HashSet;
  */
 public class GenerateConvertForInner extends GenerateConvert {
 
+    private final int innerLevel;
     private final String getterCode;
 
-    public GenerateConvertForInner(BaseVar varForSet, BaseVar varForGet, String getterCode) {
+    public GenerateConvertForInner(BaseVar varForSet, BaseVar varForGet, int innerLevel, String getterCode) {
         super(varForSet, varForGet);
+        this.innerLevel = innerLevel;
         this.getterCode = getterCode;
+    }
+
+    @Override
+    protected String changeSplitText(String splitText) {
+        if (innerLevel == 1) {
+            return splitText;
+        }
+        // 累加即可
+        return splitText + "    ";
     }
 
     @Override
@@ -37,12 +48,6 @@ public class GenerateConvertForInner extends GenerateConvert {
             srcClassName = varForGetVarType.getPresentableText();
         }
 
-        /*
-        FooDTO fooDst = null;
-        FooBO fooSrc = src.getFoo();
-        if (fooSrc != null) {
-            fooDst = new FooDTO();
-         */
         builder.append(splitText);
         builder.append(dstClassName).append(" ").append(varName).append(" = null;").append(splitText);
         builder.append(srcClassName).append(" ").append(varForGetVarName).append(" = ").append(getterCode).append(";").append(splitText);
@@ -57,6 +62,11 @@ public class GenerateConvertForInner extends GenerateConvert {
 
     @Override
     protected void afterAppend(StringBuilder builder, String splitText, HashSet<String> newImportList) {
-        builder.append("}");
+        builder.append("}").append(splitText);
+    }
+
+    @Override
+    protected int getInnerLevel() {
+        return innerLevel;
     }
 }

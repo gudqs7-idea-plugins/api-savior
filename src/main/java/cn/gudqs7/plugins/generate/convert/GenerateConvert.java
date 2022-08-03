@@ -81,22 +81,30 @@ public class GenerateConvert extends AbstractMethodListGenerate {
                 defaultVal = getGetterCode(psiMethod);
             } else {
                 // 发生了相同字段但不同类型的数据, 需再写一个 convert 语句
-                BaseVar varForSetInner = new BaseVar();
-                String dstClassVarName = dstVarName + "Dst";
-                varForSetInner.setVarName(dstClassVarName);
-                varForSetInner.setVarType(dstVarType);
-                BaseVar varForGetInner = new BaseVar();
-                varForGetInner.setVarName(dstVarName + "Src");
-                varForGetInner.setVarType(srcVarType);
+                int innerLevel = getInnerLevel();
+                // 判断循环次数, 避免死循环, 当前仅保留 3 层. 即 A 开始算起, A -> B 算一层, B -> C 算一层 C -> D 算一层
+                if (innerLevel <= 3) {
+                    BaseVar varForSetInner = new BaseVar();
+                    String dstClassVarName = dstVarName + "Dst" + innerLevel;
+                    varForSetInner.setVarName(dstClassVarName);
+                    varForSetInner.setVarType(dstVarType);
+                    BaseVar varForGetInner = new BaseVar();
+                    varForGetInner.setVarName(dstVarName + "Src" + innerLevel);
+                    varForGetInner.setVarType(srcVarType);
 
-                String getterCode = getGetterCode(psiMethod);
-                GenerateConvert generateConvertInner = new GenerateConvertForInner(varForSetInner, varForGetInner, getterCode);
-                HashSet<String> newImportList = new HashSet<>();
-                moreCode = generateConvertInner.generateCode(splitText, newImportList) + splitText;
-                defaultVal = dstClassVarName;
+                    String getterCode = getGetterCode(psiMethod);
+                    GenerateConvert generateConvertInner = new GenerateConvertForInner(varForSetInner, varForGetInner, innerLevel + 1, getterCode);
+                    HashSet<String> newImportList = new HashSet<>();
+                    moreCode = generateConvertInner.generateCode(splitText, newImportList);
+                    defaultVal = dstClassVarName;
+                }
             }
         }
         return Pair.of(defaultVal, moreCode);
+    }
+
+    protected int getInnerLevel() {
+        return 0;
     }
 
     @NotNull
