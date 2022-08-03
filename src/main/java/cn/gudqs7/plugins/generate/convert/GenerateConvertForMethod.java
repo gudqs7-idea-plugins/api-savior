@@ -14,7 +14,7 @@ import java.util.HashSet;
  */
 public class GenerateConvertForMethod extends GenerateConvert {
 
-    private PsiMethod psiMethod;
+    private final PsiMethod psiMethod;
 
     public GenerateConvertForMethod(BaseVar varForSet, BaseVar varForGet, PsiMethod psiMethod) {
         super(varForSet, varForGet);

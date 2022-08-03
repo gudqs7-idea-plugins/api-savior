@@ -57,7 +57,7 @@ public abstract class AbstractMethodListGenerate implements GenerateBase {
         StringBuilder builder = new StringBuilder();
         beforeAppend(builder, splitText, newImportList);
         for (PsiMethod method : methodList) {
-            String codeByMethod = generateCodeByMethod(newImportList, method);
+            String codeByMethod = generateCodeByMethod(method, splitText, newImportList);
             doAppend(builder, codeByMethod, splitText, newImportList);
         }
         afterAppend(builder, splitText, newImportList);

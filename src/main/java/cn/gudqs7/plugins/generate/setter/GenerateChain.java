@@ -31,7 +31,7 @@ public class GenerateChain extends AbstractDefaultValGenerate {
 
     @Override
     @NotNull
-    public String generateCodeByMethod(Set<String> newImportList, PsiMethod method) {
+    public String generateCodeByMethod(PsiMethod method, String splitText, Set<String> newImportList) {
         if (baseVar == null) {
             return "";
         }

@@ -2,6 +2,8 @@ package cn.gudqs7.plugins.generate.convert;
 
 import cn.gudqs7.plugins.generate.base.BaseVar;
 import com.intellij.codeInsight.template.impl.Variable;
+import com.intellij.psi.PsiParameter;
+import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -24,8 +26,8 @@ public class GenerateConvertForDst extends GenerateConvert {
 
     @NotNull
     @Override
-    protected String getSetVal(String getMethodName) {
-        return "$SOURCE$." + getMethodName + "()";
+    protected Pair<String, String> getDstVal(String getterMethodName, PsiParameter parameter, String splitText) {
+        return Pair.of("$SOURCE$." + getterMethodName + "()", "");
     }
 
 }

@@ -1,15 +1,16 @@
 package cn.gudqs7.plugins.generate.convert;
 
+import cn.gudqs7.plugins.common.util.structure.BaseTypeUtil;
 import cn.gudqs7.plugins.common.util.structure.PsiMethodUtil;
+import cn.gudqs7.plugins.common.util.structure.PsiTypeUtil;
 import cn.gudqs7.plugins.generate.base.AbstractMethodListGenerate;
 import cn.gudqs7.plugins.generate.base.BaseVar;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiMethod;
-import com.intellij.psi.PsiParameter;
-import com.intellij.psi.PsiParameterList;
+import com.intellij.psi.*;
 import com.intellij.psi.util.PsiTypesUtil;
+import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -34,7 +35,7 @@ public class GenerateConvert extends AbstractMethodListGenerate {
 
     @Override
     @NotNull
-    public String generateCodeByMethod(Set<String> newImportList, PsiMethod method) {
+    public String generateCodeByMethod(PsiMethod method, String splitText, Set<String> newImportList) {
         if (baseVar == null) {
             return "";
         }
@@ -48,27 +49,54 @@ public class GenerateConvert extends AbstractMethodListGenerate {
             if (setterIsBoolean) {
                 methodPrefix = "is";
             }
-            String getMethodName = methodName.replaceFirst("set", methodPrefix);
-            String setVal = getSetVal(getMethodName);
-            return generateName + "." + methodName + "(" + setVal + ");";
+            String getterMethodName = methodName.replaceFirst("set", methodPrefix);
+            Pair<String, String> dstValPair = getDstVal(getterMethodName, parameters[0], splitText);
+            String setVal = dstValPair.getLeft();
+            String moreCode = dstValPair.getRight();
+            return moreCode + generateName + "." + methodName + "(" + setVal + ");";
         } else {
             return "";
         }
     }
 
     @NotNull
-    protected String getSetVal(String getMethodName) {
+    protected Pair<String, String> getDstVal(String getterMethodName, PsiParameter psiParameter, String splitText) {
         PsiClass psiClassForGet = PsiTypesUtil.getPsiClass(varForGet.getVarType());
         List<PsiMethod> methodList = PsiMethodUtil.getGetterMethod(psiClassForGet, false);
         Map<String, PsiMethod> methodMap = PsiMethodUtil.convertMethodListToMap(methodList);
-        PsiMethod psiMethod = methodMap.get(getMethodName);
+        PsiMethod psiMethod = methodMap.get(getterMethodName);
+
         // 若源对象无此字段(即无相应的 getter), 则仍保留此 set 语句, 但 set 的值为 null
         // 主要是考虑到目标对象是我们关注的, 理论上目标对象的所有字段都应该是有用的, 因此要保留!
         String defaultVal = "null";
+        String moreCode = "";
         if (psiMethod != null) {
-            defaultVal = getGetterCode(psiMethod);
+            PsiType srcVarType = psiMethod.getReturnType();
+            String dstVarName = psiParameter.getName();
+            PsiType dstVarType = psiParameter.getType();
+            boolean samePsiType = PsiTypeUtil.isSamePsiType(srcVarType, dstVarType);
+            if (samePsiType || BaseTypeUtil.isBaseTypeOrObject(dstVarType)) {
+                // 若源对象无此字段(即无相应的 getter), 则仍保留此 set 语句, 但 set 的值为 null
+                // 主要是考虑到目标对象是我们关注的, 理论上目标对象的所有字段都应该是有用的, 因此要保留!
+                defaultVal = getGetterCode(psiMethod);
+            } else {
+                // 发生了相同字段但不同类型的数据, 需再写一个 convert 语句
+                BaseVar varForSetInner = new BaseVar();
+                String dstClassVarName = dstVarName + "Dst";
+                varForSetInner.setVarName(dstClassVarName);
+                varForSetInner.setVarType(dstVarType);
+                BaseVar varForGetInner = new BaseVar();
+                varForGetInner.setVarName(dstVarName + "Src");
+                varForGetInner.setVarType(srcVarType);
+
+                String getterCode = getGetterCode(psiMethod);
+                GenerateConvert generateConvertInner = new GenerateConvertForInner(varForSetInner, varForGetInner, getterCode);
+                HashSet<String> newImportList = new HashSet<>();
+                moreCode = generateConvertInner.generateCode(splitText, newImportList) + splitText;
+                defaultVal = dstClassVarName;
+            }
         }
-        return defaultVal;
+        return Pair.of(defaultVal, moreCode);
     }
 
     @NotNull

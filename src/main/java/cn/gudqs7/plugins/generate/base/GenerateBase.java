@@ -28,12 +28,13 @@ public interface GenerateBase {
     /**
      * 根据参数生成代码
      *
-     * @param newImportList 需要引入的 import 列表
      * @param method        方法
+     * @param splitText
+     * @param newImportList 需要引入的 import 列表
      * @return 代码
      */
     @NotNull
-    String generateCodeByMethod(Set<String> newImportList, PsiMethod method);
+    String generateCodeByMethod(PsiMethod method, String splitText, Set<String> newImportList);
 
     /**
      * 根据 PsiType 返回其类型
