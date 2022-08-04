@@ -17,8 +17,10 @@ import com.intellij.psi.impl.source.PsiClassReferenceType;
 import org.apache.commons.collections.CollectionUtils;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -41,7 +43,7 @@ public class StructureAndCommentResolver implements IStructureAndCommentResolver
         if (psiClassReferenceType == null) {
             return null;
         }
-        StructureAndCommentInfo root = resolveFromClass0(psiClassReferenceType, "", 1);
+        StructureAndCommentInfo root = resolveFromClass0(null, psiClassReferenceType, "", 1);
         psiClassCache.clear();
         earlyCache.clear();
         return root;
@@ -134,7 +136,7 @@ public class StructureAndCommentResolver implements IStructureAndCommentResolver
         return structureAndCommentInfo;
     }
 
-    private StructureAndCommentInfo resolveFromClass0(PsiClassReferenceType psiClassReferenceType, String fieldPrefix, int level) {
+    private StructureAndCommentInfo resolveFromClass0(StructureAndCommentInfo parent, PsiClassReferenceType psiClassReferenceType, String fieldPrefix, int level) {
         if (psiClassReferenceType == null) {
             return null;
         }
@@ -146,14 +148,14 @@ public class StructureAndCommentResolver implements IStructureAndCommentResolver
         psiClass = replacePsiClassIfFromJar(psiClass);
         String qualifiedName = psiClass.getQualifiedName();
         PsiTypeUtil.resolvePsiClassParameter(psiClassReferenceType);
-        if (qualifiedName != null) {
-            if (psiClassCache.containsKey(qualifiedName)) {
-                return null;
-            }
-            if (earlyCache.containsKey(qualifiedName)) {
-                return null;
-            }
-        }
+//        if (qualifiedName != null) {
+//            if (psiClassCache.containsKey(qualifiedName)) {
+//                return null;
+//            }
+//            if (earlyCache.containsKey(qualifiedName)) {
+//                return null;
+//            }
+//        }
         String clazzTypeName = psiClass.getName();
         if (BaseTypeUtil.isBaseTypeOrObject(psiClass)) {
             return null;
@@ -165,6 +167,7 @@ public class StructureAndCommentResolver implements IStructureAndCommentResolver
             return null;
         }
         StructureAndCommentInfo root = new StructureAndCommentInfo();
+        root.setParent(parent);
         root.setFieldType(clazzTypeName);
         root.setOriginalFieldType(clazzTypeName);
         root.setFieldTypeCode(FieldType.POJO.getType());
@@ -248,11 +251,11 @@ public class StructureAndCommentResolver implements IStructureAndCommentResolver
                 return null;
             }
         }
-        return resolveByPsiType0(FieldType.BASE.getType(), fieldName, psiFieldType, commentInfo, "%s", fieldPrefix, level);
+        return resolveByPsiType0(parent, FieldType.BASE.getType(), fieldName, psiFieldType, commentInfo, "%s", fieldPrefix, level);
     }
 
     @SuppressWarnings("AlibabaMethodTooLong")
-    private StructureAndCommentInfo resolveByPsiType0(int fieldTypeCode, String fieldName, PsiType psiFieldType, CommentInfo commentInfo, String typeNameFormat, String fieldPrefix, int level) {
+    private StructureAndCommentInfo resolveByPsiType0(StructureAndCommentInfo parent, int fieldTypeCode, String fieldName, PsiType psiFieldType, CommentInfo commentInfo, String typeNameFormat, String fieldPrefix, int level) {
         boolean hidden = commentInfo.isHidden(false);
         fieldName = commentInfo.getName(fieldName);
         hidden = handleHidden(fieldName, psiFieldType, hidden);
@@ -283,7 +286,7 @@ public class StructureAndCommentResolver implements IStructureAndCommentResolver
             PsiArrayType psiArrayType = (PsiArrayType) psiFieldType;
             PsiType componentType = psiArrayType.getComponentType();
             String newTypeNameFormat = String.format(typeNameFormat, "%s[]");
-            return resolveByPsiType0(FieldType.ARRAY.getType(), fieldName, componentType, commentInfo, newTypeNameFormat, fieldPrefix, level);
+            return resolveByPsiType0(parent, FieldType.ARRAY.getType(), fieldName, componentType, commentInfo, newTypeNameFormat, fieldPrefix, level);
         }
 
         boolean isReferenceType = psiFieldType instanceof PsiClassReferenceType;
@@ -315,7 +318,7 @@ public class StructureAndCommentResolver implements IStructureAndCommentResolver
             PsiType realPsiType = PsiTypeUtil.getRealPsiType(psiFieldType, project, null);
             if (realPsiType != null) {
                 String newTypeNameFormat = String.format(typeNameFormat, "%s");
-                return resolveByPsiType0(fieldTypeCode, fieldName, realPsiType, commentInfo, newTypeNameFormat, fieldPrefix, level);
+                return resolveByPsiType0(parent, fieldTypeCode, fieldName, realPsiType, commentInfo, newTypeNameFormat, fieldPrefix, level);
             }
 
             // 枚举
@@ -325,19 +328,19 @@ public class StructureAndCommentResolver implements IStructureAndCommentResolver
 
             // List
             if (PsiTypeUtil.isPsiTypeFromList(psiFieldType, project)) {
-                return getStructureAndCommentInfoByCollection(fieldName, commentInfo, typeNameFormat, fieldPrefix, level,
+                return getStructureAndCommentInfoByCollection(parent, fieldName, commentInfo, typeNameFormat, fieldPrefix, level,
                         structureAndCommentInfo, parameters, "List<%s>", FieldType.LIST);
             }
 
             // Set
             if (PsiTypeUtil.isPsiTypeFromSet(psiFieldType, project)) {
-                return getStructureAndCommentInfoByCollection(fieldName, commentInfo, typeNameFormat, fieldPrefix, level,
+                return getStructureAndCommentInfoByCollection(parent, fieldName, commentInfo, typeNameFormat, fieldPrefix, level,
                         structureAndCommentInfo, parameters, "Set<%s>", FieldType.SET);
             }
 
             // Collection 放在后面判断, 优先级低一些
             if (PsiTypeUtil.isPsiTypeFromCollection(psiFieldType, project)) {
-                return getStructureAndCommentInfoByCollection(fieldName, commentInfo, typeNameFormat, fieldPrefix, level,
+                return getStructureAndCommentInfoByCollection(parent, fieldName, commentInfo, typeNameFormat, fieldPrefix, level,
                         structureAndCommentInfo, parameters, "Collection<%s>", FieldType.COLLECTION);
             }
 
@@ -358,7 +361,7 @@ public class StructureAndCommentResolver implements IStructureAndCommentResolver
                     }
                     keyTypeName = keyType.getPresentableText();
                     String newTypeNameFormat = String.format(typeNameFormat, "Map<" + keyTypeName + ", %s>");
-                    return resolveByPsiType0(FieldType.MAP.getType(), fieldName, valueType, commentInfo, newTypeNameFormat, fieldPrefix, level);
+                    return resolveByPsiType0(parent, FieldType.MAP.getType(), fieldName, valueType, commentInfo, newTypeNameFormat, fieldPrefix, level);
                 } else {
                     return structureAndCommentInfo;
                 }
@@ -371,7 +374,15 @@ public class StructureAndCommentResolver implements IStructureAndCommentResolver
                 if (MapKeyConstant.FIELD_PREFIX_INIT.equals(fieldPrefix)) {
                     fieldPrefix0 = "";
                 }
-                StructureAndCommentInfo structureAndCommentInfoChild = resolveFromClass0(psiClassReferenceType, fieldPrefix0, level + 1);
+
+                boolean hasRecursion = checkRecursion(parent);
+                if (hasRecursion) {
+                    return null;
+                }
+
+                structureAndCommentInfo.setPsiClass(resolveClass);
+                structureAndCommentInfo.setParent(parent);
+                StructureAndCommentInfo structureAndCommentInfoChild = resolveFromClass0(structureAndCommentInfo, psiClassReferenceType, fieldPrefix0, level + 1);
                 if (structureAndCommentInfoChild != null && structureAndCommentInfoChild.getChildren().size() > 0) {
                     structureAndCommentInfo.setLeaf(false);
                     structureAndCommentInfo.copyChild(structureAndCommentInfoChild.getChildren());
@@ -388,6 +399,38 @@ public class StructureAndCommentResolver implements IStructureAndCommentResolver
         return structureAndCommentInfo;
     }
 
+    private boolean checkRecursion(StructureAndCommentInfo parent) {
+        if (parent == null) {
+            return false;
+        }
+        Set<String> uniqueNodeSet = new HashSet<>(32);
+        StructureAndCommentInfo current = parent;
+        do {
+            if (current.getFieldTypeCode().equals(FieldType.POJO.getType())) {
+                PsiClass psiClass = current.getPsiClass();
+                if (psiClass != null) {
+                    String qualifiedName = psiClass.getQualifiedName();
+                    if (uniqueNodeSet.contains(qualifiedName)) {
+                        return true;
+                    }
+                    uniqueNodeSet.add(qualifiedName);
+                }
+            }
+            current = current.getParent();
+        } while (current != null);
+        return false;
+    }
+
+    private StructureAndCommentInfo getStructureAndCommentInfoByCollection(StructureAndCommentInfo parent, String fieldName, CommentInfo commentInfo, String typeNameFormat, String fieldPrefix, int level, StructureAndCommentInfo structureAndCommentInfo, PsiType[] parameters, String format, FieldType fieldType) {
+        if (parameters.length > 0) {
+            PsiType elementType = parameters[0];
+            String newTypeNameFormat = String.format(typeNameFormat, format);
+            return resolveByPsiType0(parent, fieldType.getType(), fieldName, elementType, commentInfo, newTypeNameFormat, fieldPrefix, level);
+        } else {
+            return structureAndCommentInfo;
+        }
+    }
+
     private boolean handleHidden(String fieldName, PsiType psiFieldType, boolean oldVal) {
         if (FieldJumpUtil.isFieldNameNeedJump(fieldName)) {
             return true;
@@ -397,16 +440,6 @@ public class StructureAndCommentResolver implements IStructureAndCommentResolver
             return true;
         }
         return oldVal;
-    }
-
-    private StructureAndCommentInfo getStructureAndCommentInfoByCollection(String fieldName, CommentInfo commentInfo, String typeNameFormat, String fieldPrefix, int level, StructureAndCommentInfo structureAndCommentInfo, PsiType[] parameters, String format, FieldType fieldType) {
-        if (parameters.length > 0) {
-            PsiType elementType = parameters[0];
-            String newTypeNameFormat = String.format(typeNameFormat, format);
-            return resolveByPsiType0(fieldType.getType(), fieldName, elementType, commentInfo, newTypeNameFormat, fieldPrefix, level);
-        } else {
-            return structureAndCommentInfo;
-        }
     }
 
     private boolean checkHiddenRequest(String fieldPrefix, String fieldName) {

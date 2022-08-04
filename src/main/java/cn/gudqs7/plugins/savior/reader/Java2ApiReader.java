@@ -9,6 +9,7 @@ import cn.gudqs7.plugins.common.util.IndexIncrementUtil;
 import cn.gudqs7.plugins.common.util.StringTool;
 import cn.gudqs7.plugins.savior.pojo.FieldLevelInfo;
 import cn.gudqs7.plugins.savior.pojo.FieldMemoInfo;
+import com.intellij.psi.PsiClass;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
@@ -22,7 +23,9 @@ public class Java2ApiReader extends AbstractReader<FieldMemoInfo, Map<String, Li
     @Override
     protected void beforeRead(StructureAndCommentInfo structureAndCommentInfo, Map<String, Object> data) {
         Map<String, List<FieldLevelInfo>> levelMap = new TreeMap<>(Comparator.comparingInt(Integer::parseInt));
+        Set<String> qNameSet = new HashSet<>(32);
         data.put("levelMap", levelMap);
+        data.put("qNameSet", qNameSet);
     }
 
     @Override
@@ -38,6 +41,7 @@ public class Java2ApiReader extends AbstractReader<FieldMemoInfo, Map<String, Li
         CommentInfo commentInfo = structureAndCommentInfo.getCommentInfo();
         String clazzDesc = "";
         String clazzTypeName = "";
+        String classQname = "";
         switch (StructureType.of(type)) {
             case PSI_CLASS:
             case PSI_FIELD:
@@ -45,6 +49,10 @@ public class Java2ApiReader extends AbstractReader<FieldMemoInfo, Map<String, Li
             case PSI_RETURN:
                 clazzDesc = commentInfo.getValue("");
                 clazzTypeName = structureAndCommentInfo.getOriginalFieldType();
+                PsiClass psiClass = structureAndCommentInfo.getPsiClass();
+                if (psiClass != null) {
+                    classQname = psiClass.getQualifiedName();
+                }
                 break;
             case PSI_PARAM_LIST:
                 clazzTypeName = "Params";
@@ -59,6 +67,7 @@ public class Java2ApiReader extends AbstractReader<FieldMemoInfo, Map<String, Li
         clazzDesc = StringTool.replaceMd(clazzDesc);
         loopData.put("clazzTypeName", clazzTypeName);
         loopData.put("clazzDesc", clazzDesc);
+        loopData.put("classQname", classQname);
     }
 
     @Override
@@ -78,15 +87,18 @@ public class Java2ApiReader extends AbstractReader<FieldMemoInfo, Map<String, Li
         List<FieldMemoInfo> fieldList = getFromData(loopData, "fieldList");
         if (fieldList.size() > 0) {
             Map<String, List<FieldLevelInfo>> levelMap = getFromData(data, "levelMap");
+            Set<String> qNameSet = getFromData(data, "qNameSet");
             int level = (int) loopData.get("level");
             String clazzDesc = getFromData(loopData, "clazzDesc");
             String clazzTypeName = getFromData(loopData, "clazzTypeName");
             String parentClazzTypeName = parentData.get("clazzTypeName", "");
+            String classQname = parentData.get("classQname", "");
             FieldLevelInfo fieldLevelInfo = new FieldLevelInfo();
             fieldLevelInfo.setLevel(level);
             fieldLevelInfo.setParentClazzTypeName(parentClazzTypeName);
             fieldLevelInfo.setClazzTypeName(clazzTypeName);
             fieldLevelInfo.setClazzDesc(clazzDesc);
+            fieldLevelInfo.setClazzQname(classQname);
             fieldLevelInfo.setFieldList(fieldList);
             String levelStr = String.valueOf(level);
             List<FieldLevelInfo> list = levelMap.computeIfAbsent(levelStr, integer -> new ArrayList<>());

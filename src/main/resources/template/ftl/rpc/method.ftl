@@ -18,20 +18,25 @@ ${jsonExample}
 
 <#assign cnNumberMap = {"1": "一", "2": "二", "3": "三", "4": "四", "5": "五", "6": "六", "7": "七", "8": "八", "9": "九"}>
 <#if paramLevelMap?? && (paramLevelMap?size > 0)>
+    <#assign paramQNameSet = {}>
     <#list paramLevelMap?keys as level>
         <#if (level?number > 0)>
 
 ### 第${cnNumberMap[level]!level}层
             <#assign levelList = paramLevelMap[level]!>
             <#list levelList as levelInfo>
+                <#assign qName = levelInfo.clazzQname>
+                <#if !(paramQNameSet[qName])??>
+                    <#assign paramQNameSet += {qName: "0"}>
 #### ${levelInfo.clazzTypeName}
 ${((levelInfo.clazzDesc)?? && levelInfo.clazzDesc != '')?string('> '+ levelInfo.clazzDesc, '')}
 
 | **字段** | **类型** | **必填** | **含义** | **其他参考信息** |
 | -------- | -------- | -------- | -------- | -------- |
-                <#list levelInfo.fieldList?sort_by("index") as field>
+                    <#list levelInfo.fieldList?sort_by("index") as field>
 | ${field.fieldName} | **${((field.fieldTypeCode)?? && field.originalFieldTypeCode == 2)?string('[' + field.fieldTypeName + '](#' + field.originalFieldTypeName + ')', field.fieldTypeName)}** | ${field.required?string('**是**','否')} |  ${field.fieldDesc} | ${field.notes} |
-                </#list>
+                    </#list>
+                </#if>
             </#list>
         </#if>
     </#list>
@@ -48,20 +53,25 @@ ${returnJsonExample}
 </#if>
 
 <#if returnLevelMap?? && (returnLevelMap?size > 0)>
+    <#assign returnQNameSet = {}>
     <#list returnLevelMap?keys as level>
         <#if (level?number > 0)>
 
 ### 第${cnNumberMap[level]!level}层
             <#assign levelList = returnLevelMap[level]!>
             <#list levelList as levelInfo>
+                <#assign qName = levelInfo.clazzQname>
+                <#if !(returnQNameSet[qName])??>
+                    <#assign returnQNameSet += {qName: "0"}>
 #### ${levelInfo.clazzTypeName}
 ${((levelInfo.clazzDesc)?? && levelInfo.clazzDesc != '')?string('> '+ levelInfo.clazzDesc, '')}
 
 | **字段** | **类型** | **含义** | **其他参考信息** |
 | -------- | -------- | -------- | -------- |
-                <#list levelInfo.fieldList?sort_by("index") as field>
+                    <#list levelInfo.fieldList?sort_by("index") as field>
 | ${field.fieldName} | **${((field.fieldTypeCode)?? && field.originalFieldTypeCode == 2)?string('[' + field.fieldTypeName + '](#' + field.originalFieldTypeName + ')', field.fieldTypeName)}** |  ${field.fieldDesc} | ${field.notes} |
-                </#list>
+                    </#list>
+                </#if>
             </#list>
         </#if>
     </#list>

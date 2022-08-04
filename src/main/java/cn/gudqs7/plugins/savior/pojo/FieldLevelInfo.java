@@ -31,6 +31,11 @@ public class FieldLevelInfo {
     private String clazzDesc;
 
     /**
+     * 当前类全限定名
+     */
+    private String clazzQname;
+
+    /**
      * 当前层级下所有字段数据
      */
     private List<FieldMemoInfo> fieldList;
