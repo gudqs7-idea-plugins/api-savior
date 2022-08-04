@@ -63,7 +63,7 @@ public class GenerateConvertForListInner extends GenerateConvertForInner {
         builder.append("List<").append(dstClassName).append("> ").append(varName).append(" = null;").append(splitText);
         builder.append("List<").append(srcClassName).append("> ").append(varForGetVarName).append(" = ").append(getterCode).append(";").append(splitText);
         builder.append("if (").append(varForGetVarName).append(" != null) {").append(splitText);
-        builder.append("    ").append(varName).append(" = ").append(varForGetVarName).append(".stream().map(").append(varForGetItemVarName).append(" -> {").append(splitText);
+        builder.append("    ").append(varName).append(" = ").append(varForGetVarName).append(".stream().filter(Objects::nonNull).map(").append(varForGetItemVarName).append(" -> {").append(splitText);
         builder.append("        ").append(dstClassName).append(" ").append(varItemVarName).append(" = new ").append(dstClassName).append("();").append(splitText);
 
         baseVar.setVarName(varItemVarName);

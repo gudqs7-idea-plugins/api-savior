@@ -99,7 +99,7 @@ public class GenerateConvertAction extends GenerateBaseAction {
                 if (parent != null) {
                     if (parent.getParent() instanceof PsiMethod) {
                         PsiMethod psiMethod = (PsiMethod) parent.getParent();
-                        invokeByPsiMethod(generateBase, psiDocumentManager, containingFile, document, psiMethod);
+                        invokeByPsiMethod(generateBase, psiDocumentManager, containingFile, document, editor, psiMethod);
                     }
                 }
             }
@@ -108,7 +108,7 @@ public class GenerateConvertAction extends GenerateBaseAction {
             PsiElement parent = psiElement.getParent();
             if (parent instanceof PsiMethod) {
                 PsiMethod psiMethod = (PsiMethod) parent;
-                invokeByPsiMethod(generateBase, psiDocumentManager, containingFile, document, psiMethod);
+                invokeByPsiMethod(generateBase, psiDocumentManager, containingFile, document, editor, psiMethod);
             }
         }
     }
@@ -171,10 +171,12 @@ public class GenerateConvertAction extends GenerateBaseAction {
         }
     }
 
-    private void invokeByPsiMethod(GenerateBase generateBase, PsiDocumentManager psiDocumentManager, PsiFile containingFile, Document document, PsiMethod psiMethod) {
+    private void invokeByPsiMethod(GenerateBase generateBase, PsiDocumentManager psiDocumentManager, PsiFile containingFile, Document document, Editor editor, PsiMethod psiMethod) {
         String prefix = getPrefixWithBreakLine(document, psiMethod);
         Integer insertOffset = getInsertOffset(psiMethod);
-        generateBase.insertCodeByPsiType(document, psiDocumentManager, containingFile, prefix, insertOffset);
+        // 在此之前先移动位置
+        editor.getCaretModel().moveToVisualPosition(editor.offsetToVisualPosition(insertOffset));
+        generateBase.insertCodeByPsiTypeWithTemplate(document, psiDocumentManager, containingFile, editor);
     }
 
 }

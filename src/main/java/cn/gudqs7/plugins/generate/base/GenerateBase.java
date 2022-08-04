@@ -229,7 +229,7 @@ public interface GenerateBase {
      */
     default void insertCodeByPsiTypeWithTemplate(Document document, PsiDocumentManager psiDocumentManager, PsiFile containingFile, Editor editor, Variable... variableArray) {
         HashSet<String> newImportList = new HashSet<>();
-        String insertCode = generateCode("", newImportList);
+        String insertCode = generateCode("\n", newImportList);
         System.out.println("insertCodeByPsiTypeWithTemplate :: " + insertCode);
         TemplateManager manager = TemplateManager.getInstance(containingFile.getProject());
         Template template = manager.createTemplate("", "", insertCode + "$END$");

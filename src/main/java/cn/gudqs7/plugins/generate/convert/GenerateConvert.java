@@ -107,8 +107,8 @@ public class GenerateConvert extends AbstractMethodListGenerate {
                             varForGetInner.setVarType(srcElementType);
                         }
 
-                        newImportList.add(srcVarType.getCanonicalText());
-                        newImportList.add(dstVarType.getCanonicalText());
+                        newImportList.add(varForGetInner.getVarType().getCanonicalText());
+                        newImportList.add(varForSetInner.getVarType().getCanonicalText());
 
                         String getterCode = getGetterCode(psiMethod);
 
