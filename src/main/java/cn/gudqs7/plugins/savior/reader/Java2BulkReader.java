@@ -3,9 +3,11 @@ package cn.gudqs7.plugins.savior.reader;
 import cn.gudqs7.plugins.common.consts.CommonConst;
 import cn.gudqs7.plugins.common.consts.MapKeyConstant;
 import cn.gudqs7.plugins.common.enums.FieldType;
+import cn.gudqs7.plugins.common.enums.PluginSettingEnum;
 import cn.gudqs7.plugins.common.pojo.ReadOnlyMap;
 import cn.gudqs7.plugins.common.pojo.resolver.CommentInfo;
 import cn.gudqs7.plugins.common.pojo.resolver.StructureAndCommentInfo;
+import cn.gudqs7.plugins.common.util.PluginSettingHelper;
 import cn.gudqs7.plugins.savior.pojo.PostmanKvInfo;
 import cn.gudqs7.plugins.savior.theme.Theme;
 import org.apache.commons.lang3.StringUtils;
@@ -135,6 +137,14 @@ public class Java2BulkReader extends AbstractJsonReader<List<PostmanKvInfo>> {
         }
         String desktopPath = home + "/Desktop";
         String downloadPath = home + "/Downloads";
+
+        // get var from config
+        if (PluginSettingHelper.configExists()) {
+            desktopPath = PluginSettingHelper.getConfigItem(PluginSettingEnum.DEFAULT_DESKTOP_PATH, desktopPath);
+            downloadPath = PluginSettingHelper.getConfigItem(PluginSettingEnum.DEFAULT_DOWNLOAD_PATH, downloadPath);
+            projectPath = PluginSettingHelper.getConfigItem(PluginSettingEnum.DEFAULT_PROJECT_PATH, projectPath);
+        }
+
         example = example.replaceAll("\\$\\{desktop}", desktopPath);
         example = example.replaceAll("\\$\\{download}", downloadPath);
         example = example.replaceAll("\\$\\{project}", projectPath);

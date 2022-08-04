@@ -68,6 +68,18 @@ public enum PluginSettingEnum {
      */
     DEFAULT_URL_PREFIX("default.url", PluginSettingTypeEnum.STRING),
     /**
+     * 给桌面路径设置一个默认值, 主要用于防止信息泄漏或测试时避免变量
+     */
+    DEFAULT_DESKTOP_PATH("default.path.desktop", PluginSettingTypeEnum.STRING),
+    /**
+     * 给下载路径设置一个默认值, 主要用于防止信息泄漏或测试时避免变量
+     */
+    DEFAULT_DOWNLOAD_PATH("default.path.download", PluginSettingTypeEnum.STRING),
+    /**
+     * 给项目路径设置一个默认值, 主要用于防止信息泄漏或测试时避免变量
+     */
+    DEFAULT_PROJECT_PATH("default.path.project", PluginSettingTypeEnum.STRING),
+    /**
      * 若设置为 true, 则生成数据时不生成随机数据(主要用于作者测试)
      */
     DEFAULT_NOT_RANDOM("default.notUsingRandom", PluginSettingTypeEnum.BOOL),

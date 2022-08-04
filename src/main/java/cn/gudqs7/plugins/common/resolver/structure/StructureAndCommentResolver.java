@@ -244,12 +244,6 @@ public class StructureAndCommentResolver implements IStructureAndCommentResolver
             if (parentPsiClass == null) {
                 ExceptionUtil.handleSyntaxError(parentPsiClassReferenceType.getCanonicalText());
             }
-            String qualifiedName = parentPsiClass.getQualifiedName();
-            String canonicalText = psiFieldType.getCanonicalText();
-            if (Objects.equals(qualifiedName, canonicalText)) {
-                // 自己依赖自己
-                return null;
-            }
         }
         return resolveByPsiType0(parent, FieldType.BASE.getType(), fieldName, psiFieldType, commentInfo, "%s", fieldPrefix, level);
     }
