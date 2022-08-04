@@ -7,6 +7,8 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Set;
+
 /**
  * @author wenquan
  * @date 2022/8/3
@@ -26,7 +28,7 @@ public class GenerateConvertForDst extends GenerateConvert {
 
     @NotNull
     @Override
-    protected Pair<String, String> getDstVal(String getterMethodName, PsiParameter parameter, String splitText) {
+    protected Pair<String, String> getDstVal(String getterMethodName, PsiParameter parameter, Set<String> newImportList, String splitText) {
         return Pair.of("$SOURCE$." + getterMethodName + "()", "");
     }
 
