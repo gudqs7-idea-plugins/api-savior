@@ -1,6 +1,13 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf8">
 
 <pre>
+<strong>Release v2.5.1</strong>
+    1:perf: Generate Convert 支持嵌套, 即两个Pojo中包含相同字段但类型不同的Pojo, convert 时, 直接 set 会报错类型不符, 因此加入嵌套生成.
+    2:perf: 完善了之前的结构解析器, 优化其中的递归终止条件, 以达到最终输出文档效果更好(字段展示更全, 但不会无限展示).
+
+    English：
+    1:perf: Generate Convert supports nesting, that is, two Pojos contain the same fields but different types. When converting, directly set will report an error of type mismatch, so add nested generation.
+    2:perf: The previous structure parser has been improved, and the recursive termination condition has been optimized to achieve a better final output document (field display is more complete, but not infinite).
 <strong>Release v2.5.0</strong>
     1.feat: Generate Convert 添加仅通过目标对象生成完整语句, 生成后, 源对象由用户手动输入(仅需输入一次即替换全部语句).
     2.feat: getter/setter 生成添加不含父类的模式, 使用 allsetp / allgetp 来触发; 仅支持 postfix completion.
