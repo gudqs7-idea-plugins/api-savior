@@ -1,6 +1,11 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf8">
 
 <pre>
+<strong>Release v2.5.2</strong>
+    1.fix: 修复 SearchEverywhere 的 ApiNavigationItem toString 方法未在 readAction 内读取了 Psi 树导致的报错
+
+    English：
+    1.fix: Fix the error that SearchEverywhere's ApiNavigationItem toString method does not read the Psi tree in readAction
 <strong>Release v2.5.1</strong>
     1:perf: Generate Convert 支持嵌套, 即两个Pojo中包含相同字段但类型不同的Pojo, convert 时, 直接 set 会报错类型不符, 因此加入嵌套生成.
     2:perf: 完善了之前的结构解析器, 优化其中的递归终止条件, 以达到最终输出文档效果更好(字段展示更全, 但不会无限展示).
