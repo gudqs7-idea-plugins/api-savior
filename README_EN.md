@@ -105,3 +105,6 @@ At this point you can search and jump to the interface by url or interface descr
 - [Github intellij-generateAllSetMethod](https://github.com/gejun123456/intellij-generateAllSetMethod)
 - [Github genSets](https://github.com/yoke233/genSets)
 - [Github RESTKit](https://github.com/newhoo/RESTKit)
+- Thanks to [JetBrains OpenSource](https:jb.ggOpenSourceSupport) for the full product license for this project!
+
+[![OpenSource](parts/imgs/jb_beam.png)](https://jb.gg/OpenSourceSupport)

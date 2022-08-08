@@ -13,6 +13,7 @@
 [![Downloads](http://phpstorm.espend.de/badge/16860/downloads)][plugin]
 [![Install Plugins][jet-img]][jet]  
 
+
 ---
 [English 🇺🇸](./README_EN.md)
 
@@ -106,3 +107,6 @@ git clone https://github.com/docer-savior/docer-savior-plugin-usage-examples
 - [Github intellij-generateAllSetMethod](https://github.com/gejun123456/intellij-generateAllSetMethod)
 - [Github genSets](https://github.com/yoke233/genSets)
 - [Github RESTKit](https://github.com/newhoo/RESTKit)
+- 感谢 [JetBrains OpenSource](https://jb.gg/OpenSourceSupport) 为此项目提供的全产品许可证!   
+
+ [![OpenSource](parts/imgs/jb_beam.png)](https://jb.gg/OpenSourceSupport)
