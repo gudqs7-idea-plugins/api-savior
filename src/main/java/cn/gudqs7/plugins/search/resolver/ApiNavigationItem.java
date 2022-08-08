@@ -4,8 +4,6 @@ import cn.gudqs7.plugins.common.enums.HttpMethod;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiMethod;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
@@ -14,8 +12,6 @@ import org.jetbrains.annotations.NotNull;
  * @date 2022/5/28
  */
 @Data
-@ToString(doNotUseGetters = true)
-@EqualsAndHashCode(doNotUseGetters = true)
 public class ApiNavigationItem {
 
     private PsiElement psiElement;
@@ -44,4 +40,8 @@ public class ApiNavigationItem {
         }
     }
 
+    @Override
+    public String toString() {
+        return getRightText();
+    }
 }
