@@ -21,7 +21,13 @@ import java.util.List;
  */
 public class HTMLDecorator implements Decorator {
 
+    public final String idPrefix;
+
     private StringBuilder content = new StringBuilder();
+
+    public HTMLDecorator(String idPrefix) {
+        this.idPrefix = idPrefix;
+    }
 
     @Override
     public void beginWork(String outputFilePath) {
@@ -106,7 +112,7 @@ public class HTMLDecorator implements Decorator {
         if (level == 1) {
             String id = "";
             if (ArrayUtils.isNotEmpty(valueParts)) {
-                id = valueParts[0].getValue();
+                id = idPrefix + valueParts[0].getValue();
             }
             return oneLineHtml(valueParts, "h" + level, "id='" + id + "'");
         } else {

@@ -28,7 +28,7 @@ public class StringTool {
         source = source.replaceAll("\\<", "\\\\<");
         source = source.replaceAll("\\>", "\\\\>");
         source = source.replaceAll("\\|", "\\\\|");
-        source = source.replaceAll(CommonConst.BREAK_LINE, "<br>");
+        source = source.replaceAll(CommonConst.BREAK_LINE, "<br/>");
         return source;
     }
 

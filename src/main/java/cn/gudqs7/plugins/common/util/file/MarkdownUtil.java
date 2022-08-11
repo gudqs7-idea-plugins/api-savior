@@ -14,12 +14,16 @@ import java.util.List;
 public class MarkdownUtil {
 
     public static String markdownToHtml(String markdown) {
+        return markdownToHtml(markdown, "");
+    }
+
+    public static String markdownToHtml(String markdown, String idPrefix) {
         if(markdown==null){
             return null;
         }
 
         List<Block> list = Analyzer.analyze(markdown);
-        HTMLDecorator decorator = new HTMLDecorator();
+        HTMLDecorator decorator = new HTMLDecorator(idPrefix);
 
         decorator.decorate(list);
         return decorator.outputHtml();

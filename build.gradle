@@ -21,6 +21,8 @@ dependencies {
     implementation 'org.freemarker:freemarker:2.3.31'
     implementation 'org.projectlombok:lombok:1.18.2'
     annotationProcessor 'org.projectlombok:lombok:1.18.2'
+    implementation 'org.jsoup:jsoup:1.13.1'
+    implementation 'com.openhtmltopdf:openhtmltopdf-pdfbox:1.0.10'
 }
 
 // See https://github.com/JetBrains/gradle-intellij-plugin/

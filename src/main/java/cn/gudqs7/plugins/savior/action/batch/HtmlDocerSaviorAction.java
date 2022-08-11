@@ -53,7 +53,7 @@ public class HtmlDocerSaviorAction extends AbstractBatchDocerSavior {
         Map<String, Object> root = new HashMap<>(8);
         root.put("title", moduleName + "-" + fileName);
         root.put("markdownDoc", markdown2Html);
-        return FreeMarkerUtil.renderTemplate("html-doc.ftl", root);
+        return FreeMarkerUtil.renderTemplate("html/html-doc.ftl", root);
     }
 
     @Override
@@ -85,7 +85,7 @@ public class HtmlDocerSaviorAction extends AbstractBatchDocerSavior {
             }
             Map<String, Object> root = new HashMap<>(8);
             root.put("moduleList", moduleList);
-            String template = FreeMarkerUtil.renderTemplate("index.ftl", root);
+            String template = FreeMarkerUtil.renderTemplate("html/index.ftl", root);
             File parent = new File(docRootDirPath);
             FileUtil.writeStringToFile(template, parent, "index.html");
         }

@@ -67,22 +67,34 @@
         <group id="cn.gudqs.docer.savior.project" text="Api Savior Project Group">
             <add-to-group group-id="ProjectViewPopupMenu" anchor="after" relative-to-action="CutCopyPasteGroup"/>
 
-            <action id="cn.gudqs.docer.savior.project.rpc" class="cn.gudqs7.plugins.savior.action.rpc.RpcProjectDocSaviorAction"
+            <action id="cn.gudqs.docer.savior.project.rpc"
+                    class="cn.gudqs7.plugins.savior.action.rpc.RpcProjectDocSaviorAction"
                     text="Batch Generate RPC Interface Doc" description="Generate RPC interface documents in batches">
             </action>
-            <action id="cn.gudqs.docer.savior.project.restful" class="cn.gudqs7.plugins.savior.action.restful.RestfulProjectDocSaviorAction"
+            <action id="cn.gudqs.docer.savior.project.restful"
+                    class="cn.gudqs7.plugins.savior.action.restful.RestfulProjectDocSaviorAction"
                     text="Batch Generate Api Interface Doc" description="Generate API interface documents in batches">
             </action>
-            <action id="cn.gudqs.docer.savior.project.html" class="cn.gudqs7.plugins.savior.action.batch.HtmlDocerSaviorAction"
-                    text="Batch Generate Api Interface Doc(HTML)" description="Batch generate Api interface documents in HTML format">
+            <action id="cn.gudqs.docer.savior.project.html"
+                    class="cn.gudqs7.plugins.savior.action.batch.HtmlDocerSaviorAction"
+                    text="Batch Generate Api Interface Doc(HTML)"
+                    description="Batch generate Api interface documents in HTML format">
             </action>
-            <action id="cn.gudqs.docer.savior.project.postman" class="cn.gudqs7.plugins.savior.action.batch.PostmanDocerSaviorAction"
+            <action id="cn.gudqs.docer.savior.project.pdf"
+                    class="cn.gudqs7.plugins.savior.action.batch.PdfDocerSaviorAction"
+                    text="Batch Generate Api Interface Doc(PDF)"
+                    description="Batch generate Api interface documents in PDF format">
+            </action>
+            <action id="cn.gudqs.docer.savior.project.postman"
+                    class="cn.gudqs7.plugins.savior.action.batch.PostmanDocerSaviorAction"
                     text="Export Api Interface to Postman" description="Export Api interface to Postman">
             </action>
-            <action id="cn.gudqs.docer.savior.project.amp" class="cn.gudqs7.plugins.savior.action.batch.AmpDocerSaviorAction"
+            <action id="cn.gudqs.docer.savior.project.amp"
+                    class="cn.gudqs7.plugins.savior.action.batch.AmpDocerSaviorAction"
                     text="Export Api to Amp" description="Export Api to amp">
             </action>
-            <action id="cn.gudqs.docer.savior.project.oneapi" class="cn.gudqs7.plugins.savior.action.batch.OneApiDocerSaviorAction"
+            <action id="cn.gudqs.docer.savior.project.oneapi"
+                    class="cn.gudqs7.plugins.savior.action.batch.OneApiDocerSaviorAction"
                     text="Export Api to OneApi" description="Export Api to oneApi">
             </action>
         </group>

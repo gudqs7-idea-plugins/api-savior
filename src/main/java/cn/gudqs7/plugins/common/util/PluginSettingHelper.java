@@ -206,7 +206,7 @@ public class PluginSettingHelper {
      * @param currentVirtualFile 与此文件同一个 src 下的优先
      * @return 配置信息
      */
-    @SneakyThrows
+    @SneakyThrows(IOException.class)
     public static Map<String, String> getConfigFromFile(Project project, VirtualFile currentVirtualFile) {
         String projectBasePath = project.getBasePath();
         VirtualFile configFile = configFileMap.get(projectBasePath);

@@ -1,10 +1,13 @@
 package cn.gudqs7.plugins.common.util.file;
 
+import lombok.SneakyThrows;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
 /**
@@ -26,13 +29,31 @@ public class FileUtil {
     }
 
     public static void writeStringToFile(String content, File parent, String path) {
-        if (StringUtils.isBlank(content) || StringUtils.isBlank(path)) {
+        if (StringUtils.isBlank(content)) {
             return;
+        }
+        try {
+            FileOutputStream fileOutputStream = getFileOutputStream(parent, path);
+            if (fileOutputStream == null) {
+                return;
+            }
+            // 此处编码应与 FreeMarker 设置的编码以及文件编码统一, 因此需要指定, 与默认编码无关
+            fileOutputStream.write(content.getBytes(StandardCharsets.UTF_8));
+            fileOutputStream.flush();
+            fileOutputStream.close();
+        } catch (Exception e) {
+            throw new RuntimeException("writeStringToFile Error: " + e.toString());
+        }
+    }
+
+    public static FileOutputStream getFileOutputStream(File parent, String path) {
+        if (StringUtils.isBlank(path)) {
+            return null;
         }
         path = getRightFileName(path);
         // 若 parent 不存在, 则 parent.isFile() 返回 false, 不影响代码运行 (反之判断是否为目录则有问题)
         if (parent == null || parent.isFile()) {
-            return;
+            return null;
         }
         try {
             if (!parent.exists()) {
@@ -42,14 +63,9 @@ public class FileUtil {
             if (!file.exists()) {
                 file.createNewFile();
             }
-
-            FileOutputStream fileOutputStream = new FileOutputStream(file);
-            // 此处编码应与 FreeMarker 设置的编码以及文件编码统一, 因此需要指定, 与默认编码无关
-            fileOutputStream.write(content.getBytes(StandardCharsets.UTF_8));
-            fileOutputStream.flush();
-            fileOutputStream.close();
+            return new FileOutputStream(file);
         } catch (Exception e) {
-            throw new RuntimeException("writeStringToFile Error: " + e.toString());
+            throw new RuntimeException("getFileOutputStream Error - " + e.getMessage());
         }
     }
 
@@ -61,6 +77,16 @@ public class FileUtil {
         } catch (Exception e) {
             throw new RuntimeException("deleteDirectory Error: " + e.toString());
         }
+    }
+
+    @SneakyThrows(IOException.class)
+    public static File generateTempFile(InputStream fontStream, String prefix, String suffix) {
+        if (fontStream == null) {
+            return null;
+        }
+        File pdfFont = File.createTempFile(prefix, suffix);
+        FileUtils.copyToFile(fontStream, pdfFont);
+        return pdfFont;
     }
 
 }
