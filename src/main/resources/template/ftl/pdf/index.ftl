@@ -3,7 +3,8 @@
     <meta charset="UTF-8"/>
     <title>接口文档</title>
     <style>
-        body {
+		html {
+			font-size: 80%;
             font-family: "Microsoft YaHei";
         }
 
@@ -121,7 +122,6 @@
             border-radius: 4px;
             background-color: #f8f8f8;
             color: #525252;
-            font-size: 14px;
             line-height: 22px;
             white-space: pre;
             overflow-x: auto;

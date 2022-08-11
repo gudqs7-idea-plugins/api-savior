@@ -2,7 +2,6 @@ package cn.gudqs7.plugins.savior.action.batch;
 
 import cn.gudqs7.plugins.common.base.action.AbstractBatchDocerSavior;
 import cn.gudqs7.plugins.common.pojo.resolver.CommentInfo;
-import cn.gudqs7.plugins.common.util.file.FileUtil;
 import cn.gudqs7.plugins.common.util.file.FreeMarkerUtil;
 import cn.gudqs7.plugins.common.util.file.MarkdownUtil;
 import cn.gudqs7.plugins.common.util.file.PdfUtil;
@@ -107,7 +106,6 @@ public class PdfDocerSaviorAction extends AbstractBatchDocerSavior {
             String html = FreeMarkerUtil.renderTemplate("pdf/index.ftl", root);
             File parent = new File(docRootDirPath);
             String projectName = project.getName();
-            FileUtil.writeStringToFile(html, parent, "index.html");
             PdfUtil.html2Pdf(html, parent, projectName + "-接口文档.pdf");
         }
     }
