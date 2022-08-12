@@ -32,7 +32,7 @@ public class PdfUtil {
             File fontFile = FileUtil.generateTempFile(fontStream, "pdfFont", ".ttf");
             PdfRendererBuilder builder = new PdfRendererBuilder();
             builder.toStream(outputStream);
-            builder.useFont(fontFile, "Microsoft YaHei", 1, BaseRendererBuilder.FontStyle.NORMAL, true);
+            builder.useFont(fontFile, "Microsoft YaHei", 400, BaseRendererBuilder.FontStyle.NORMAL, true);
             builder.withW3cDocument(w3cDoc, null);
             builder.run();
 
