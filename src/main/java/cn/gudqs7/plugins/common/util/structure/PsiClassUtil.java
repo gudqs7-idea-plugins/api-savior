@@ -3,6 +3,7 @@ package cn.gudqs7.plugins.common.util.structure;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
 import com.intellij.psi.impl.source.PsiClassReferenceType;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
@@ -93,7 +94,6 @@ public class PsiClassUtil {
         return !qualifiedName.startsWith("java.");
     }
 
-
     /**
      * 判断该类是否为Controller或者Feign
      *
@@ -131,6 +131,45 @@ public class PsiClassUtil {
                     || psiClassFromMap);
         }
         return false;
+    }
+
+    /**
+     * 得到最顶级的类(针对内部类而已)
+     *
+     * @param psiClass psi类
+     * @return {@link PsiClass}
+     */
+    public static PsiClass getTopmostClass(@NotNull PsiClass psiClass) {
+        while (true) {
+            PsiClass containingClass = psiClass.getContainingClass();
+            if (containingClass == null) {
+                return psiClass;
+            }
+            psiClass = containingClass;
+        }
+    }
+
+    /**
+     * 通过顶级类找到其下的内部类
+     *
+     * @param topmostClass   顶级类
+     * @param innerClassName 内部类全限定名
+     * @return {@link PsiClass}
+     */
+    public static PsiClass findInnerClass(@NotNull PsiClass topmostClass, @NotNull String innerClassName) {
+        if (innerClassName.equals(topmostClass.getQualifiedName())) {
+            return topmostClass;
+        }
+        PsiClass[] innerClasses = topmostClass.getInnerClasses();
+        if (ArrayUtils.isNotEmpty(innerClasses)) {
+            for (PsiClass innerClass : innerClasses) {
+                PsiClass innerClass0 = findInnerClass(innerClass, innerClassName);
+                if (innerClass0 != null) {
+                    return innerClass0;
+                }
+            }
+        }
+        return null;
     }
 
 }

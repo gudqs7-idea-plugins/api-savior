@@ -16,6 +16,7 @@ import com.intellij.psi.impl.compiled.ClsClassImpl;
 import com.intellij.psi.impl.source.PsiClassReferenceType;
 import org.apache.commons.collections.CollectionUtils;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashSet;
 import java.util.List;
@@ -206,6 +207,24 @@ public class StructureAndCommentResolver implements IStructureAndCommentResolver
 
     @NotNull
     private PsiClass replacePsiClassIfFromJar(@NotNull PsiClass psiClass) {
+        String qualifiedName = psiClass.getQualifiedName();
+        if (qualifiedName == null) {
+            return psiClass;
+        }
+        // 兼容内部类(先获取顶级类, 这样才能找到源文件; 然后通过源文件的顶级类, 再查询内部类即可)
+        PsiClass topmostClass = PsiClassUtil.getTopmostClass(psiClass);
+        PsiClass sourceFileClass = getSourceFileClass(topmostClass);
+        if (sourceFileClass != null) {
+            PsiClass innerClass = PsiClassUtil.findInnerClass(sourceFileClass, qualifiedName);
+            if (innerClass != null) {
+                return innerClass;
+            }
+        }
+        return psiClass;
+    }
+
+    @Nullable
+    private PsiClass getSourceFileClass(@NotNull PsiClass psiClass) {
         if (psiClass instanceof ClsClassImpl) {
             PsiFile containingFile = psiClass.getContainingFile();
             if (containingFile != null) {
@@ -232,7 +251,7 @@ public class StructureAndCommentResolver implements IStructureAndCommentResolver
                 System.err.println("containingFile is null :: " + psiClass.getQualifiedName());
             }
         }
-        return psiClass;
+        return null;
     }
 
     private StructureAndCommentInfo resolveByPsiType(StructureAndCommentInfo parent, String fieldName, PsiType psiFieldType, CommentInfo commentInfo, PsiClassReferenceType parentPsiClassReferenceType, String fieldPrefix, int level) {
