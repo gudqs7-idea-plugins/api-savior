@@ -80,11 +80,6 @@
                     text="Batch Generate Api Interface Doc(HTML)"
                     description="Batch generate Api interface documents in HTML format">
             </action>
-            <action id="cn.gudqs.docer.savior.project.pdf"
-                    class="cn.gudqs7.plugins.savior.action.batch.PdfDocerSaviorAction"
-                    text="Batch Generate Api Interface Doc(PDF)"
-                    description="Batch generate Api interface documents in PDF format">
-            </action>
             <action id="cn.gudqs.docer.savior.project.postman"
                     class="cn.gudqs7.plugins.savior.action.batch.PostmanDocerSaviorAction"
                     text="Export Api Interface to Postman" description="Export Api interface to Postman">

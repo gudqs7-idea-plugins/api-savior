@@ -156,7 +156,7 @@ public abstract class AbstractAnnotationHolder implements AnnotationHolder {
      * @param commentInfo 原始信息
      */
     protected void overrideRequiredByValid(CommentInfo commentInfo) {
-        boolean hasRequiredAnnotation = hasAnyOneAnnotation(QNAME_OF_VALID_NOT_NULL, QNAME_OF_VALID_NOT_EMPTY, QNAME_OF_VALID_NOT_BLANK);
+        boolean hasRequiredAnnotation = hasAnyOneAnnotation(QNAME_OF_VALID_NOT_NULL, QNAME_OF_VALID_NOT_EMPTY, QNAME_OF_VALID_NOT_BLANK, QNAME_OF_VALID_NOT_EMPTY_JAVAX, QNAME_OF_VALID_NOT_BLANK_JAVAX);
         if (hasRequiredAnnotation) {
             commentInfo.setRequired(true);
         }

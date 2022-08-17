@@ -31,6 +31,8 @@ public interface AnnotationHolder {
     String QNAME_OF_VALID_NOT_NULL = "javax.validation.constraints.NotNull";
     String QNAME_OF_VALID_NOT_EMPTY = "org.hibernate.validator.constraints.NotEmpty";
     String QNAME_OF_VALID_NOT_BLANK = "org.hibernate.validator.constraints.NotBlank";
+    String QNAME_OF_VALID_NOT_EMPTY_JAVAX = "javax.validation.constraints.NotEmpty";
+    String QNAME_OF_VALID_NOT_BLANK_JAVAX = "javax.validation.constraints.NotBlank";
     String QNAME_OF_VALID_LENGTH = "org.hibernate.validator.constraints.Length";
     String QNAME_OF_VALID_MIN = "javax.validation.constraints.Min";
     String QNAME_OF_VALID_MAX = "javax.validation.constraints.Max";
