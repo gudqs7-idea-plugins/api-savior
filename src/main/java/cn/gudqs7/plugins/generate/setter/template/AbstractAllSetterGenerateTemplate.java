@@ -3,25 +3,25 @@ package cn.gudqs7.plugins.generate.setter.template;
 import cn.gudqs7.plugins.generate.base.AbstractVariableGenerateTemplate;
 import cn.gudqs7.plugins.generate.base.BaseVar;
 import cn.gudqs7.plugins.generate.base.GenerateBase;
-import cn.gudqs7.plugins.generate.setter.GenerateChain;
+import cn.gudqs7.plugins.generate.setter.GenerateSetter;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * @author WQ
  * @date 2021/10/1
  */
-public class GenerateAllSetterWithChainTemplate extends AbstractVariableGenerateTemplate {
+public abstract class AbstractAllSetterGenerateTemplate extends AbstractVariableGenerateTemplate {
 
     private final boolean generateDefaultVal;
 
-    public GenerateAllSetterWithChainTemplate() {
-        super("allsetc", "Generate setter with chain; if you using @Accessors(chain = true)");
-        this.generateDefaultVal = true;
+    public AbstractAllSetterGenerateTemplate(boolean generateDefaultVal, String templateName, String example) {
+        super(templateName, example);
+        this.generateDefaultVal = generateDefaultVal;
     }
 
     @NotNull
     @Override
     protected GenerateBase getGenerateByVar(BaseVar baseVar) {
-        return new GenerateChain(generateDefaultVal, baseVar);
+        return new GenerateSetter(generateDefaultVal, baseVar);
     }
 }

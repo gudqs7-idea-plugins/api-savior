@@ -1,9 +1,9 @@
 package cn.gudqs7.plugins.generate.convert.template;
 
 import cn.gudqs7.plugins.common.util.structure.PsiExpressionUtil;
+import cn.gudqs7.plugins.generate.base.BaseGenerateTemplate;
 import cn.gudqs7.plugins.generate.base.BaseVar;
 import cn.gudqs7.plugins.generate.base.GenerateBase;
-import cn.gudqs7.plugins.generate.base.GenerateBaseTemplate;
 import cn.gudqs7.plugins.generate.convert.GenerateConvert;
 import cn.gudqs7.plugins.generate.convert.GenerateConvertForDst;
 import com.intellij.openapi.editor.Document;
@@ -13,10 +13,10 @@ import com.intellij.psi.tree.IElementType;
 /**
  * @author WQ
  */
-public class GenerateConvertTemplate extends GenerateBaseTemplate {
+public class ConvertGenerateTemplate extends BaseGenerateTemplate {
 
-    public GenerateConvertTemplate() {
-        super("convert", "Generate Convert by to.setXxx(from.getXxx)", GenerateConvertTemplate::isApplicable0);
+    public ConvertGenerateTemplate() {
+        super("convert", "Generate Convert by to.setXxx(from.getXxx)", ConvertGenerateTemplate::isApplicable0);
     }
 
     private static boolean isApplicable0(PsiElement psiElement) {

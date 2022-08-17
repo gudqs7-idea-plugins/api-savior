@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
  * @author WQ
  * @date 2021/10/6
  */
-public abstract class AbstractVariableGenerateTemplate extends GenerateBaseTemplate {
+public abstract class AbstractVariableGenerateTemplate extends BaseGenerateTemplate {
 
     public AbstractVariableGenerateTemplate(String templateName, String example) {
         super(templateName, example, AbstractVariableGenerateTemplate::isApplicable0);

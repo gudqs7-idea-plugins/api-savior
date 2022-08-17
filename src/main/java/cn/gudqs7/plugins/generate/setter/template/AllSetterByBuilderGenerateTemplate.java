@@ -1,8 +1,8 @@
 package cn.gudqs7.plugins.generate.setter.template;
 
+import cn.gudqs7.plugins.generate.base.BaseGenerateTemplate;
 import cn.gudqs7.plugins.generate.base.BaseVar;
 import cn.gudqs7.plugins.generate.base.GenerateBase;
-import cn.gudqs7.plugins.generate.base.GenerateBaseTemplate;
 import cn.gudqs7.plugins.generate.setter.GenerateBuilder;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.project.Project;
@@ -16,14 +16,14 @@ import org.apache.commons.lang3.tuple.Pair;
  * @author WQ
  * @date 2021/10/1
  */
-public class GenerateAllSetterByBuilderTemplate extends GenerateBaseTemplate {
+public class AllSetterByBuilderGenerateTemplate extends BaseGenerateTemplate {
 
     private final boolean generateDefaultVal;
 
-    public GenerateAllSetterByBuilderTemplate() {
+    public AllSetterByBuilderGenerateTemplate() {
         super("allbuilder", "Generate builder",
-                GenerateAllSetterByBuilderTemplate::isApplicable0,
-                GenerateAllSetterByBuilderTemplate::getExpressions
+                AllSetterByBuilderGenerateTemplate::isApplicable0,
+                AllSetterByBuilderGenerateTemplate::getExpressions
         );
         this.generateDefaultVal = true;
     }

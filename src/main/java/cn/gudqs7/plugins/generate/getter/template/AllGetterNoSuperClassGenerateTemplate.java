@@ -9,14 +9,15 @@ import org.jetbrains.annotations.NotNull;
  * @author WQ
  * @date 2021/10/1
  */
-public class GenerateAllGetterTemplate extends AbstractVariableGenerateTemplate {
+@SuppressWarnings("PostfixTemplateDescriptionNotFound")
+public class AllGetterNoSuperClassGenerateTemplate extends AbstractVariableGenerateTemplate {
 
-    public GenerateAllGetterTemplate() {
-        super("allget", "Generate Getter");
+    public AllGetterNoSuperClassGenerateTemplate() {
+        super("allgetp", "Generate Getter but no super class");
     }
 
     @Override
     protected @NotNull GenerateGetter getGenerateByVar(BaseVar baseVar) {
-        return new GenerateGetter(baseVar);
+        return new GenerateGetter(baseVar, true);
     }
 }

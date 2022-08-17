@@ -14,14 +14,14 @@ import java.util.function.Function;
 /**
  * @author WQ
  */
-public abstract class GenerateBaseTemplate extends AbstractPostfixTemplate {
+public abstract class BaseGenerateTemplate extends AbstractPostfixTemplate {
 
 
-    public GenerateBaseTemplate(String templateName, String example, Function<PsiElement, Boolean> isApplicable) {
+    public BaseGenerateTemplate(String templateName, String example, Function<PsiElement, Boolean> isApplicable) {
         super(templateName, example, isApplicable);
     }
 
-    public GenerateBaseTemplate(String templateName, String example, Function<PsiElement, Boolean> isApplicable, Function<PsiElement, PsiElement> expressionGetFn) {
+    public BaseGenerateTemplate(String templateName, String example, Function<PsiElement, Boolean> isApplicable, Function<PsiElement, PsiElement> expressionGetFn) {
         super(templateName, example, isApplicable, expressionGetFn);
     }
 

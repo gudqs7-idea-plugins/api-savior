@@ -11,9 +11,9 @@ import org.jetbrains.annotations.NotNull;
  * @date 2021/10/1
  */
 @SuppressWarnings("PostfixTemplateDescriptionNotFound")
-public class GenerateAllSetterNoSuperClassTemplate extends AbstractVariableGenerateTemplate {
+public class AllSetterNoSuperClassGenerateTemplate extends AbstractVariableGenerateTemplate {
 
-    public GenerateAllSetterNoSuperClassTemplate() {
+    public AllSetterNoSuperClassGenerateTemplate() {
         super("allsetp", "Generate Setter but no super class");
     }
 
