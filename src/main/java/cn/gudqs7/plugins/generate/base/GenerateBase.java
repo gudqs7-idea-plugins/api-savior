@@ -4,8 +4,6 @@ import cn.gudqs7.plugins.common.util.jetbrain.ExceptionUtil;
 import cn.gudqs7.plugins.common.util.jetbrain.PsiDocumentUtil;
 import cn.gudqs7.plugins.common.util.structure.BaseTypeUtil;
 import cn.gudqs7.plugins.common.util.structure.PsiTypeUtil;
-import com.intellij.codeInsight.template.Template;
-import com.intellij.codeInsight.template.TemplateManager;
 import com.intellij.codeInsight.template.impl.Variable;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
@@ -230,16 +228,7 @@ public interface GenerateBase {
     default void insertCodeByPsiTypeWithTemplate(Document document, PsiDocumentManager psiDocumentManager, PsiFile containingFile, Editor editor, Variable... variableArray) {
         HashSet<String> newImportList = new HashSet<>();
         String insertCode = generateCode("\n", newImportList);
-        System.out.println("insertCodeByPsiTypeWithTemplate :: " + insertCode);
-        TemplateManager manager = TemplateManager.getInstance(containingFile.getProject());
-        Template template = manager.createTemplate("", "", insertCode + "$END$");
-        if (variableArray != null && variableArray.length > 0) {
-            for (Variable variable : variableArray) {
-                template.addVariable(variable);
-            }
-        }
-        template.setToReformat(true);
-        manager.startTemplate(editor, template);
+        PsiDocumentUtil.startTemplate(insertCode, editor, containingFile, variableArray);
         PsiDocumentUtil.addImportToFile(psiDocumentManager, (PsiJavaFile) containingFile, document, newImportList);
     }
 

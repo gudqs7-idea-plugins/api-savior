@@ -35,7 +35,7 @@ public class GenerateConvertAction extends GenerateBaseAction {
     }
 
     @Override
-    protected boolean isAvailable0(@NotNull Project project, Editor editor, @NotNull PsiElement psiElement) {
+    protected boolean isAvailable0(@NotNull Project project, Editor editor, @NotNull PsiElement psiElement) throws Throwable {
         if (psiElement instanceof PsiJavaToken) {
             PsiJavaToken psiJavaToken = (PsiJavaToken) psiElement;
             IElementType tokenType = psiJavaToken.getTokenType();
@@ -87,7 +87,7 @@ public class GenerateConvertAction extends GenerateBaseAction {
     }
 
     @Override
-    protected void invoke0(Project project, Editor editor, PsiElement psiElement, Document document, PsiDocumentManager psiDocumentManager) {
+    protected void invoke0(Project project, Editor editor, PsiElement psiElement, Document document, PsiDocumentManager psiDocumentManager) throws Throwable {
         GenerateBase generateBase = buildGenerate(psiElement);
         PsiFile containingFile = psiElement.getContainingFile();
         if (psiElement instanceof PsiJavaToken) {

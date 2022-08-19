@@ -6,6 +6,7 @@ import com.intellij.psi.impl.source.PsiClassReferenceType;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
@@ -172,4 +173,25 @@ public class PsiClassUtil {
         return null;
     }
 
+    /**
+     * 获得包名
+     *
+     * @param psiClass psi class
+     * @return {@link String} 若为空则未找到包名
+     */
+    @Nullable
+    public static String getPackageName(PsiClass psiClass) {
+        PsiElement element = psiClass.getParent();
+        if (element instanceof PsiJavaFile) {
+            PsiJavaFile psiJavaFile = (PsiJavaFile) element;
+            String packageName = psiJavaFile.getPackageName();
+            if (StringUtils.isNotBlank(packageName)) {
+                return packageName;
+            }
+        }
+        if (element instanceof PsiClass) {
+            return getPackageName((PsiClass) element);
+        }
+        return null;
+    }
 }

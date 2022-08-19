@@ -36,8 +36,9 @@ public abstract class AbstractEditorIntentionAction extends PsiElementBaseIntent
      * @param editor  编辑器
      * @param element 当前元素
      * @return 此提示是否显示
+     * @throws Throwable throwable
      */
-    protected abstract boolean isAvailable0(@NotNull Project project, Editor editor, @NotNull PsiElement element);
+    protected abstract boolean isAvailable0(@NotNull Project project, Editor editor, @NotNull PsiElement element) throws Throwable;
 
     @Override
     public void invoke(@NotNull Project project, Editor editor, @NotNull PsiElement element) throws IncorrectOperationException {
@@ -61,8 +62,9 @@ public abstract class AbstractEditorIntentionAction extends PsiElementBaseIntent
      * @param element            当前元素
      * @param elementDocument    当前元素所在文件的文档对象(可编辑)
      * @param psiDocumentManager 文档管理器对象
+     * @throws Throwable throwable
      */
-    protected abstract void invoke0(Project project, Editor editor, PsiElement element, Document elementDocument, PsiDocumentManager psiDocumentManager);
+    protected abstract void invoke0(Project project, Editor editor, PsiElement element, Document elementDocument, PsiDocumentManager psiDocumentManager) throws Throwable;
 
     protected void destroy(Project project, Editor editor, PsiElement element) {
 

@@ -11,6 +11,7 @@ import cn.gudqs7.plugins.common.util.jetbrain.DialogUtil;
 import cn.gudqs7.plugins.common.util.jetbrain.ExceptionUtil;
 import cn.gudqs7.plugins.common.util.jetbrain.IdeaApplicationUtil;
 import cn.gudqs7.plugins.common.util.structure.PackageInfoUtil;
+import cn.gudqs7.plugins.common.util.structure.PsiClassUtil;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.openapi.actionSystem.PlatformDataKeys;
@@ -152,7 +153,7 @@ public abstract class AbstractBatchDocerSavior extends AbstractAction implements
                                     AnnotationHolder psiClassHolder = AnnotationHolder.getPsiClassHolder(psiClass0);
                                     CommentInfo commentInfo = psiClassHolder.getCommentInfo();
                                     apiModelPropertyAtomic.set(commentInfo);
-                                    String packageName = getPackageNameByPsiClass(psiClass0);
+                                    String packageName = PsiClassUtil.getPackageName(psiClass0);
                                     String moduleName = getModuleName(project, packageName, psiClass0, commentInfo);
                                     moduleNameAtomic.set(moduleName);
                                 });
@@ -511,24 +512,6 @@ public abstract class AbstractBatchDocerSavior extends AbstractAction implements
                 psiClassList.addAll(Arrays.asList(classes));
             }
         }
-    }
-
-
-    private String getPackageNameByPsiClass(PsiClass psiClass0) {
-        String packageNameUnique = "";
-        PsiElement element = psiClass0.getParent();
-        if (element instanceof PsiJavaFile) {
-            PsiJavaFile psiJavaFile = (PsiJavaFile) element;
-            String packageName = psiJavaFile.getPackageName();
-            if (StringUtils.isNotBlank(packageName)) {
-                return packageName;
-            }
-        }
-        if (element instanceof PsiClass) {
-            PsiClass psiClass = (PsiClass) element;
-            return getPackageNameByPsiClass(psiClass);
-        }
-        return packageNameUnique;
     }
 
 }

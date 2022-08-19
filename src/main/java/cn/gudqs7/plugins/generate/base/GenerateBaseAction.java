@@ -66,7 +66,7 @@ public abstract class GenerateBaseAction extends AbstractEditorIntentionAction {
     }
 
     @Override
-    protected boolean isAvailable0(@NotNull Project project, Editor editor, @NotNull PsiElement element) {
+    protected boolean isAvailable0(@NotNull Project project, Editor editor, @NotNull PsiElement element) throws Throwable {
         GenerateBase generateBase = buildGenerate(element);
         // 只需确保该变量含有get方法即可
         PsiClass localVariableContainingClass = getLocalVariableContainingClass(element);
@@ -89,7 +89,7 @@ public abstract class GenerateBaseAction extends AbstractEditorIntentionAction {
     protected abstract boolean checkVariableClass(PsiClass psiClass);
 
     @Override
-    protected void invoke0(Project project, Editor editor, PsiElement element, Document elementDocument, PsiDocumentManager psiDocumentManager) {
+    protected void invoke0(Project project, Editor editor, PsiElement element, Document elementDocument, PsiDocumentManager psiDocumentManager) throws Throwable {
         GenerateBase generateBase = buildGenerate(element);
         PsiLocalVariable psiLocal = PsiTreeUtil.getParentOfType(element, PsiLocalVariable.class);
         PsiFile containingFile = element.getContainingFile();

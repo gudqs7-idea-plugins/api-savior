@@ -1,6 +1,10 @@
 package cn.gudqs7.plugins.common.util.jetbrain;
 
+import com.intellij.codeInsight.template.Template;
+import com.intellij.codeInsight.template.TemplateManager;
+import com.intellij.codeInsight.template.impl.Variable;
 import com.intellij.openapi.editor.Document;
+import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.psi.*;
 
@@ -54,6 +58,18 @@ public class PsiDocumentUtil {
                 commitAndSaveDocument(psiDocumentManager, document);
             }
         }
+    }
+
+    public static void startTemplate(String insertCode, Editor editor, PsiFile containingFile, Variable... variableArray) {
+        TemplateManager manager = TemplateManager.getInstance(containingFile.getProject());
+        Template template = manager.createTemplate("", "", insertCode + "$END$");
+        if (variableArray != null && variableArray.length > 0) {
+            for (Variable variable : variableArray) {
+                template.addVariable(variable);
+            }
+        }
+        template.setToReformat(true);
+        manager.startTemplate(editor, template);
     }
 
 }
