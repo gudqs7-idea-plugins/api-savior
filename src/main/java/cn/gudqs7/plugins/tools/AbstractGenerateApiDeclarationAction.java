@@ -1,12 +1,11 @@
 package cn.gudqs7.plugins.tools;
 
 import cn.gudqs7.plugins.common.base.action.intention.AbstractEditorIntentionAction;
+import cn.gudqs7.plugins.common.util.jetbrain.NotificationUtil;
 import cn.gudqs7.plugins.common.util.jetbrain.PsiDocumentUtil;
 import cn.gudqs7.plugins.common.util.jetbrain.PsiSearchUtil;
 import cn.gudqs7.plugins.common.util.structure.PsiClassUtil;
 import com.intellij.codeInsight.template.impl.Variable;
-import com.intellij.codeInspection.util.IntentionFamilyName;
-import com.intellij.codeInspection.util.IntentionName;
 import com.intellij.ide.fileTemplates.FileTemplate;
 import com.intellij.ide.fileTemplates.FileTemplateManager;
 import com.intellij.openapi.editor.Document;
@@ -16,6 +15,7 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.VirtualFileManager;
 import com.intellij.psi.*;
 import com.intellij.psi.impl.file.PsiDirectoryFactory;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
@@ -30,10 +30,28 @@ import java.util.Set;
  * @author wenquan
  * @date 2022/8/19
  */
-@SuppressWarnings("IntentionDescriptionNotFoundInspection")
-public class GenerateApiDeclarationAction extends AbstractEditorIntentionAction {
+public abstract class AbstractGenerateApiDeclarationAction extends AbstractEditorIntentionAction {
 
     public static final String PACKAGE_NAME_CONTROLLER = "controller";
+
+    /**
+     * 模板名称
+     */
+    private final String templateName;
+
+    /**
+     * 是否生成响应类
+     */
+    private final boolean generateResponseClass;
+
+    public AbstractGenerateApiDeclarationAction(String templateName) {
+        this(templateName, false);
+    }
+
+    public AbstractGenerateApiDeclarationAction(String templateName, boolean generateResponseClass) {
+        this.templateName = templateName;
+        this.generateResponseClass = generateResponseClass;
+    }
 
     @Override
     protected boolean isAvailable0(@NotNull Project project, Editor editor, @NotNull PsiElement element) throws Throwable {
@@ -104,10 +122,15 @@ public class GenerateApiDeclarationAction extends AbstractEditorIntentionAction 
         String requestClassVar = methodName + "Request";
         String responseClass = thingName.substring(0, 1).toUpperCase() + thingName.substring(1) + "Response";
 
-        FileTemplate apiTemplate = FileTemplateManager.getInstance(project).getPattern("Api");
+        FileTemplateManager fileTemplateManager = FileTemplateManager.getInstance(project);
+        FileTemplate apiTemplate = fileTemplateManager.getPattern(templateName);
+        if (apiTemplate == null) {
+            NotificationUtil.showTips("需在 File and Templates -> Includes 创建名为" + templateName + "的方法定义模版.");
+            return;
+        }
         Map<String, String> attributes = new HashMap<>(32);
         attributes.put("methodName", methodName);
-        attributes.put("serviceName", "xxxService");
+        attributes.put("serviceName", getServiceName(element, psiTypeElement, project));
         attributes.put("requestClass", requestClass);
         attributes.put("requestClassVar", requestClassVar);
         attributes.put("responseClass", responseClass);
@@ -131,19 +154,29 @@ public class GenerateApiDeclarationAction extends AbstractEditorIntentionAction 
         String responseClassQn = dstPackage + ".dto.response." + responseClass;
 
         importSet.add(requestClassQn);
-        importSet.add(responseClassQn);
         PsiClass requestClassByQn = PsiSearchUtil.findPsiClassByQname(project, requestClassQn);
         if (requestClassByQn == null) {
             if (requestDir != null) {
+                String requestTemplateName = "ApiRequest";
+                if (templateNotExists(fileTemplateManager, requestTemplateName)) {
+                    return;
+                }
                 HashMap<String, String> additionalProperties = new HashMap<>(32);
-                JavaDirectoryService.getInstance().createClass(requestDir, requestClass, "ApiRequest", false, additionalProperties);
+                JavaDirectoryService.getInstance().createClass(requestDir, requestClass, requestTemplateName, false, additionalProperties);
             }
         }
-        PsiClass responseClassByQn = PsiSearchUtil.findPsiClassByQname(project, responseClassQn);
-        if (responseClassByQn == null) {
-            if (responseDir != null) {
-                HashMap<String, String> additionalProperties = new HashMap<>(32);
-                JavaDirectoryService.getInstance().createClass(responseDir, responseClass, "ApiResponse", false, additionalProperties);
+        if (generateResponseClass) {
+            importSet.add(responseClassQn);
+            PsiClass responseClassByQn = PsiSearchUtil.findPsiClassByQname(project, responseClassQn);
+            if (responseClassByQn == null) {
+                if (responseDir != null) {
+                    String responseTemplateName = "ApiResponse";
+                    if (templateNotExists(fileTemplateManager, responseTemplateName)) {
+                        return;
+                    }
+                    HashMap<String, String> additionalProperties = new HashMap<>(32);
+                    JavaDirectoryService.getInstance().createClass(responseDir, responseClass, responseTemplateName, false, additionalProperties);
+                }
             }
         }
 
@@ -155,6 +188,32 @@ public class GenerateApiDeclarationAction extends AbstractEditorIntentionAction 
         PsiDocumentManager psiDocumentManager = PsiDocumentManager.getInstance(project);
         PsiDocumentUtil.startTemplate(templateText, editor, containingFile, (Variable[]) null);
         PsiDocumentUtil.addImportToFile(psiDocumentManager, (PsiJavaFile) containingFile, document, importSet);
+    }
+
+    private boolean templateNotExists(FileTemplateManager fileTemplateManager, String templateName) {
+        FileTemplate responseTemplate = fileTemplateManager.getTemplate(templateName);
+        if (responseTemplate == null) {
+            NotificationUtil.showTips("需在 File and Templates -> Includes 创建名为" + templateName + "的方法定义模版.");
+            return true;
+        }
+        return false;
+    }
+
+    @NotNull
+    private String getServiceName(PsiElement element, PsiTypeElement psiTypeElement, Project project) {
+        PsiClass currentPsiClass = getCurrentPsiClass(element);
+        if (currentPsiClass != null) {
+            PsiField[] allFields = currentPsiClass.getAllFields();
+            if (ArrayUtils.isNotEmpty(allFields)) {
+                for (PsiField field : allFields) {
+                    String fieldName = field.getName();
+                    if (fieldName.endsWith("Service") && (field.hasAnnotation("javax.annotation.Resource") || field.hasAnnotation("org.springframework.beans.factory.annotation.Autowired"))) {
+                        return fieldName;
+                    }
+                }
+            }
+        }
+        return "$SERVICE_NAME$";
     }
 
     private PsiDirectory getProjectDirectory(Project project) {
@@ -169,10 +228,17 @@ public class GenerateApiDeclarationAction extends AbstractEditorIntentionAction 
     }
 
     private String getJavaFilePackageName(PsiElement element) {
+        PsiClass currentPsiClass = getCurrentPsiClass(element);
+        if (currentPsiClass != null) {
+            return PsiClassUtil.getPackageName(currentPsiClass);
+        }
+        return null;
+    }
+
+    private PsiClass getCurrentPsiClass(PsiElement element) {
         PsiElement parent = element.getParent();
         if (parent instanceof PsiClass) {
-            PsiClass psiClass = (PsiClass) parent;
-            return PsiClassUtil.getPackageName(psiClass);
+            return (PsiClass) parent;
         }
         return null;
     }
@@ -194,15 +260,4 @@ public class GenerateApiDeclarationAction extends AbstractEditorIntentionAction 
         return null;
     }
 
-    @Override
-    public @NotNull
-    @IntentionFamilyName String getFamilyName() {
-        return "Generate Api Method";
-    }
-
-    @Override
-    public @IntentionName
-    @NotNull String getText() {
-        return "Generate Api Method";
-    }
 }
