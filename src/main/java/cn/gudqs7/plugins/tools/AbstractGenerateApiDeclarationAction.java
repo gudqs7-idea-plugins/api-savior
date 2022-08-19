@@ -64,11 +64,12 @@ public abstract class AbstractGenerateApiDeclarationAction extends AbstractEdito
             }
         }
         if (element instanceof PsiWhiteSpace) {
-            PsiElement errorElement = element.getPrevSibling();
-            if (errorElement instanceof PsiErrorElement) {
-                PsiElement typeElement = errorElement.getPrevSibling();
+            PsiElement prevSibling = element.getPrevSibling();
+            if (prevSibling instanceof PsiErrorElement) {
+                PsiElement typeElement = prevSibling.getPrevSibling();
                 return typeElement instanceof PsiTypeElement;
             }
+            return prevSibling instanceof PsiTypeElement;
         }
         return false;
     }
@@ -76,13 +77,17 @@ public abstract class AbstractGenerateApiDeclarationAction extends AbstractEdito
     @Override
     protected void invoke0(Project project, Editor editor, PsiElement element, Document elementDocument, PsiDocumentManager psiDocumentManager) throws Throwable {
         if (element instanceof PsiWhiteSpace) {
-            PsiElement errorElement = element.getPrevSibling();
-            if (errorElement instanceof PsiErrorElement) {
-                PsiElement typeElement = errorElement.getPrevSibling();
+            PsiElement prevSibling = element.getPrevSibling();
+            if (prevSibling instanceof PsiErrorElement) {
+                PsiElement typeElement = prevSibling.getPrevSibling();
                 if (typeElement instanceof PsiTypeElement) {
                     PsiTypeElement psiTypeElement = (PsiTypeElement) typeElement;
                     invokeByTypeElement(project, editor, element, psiTypeElement);
                 }
+            }
+            if (prevSibling instanceof PsiTypeElement) {
+                PsiTypeElement psiTypeElement = (PsiTypeElement) prevSibling;
+                invokeByTypeElement(project, editor, element, psiTypeElement);
             }
         }
     }
@@ -213,7 +218,7 @@ public abstract class AbstractGenerateApiDeclarationAction extends AbstractEdito
                 }
             }
         }
-        return "$SERVICE_NAME$";
+        return "xxxService";
     }
 
     private PsiDirectory getProjectDirectory(Project project) {
