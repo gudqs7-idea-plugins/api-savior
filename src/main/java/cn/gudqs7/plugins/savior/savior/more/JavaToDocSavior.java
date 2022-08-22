@@ -7,16 +7,19 @@ import cn.gudqs7.plugins.common.pojo.resolver.StructureAndCommentInfo;
 import cn.gudqs7.plugins.common.util.JsonUtil;
 import cn.gudqs7.plugins.common.util.StringTool;
 import cn.gudqs7.plugins.common.util.file.FreeMarkerUtil;
-import cn.gudqs7.plugins.common.util.structure.PsiClassUtil;
 import cn.gudqs7.plugins.savior.pojo.FieldLevelInfo;
 import cn.gudqs7.plugins.savior.savior.base.AbstractSavior;
 import cn.gudqs7.plugins.savior.theme.Theme;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiMethod;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author wq
@@ -34,20 +37,16 @@ public class JavaToDocSavior extends AbstractSavior<Map<String, Object>> {
 
     public Pair<String, List<String>> generateApiByServiceInterfaceV2(PsiClass psiClass, Project project) {
         String interfaceClassName = psiClass.getQualifiedName();
-        PsiMethod[] methods = PsiClassUtil.getAllMethods(psiClass);
-        // 根据 @Order 注解 以及字母顺序, 从小到大排序
-        Arrays.sort(methods, this::orderByMethod);
-
         List<String> apiNameList = new ArrayList<>();
         StringBuilder allDoc = new StringBuilder();
-        for (PsiMethod method : methods) {
-            if (filterMethod(method)) {
-                continue;
-            }
 
+        List<PsiMethod> methods = getMethodList(psiClass);
+        for (PsiMethod method : methods) {
             Pair<String, String> pair = generateDocByMethodV2(project, interfaceClassName, method, false);
             String doc = pair.getLeft();
-            allDoc.append(doc);
+            if (StringUtils.isNotBlank(doc)) {
+                allDoc.append(doc);
+            }
             String apiName = pair.getRight();
             if (apiName != null) {
                 apiNameList.add(apiName);

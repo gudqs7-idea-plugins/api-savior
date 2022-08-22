@@ -8,7 +8,6 @@ import cn.gudqs7.plugins.common.pojo.resolver.StructureAndCommentInfo;
 import cn.gudqs7.plugins.common.resolver.comment.AnnotationHolder;
 import cn.gudqs7.plugins.common.util.JsonUtil;
 import cn.gudqs7.plugins.common.util.file.FreeMarkerUtil;
-import cn.gudqs7.plugins.common.util.structure.PsiClassUtil;
 import cn.gudqs7.plugins.savior.pojo.PostmanKvInfo;
 import cn.gudqs7.plugins.savior.reader.Java2BulkReader;
 import cn.gudqs7.plugins.savior.savior.base.AbstractSavior;
@@ -46,20 +45,13 @@ public class JavaToPostmanSavior extends AbstractSavior<Map<String, Object>> {
             return null;
         }
 
-        String interfaceClassName = psiClass.getQualifiedName();
-        PsiMethod[] methods = PsiClassUtil.getAllMethods(psiClass);
-        // 根据 @Order 注解 以及字母顺序, 从小到大排序
-        Arrays.sort(methods, this::orderByMethod);
-
         String hostAndPort = "";
+        String interfaceClassName = psiClass.getQualifiedName();
         boolean noResponse = commentInfo.getSingleBool(MoreCommentTagEnum.POSTMAN_NO_RESPONSE.getTag(), false);
         List<Map<String, Object>> itemList = new ArrayList<>();
 
+        List<PsiMethod> methods = getMethodList(psiClass);
         for (PsiMethod method : methods) {
-            if (this.filterMethod(method)) {
-                continue;
-            }
-
             Map<String, Object> postmanRequestByMethod = generatePostmanRequestByMethod(project, interfaceClassName, method, noResponse);
             if (postmanRequestByMethod != null) {
                 hostAndPort = postmanRequestByMethod.remove(MapKeyConstant.HOST_PORT).toString();

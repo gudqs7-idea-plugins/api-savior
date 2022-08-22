@@ -32,11 +32,13 @@ public class PsiClassUtil {
     }
 
     @NotNull
-    public static PsiMethod[] getAllMethods(PsiClass psiClass) {
+    public static List<PsiMethod> getAllMethods(PsiClass psiClass) {
         PsiMethod[] methods = psiClass.getMethods();
         PsiClassType[] extendsListTypes = psiClass.getExtendsListTypes();
-        if (extendsListTypes.length == 0) {
-            return methods;
+        PsiClass[] interfaces = psiClass.getInterfaces();
+        List<PsiMethod> methodList = Arrays.asList(methods);
+        if (extendsListTypes.length == 0 && interfaces.length == 0) {
+            return methodList;
         }
 
         List<PsiMethod> allMethods = new ArrayList<>();
@@ -45,10 +47,13 @@ public class PsiClassUtil {
             if (extendCls == null) {
                 handleSyntaxError(extendsListType.getCanonicalText());
             }
-            allMethods.addAll(Arrays.asList(getAllMethods(extendCls)));
+            allMethods.addAll(getAllMethods(extendCls));
         }
-        allMethods.addAll(Arrays.asList(methods));
-        return allMethods.toArray(new PsiMethod[0]);
+        for (PsiClass anInterface : interfaces) {
+            allMethods.addAll(getAllMethods(anInterface));
+        }
+        allMethods.addAll(methodList);
+        return allMethods;
     }
 
     public static PsiField[] getAllFieldsByPsiClass(PsiClass psiClass) {

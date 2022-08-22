@@ -8,7 +8,6 @@ import cn.gudqs7.plugins.common.pojo.resolver.CommentInfo;
 import cn.gudqs7.plugins.common.pojo.resolver.StructureAndCommentInfo;
 import cn.gudqs7.plugins.common.resolver.comment.AnnotationHolder;
 import cn.gudqs7.plugins.common.util.PluginSettingHelper;
-import cn.gudqs7.plugins.common.util.structure.PsiClassUtil;
 import cn.gudqs7.plugins.savior.pojo.ComplexInfo;
 import cn.gudqs7.plugins.savior.pojo.FieldCommentInfo;
 import cn.gudqs7.plugins.savior.reader.Java2ComplexReader;
@@ -49,16 +48,11 @@ public class JavaToAmpSavior extends AbstractSavior<Map<String, Object>> {
             return null;
         }
 
-        // 根据 @Order 注解 以及字母顺序, 从小到大排序
-        PsiMethod[] methods = PsiClassUtil.getAllMethods(psiClass);
-        Arrays.sort(methods, this::orderByMethod);
+        List<PsiMethod> methods = getMethodList(psiClass);
         String interfaceClassName = psiClass.getQualifiedName();
         Map<String, Object> apis = new HashMap<>(8);
 
         for (PsiMethod method : methods) {
-            if (this.filterMethod(method)) {
-                continue;
-            }
             String actionName = getMethodActionName(method);
             if (StringUtils.isBlank(actionName)) {
                 continue;

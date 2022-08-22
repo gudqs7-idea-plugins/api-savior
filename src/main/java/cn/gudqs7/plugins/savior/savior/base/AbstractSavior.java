@@ -6,6 +6,7 @@ import cn.gudqs7.plugins.common.pojo.resolver.StructureAndCommentInfo;
 import cn.gudqs7.plugins.common.resolver.comment.AnnotationHolder;
 import cn.gudqs7.plugins.common.resolver.structure.StructureAndCommentResolver;
 import cn.gudqs7.plugins.common.util.structure.PsiAnnotationUtil;
+import cn.gudqs7.plugins.common.util.structure.PsiClassUtil;
 import cn.gudqs7.plugins.common.util.structure.ResolverContextHolder;
 import cn.gudqs7.plugins.savior.reader.Java2ApiReader;
 import cn.gudqs7.plugins.savior.reader.Java2MapReader;
@@ -34,6 +35,17 @@ public abstract class AbstractSavior<T> extends BaseSavior {
         structureAndCommentResolver = new StructureAndCommentResolver();
     }
 
+    public List<PsiMethod> getMethodList(PsiClass psiClass) {
+        // 获取该类相关的所有方法, 包括父类和接口
+        List<PsiMethod> methodList = PsiClassUtil.getAllMethods(psiClass);
+        // 过滤信息
+        methodList.removeIf(this::filterMethod);
+
+        // 根据 @Order 注解 以及字母顺序, 从小到大排序
+        methodList.sort(this::orderByMethod);
+        return methodList;
+    }
+
     protected int orderByMethod(PsiMethod publicMethod, PsiMethod publicMethod2) {
         PsiAnnotation orderAnnotation = publicMethod.getAnnotation("org.springframework.core.annotation.Order");
         int order = Integer.MAX_VALUE;
@@ -49,6 +61,11 @@ public abstract class AbstractSavior<T> extends BaseSavior {
     }
 
     protected boolean filterMethod(PsiMethod method) {
+        // 个人认为, 添加了 @Override 注解的方法, 一般相关注视/注解信息均位于父类(或接口)处, 因此此处的方法可以过滤调, 避免出现重复
+        boolean overrideFromSuperClassOrInterface = method.hasAnnotation("java.lang.Override");
+        if (overrideFromSuperClassOrInterface) {
+            return true;
+        }
         if (method.isConstructor()) {
             return true;
         }
