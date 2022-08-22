@@ -122,10 +122,11 @@ public abstract class AbstractGenerateApiDeclarationAction extends AbstractEdito
         String[] wordArray0 = new String[wordArray.length - 1];
         System.arraycopy(wordArray, 1, wordArray0, 0, wordArray0.length);
 
+        String verb = wordArray[0];
         String thingName = StringUtils.join(wordArray0);
         String requestClass = methodName.substring(0, 1).toUpperCase() + methodName.substring(1) + "Request";
         String requestClassVar = methodName + "Request";
-        String responseClass = thingName.substring(0, 1).toUpperCase() + thingName.substring(1) + "Response";
+        String responseClass = thingName + "Response";
 
         FileTemplateManager fileTemplateManager = FileTemplateManager.getInstance(project);
         FileTemplate apiTemplate = fileTemplateManager.getPattern(templateName);
@@ -135,6 +136,8 @@ public abstract class AbstractGenerateApiDeclarationAction extends AbstractEdito
         }
         Map<String, String> attributes = new HashMap<>(32);
         attributes.put("methodName", methodName);
+        attributes.put("verb", verb);
+        attributes.put("predicate", thingName);
         attributes.put("serviceName", getServiceName(element, psiTypeElement, project));
         attributes.put("requestClass", requestClass);
         attributes.put("requestClassVar", requestClassVar);
