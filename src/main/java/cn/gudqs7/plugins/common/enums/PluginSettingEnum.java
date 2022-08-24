@@ -38,6 +38,7 @@ public enum PluginSettingEnum {
     AMP_HOST_PRE("amp.host.pre", PluginSettingTypeEnum.STRING),
     AMP_HOST_PRO("amp.host.pro", PluginSettingTypeEnum.STRING),
     AMP_BACK_APP_NAME("amp.backendService.appName", PluginSettingTypeEnum.STRING),
+    AMP_BACK_SIGN_KEY_NAME("amp.backendService.signKeyName", PluginSettingTypeEnum.STRING),
     AMP_PARAM_SYSTEM("amp.param.system", PluginSettingTypeEnum.STRING),
     AMP_PARAM_REQUEST("amp.param.req", PluginSettingTypeEnum.STRING),
 

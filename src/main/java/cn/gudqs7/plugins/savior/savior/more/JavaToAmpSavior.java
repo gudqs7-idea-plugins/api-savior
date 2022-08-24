@@ -260,15 +260,16 @@ public class JavaToAmpSavior extends AbstractSavior<Map<String, Object>> {
     }
 
     private Map<String, Object> getBackendService(String url) {
-        String preHost = PluginSettingHelper.getConfigItem(PluginSettingEnum.AMP_HOST_PRO, "");
+        String proHost = PluginSettingHelper.getConfigItem(PluginSettingEnum.AMP_HOST_PRO, "");
         String appName = PluginSettingHelper.getConfigItem(PluginSettingEnum.AMP_BACK_APP_NAME, "xxx");
+        String signKeyName = PluginSettingHelper.getConfigItem(PluginSettingEnum.AMP_BACK_SIGN_KEY_NAME, "xxx");
         Map<String, Object> backendService = new LinkedHashMap<>(8);
         backendService.put("protocol", "http");
         backendService.put("appName", appName);
         backendService.put("retries", -1);
         backendService.put("timeout", 10000L);
-        backendService.put("url", preHost + url);
-        backendService.put("signKeyName", "aiops");
+        backendService.put("url", proHost + url);
+        backendService.put("signKeyName", signKeyName);
         backendService.put("sign", true);
         backendService.put("signPolicy", "Local");
         return backendService;
