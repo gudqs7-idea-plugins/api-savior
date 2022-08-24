@@ -14,9 +14,6 @@ import cn.gudqs7.plugins.savior.reader.Java2ComplexReader;
 import cn.gudqs7.plugins.savior.savior.base.AbstractSavior;
 import cn.gudqs7.plugins.savior.theme.Theme;
 import cn.gudqs7.plugins.savior.util.RestfulUtil;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiMethod;
@@ -40,7 +37,7 @@ public class JavaToAmpSavior extends AbstractSavior<Map<String, Object>> {
     }
 
     @SneakyThrows
-    public String generateAmpScheme(PsiClass psiClass, Project project) {
+    public Map<String, Object> generateAmpScheme(PsiClass psiClass, Project project) {
         AnnotationHolder psiClassHolder = AnnotationHolder.getPsiClassHolder(psiClass);
         CommentInfo commentInfo = psiClassHolder.getCommentInfo();
         boolean hidden = commentInfo.isHidden(false);
@@ -50,7 +47,7 @@ public class JavaToAmpSavior extends AbstractSavior<Map<String, Object>> {
 
         List<PsiMethod> methods = getMethodList(psiClass);
         String interfaceClassName = psiClass.getQualifiedName();
-        Map<String, Object> apis = new HashMap<>(8);
+        Map<String, Object> apis = new LinkedHashMap<>(16);
 
         for (PsiMethod method : methods) {
             String actionName = getMethodActionName(method);
@@ -67,14 +64,7 @@ public class JavaToAmpSavior extends AbstractSavior<Map<String, Object>> {
         if (apis.size() == 0) {
             return null;
         }
-
-        Map<String, Object> root = new HashMap<>(4);
-        root.put("apis", apis);
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        String json = objectMapper.writeValueAsString(root);
-        JsonNode jsonNodeTree = objectMapper.readTree(json);
-        return new YAMLMapper().writeValueAsString(jsonNodeTree);
+        return apis;
     }
 
     public Map<String, Object> generateAmpApi(Project project, String interfaceClassName, PsiMethod publicMethod) {

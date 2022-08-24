@@ -23,7 +23,7 @@ public abstract class AbstractProjectDocerSavior extends AbstractBatchDocerSavio
     }
 
     @Override
-    protected String runLoop0(PsiClass psiClass0, Project project, CommentInfo commentInfo, String moduleName, String fileName, String fullFileName, Map<String, Object> otherMap) {
+    protected String runLoop0(PsiClass psiClass0, Project project, CommentInfo commentInfo, String moduleName, String fileName, String fullFileName, Map<String, Object> otherMap) throws Throwable {
         return docSavior.generateApiByServiceInterface(psiClass0, project);
     }
 

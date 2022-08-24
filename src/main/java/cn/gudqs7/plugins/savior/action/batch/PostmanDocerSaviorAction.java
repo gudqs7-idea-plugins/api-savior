@@ -38,7 +38,7 @@ public class PostmanDocerSaviorAction extends AbstractBatchDocerSavior {
     }
 
     @Override
-    protected void runLoopBefore(Project project, ProgressIndicator indicator, AtomicBoolean hasCancelAtomic, Set<PsiClass> finalPsiClassList, String apiDocPath, Map<String, Object> otherMap) {
+    protected void runLoopBefore(Project project, ProgressIndicator indicator, AtomicBoolean hasCancelAtomic, Set<PsiClass> finalPsiClassList, String apiDocPath, Map<String, Object> otherMap) throws Throwable {
         Map<String, List<Map<String, Object>>> itemListMap = new LinkedHashMap<>(16);
         otherMap.put("itemListMap", itemListMap);
         otherMap.put("psiClassCount", 0);
@@ -71,7 +71,7 @@ public class PostmanDocerSaviorAction extends AbstractBatchDocerSavior {
     }
 
     @Override
-    protected void runLoopAfter(Project project, ProgressIndicator indicator, AtomicBoolean hasCancelAtomic, Set<PsiClass> finalPsiClassList, String docRootDirPath, Map<String, Object> otherMap) {
+    protected void runLoopAfter(Project project, ProgressIndicator indicator, AtomicBoolean hasCancelAtomic, Set<PsiClass> finalPsiClassList, String docRootDirPath, Map<String, Object> otherMap) throws Throwable {
         Map<String, List<Map<String, Object>>> itemListMap0 = getItemListMap0(otherMap);
         if (itemListMap0 == null) {
             return;

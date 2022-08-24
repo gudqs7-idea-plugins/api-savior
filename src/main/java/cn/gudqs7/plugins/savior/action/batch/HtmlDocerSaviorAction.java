@@ -37,7 +37,7 @@ public class HtmlDocerSaviorAction extends AbstractBatchDocerSavior {
     }
 
     @Override
-    protected String runLoop0(PsiClass psiClass0, Project project, CommentInfo commentInfo, String moduleName, String fileName, String fullFileName, Map<String, Object> otherMap) {
+    protected String runLoop0(PsiClass psiClass0, Project project, CommentInfo commentInfo, String moduleName, String fileName, String fullFileName, Map<String, Object> otherMap) throws Throwable {
         Pair<String, List<String>> markdownPair = docSavior.generateApiByServiceInterfaceV2(psiClass0, project);
         String markdown = markdownPair.getLeft();
         List<String> apiNameList = markdownPair.getRight();
@@ -57,7 +57,7 @@ public class HtmlDocerSaviorAction extends AbstractBatchDocerSavior {
     }
 
     @Override
-    protected void runLoopAfter(Project project, ProgressIndicator indicator, AtomicBoolean hasCancelAtomic, Set<PsiClass> finalPsiClassList, String docRootDirPath, Map<String, Object> otherMap) {
+    protected void runLoopAfter(Project project, ProgressIndicator indicator, AtomicBoolean hasCancelAtomic, Set<PsiClass> finalPsiClassList, String docRootDirPath, Map<String, Object> otherMap) throws Throwable {
         List<CategoryItem> categoryItemList = (List<CategoryItem>) otherMap.computeIfAbsent("categoryItemList", k -> new ArrayList<>());
         if (CollectionUtils.isNotEmpty(categoryItemList)) {
             List<Module> moduleList = new ArrayList<>();
