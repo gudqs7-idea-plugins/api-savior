@@ -163,11 +163,14 @@ public class JavaToAmpSavior extends AbstractSavior<Map<String, Object>> {
     }
 
     private Map<String, Object> getErrorMapping() {
+        String errorExpression = PluginSettingHelper.getConfigItem(PluginSettingEnum.AMP_ERROR_EXPRESSION, "code!=200");
+        String codeField = PluginSettingHelper.getConfigItem(PluginSettingEnum.AMP_ERROR_CODE, "code");
+        String errorMessageField = PluginSettingHelper.getConfigItem(PluginSettingEnum.AMP_ERROR_MESSAGE, "msg");
         Map<String, Object> errorMapping = new HashMap<>(8);
         // 错误条件判断
-        errorMapping.put("errorExpression", "code!=200");
-        errorMapping.put("codeField", "code");
-        errorMapping.put("errorMessageField", "msg");
+        errorMapping.put("errorExpression", errorExpression);
+        errorMapping.put("codeField", codeField);
+        errorMapping.put("errorMessageField", errorMessageField);
         errorMapping.put("httpStatusCodeField", "httpStatusCode");
         return errorMapping;
     }
