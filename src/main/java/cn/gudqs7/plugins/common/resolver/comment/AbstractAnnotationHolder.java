@@ -184,4 +184,8 @@ public abstract class AbstractAnnotationHolder implements AnnotationHolder {
         }
     }
 
+    protected String removeJavaDocPrefix(String line) {
+        return line.replaceFirst("\\*", "").trim();
+    }
+
 }

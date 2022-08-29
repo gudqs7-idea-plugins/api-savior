@@ -48,7 +48,7 @@ public class PsiParameterAnnotationHolderImpl extends AbstractFieldAnnotationHol
                             if (line.contains("/**") || line.contains("*/")) {
                                 continue;
                             }
-                            line = line.replaceAll("\\*", "").trim();
+                            line = removeJavaDocPrefix(line);
                             if (StringUtils.isBlank(line)) {
                                 continue;
                             }

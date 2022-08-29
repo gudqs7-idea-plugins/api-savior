@@ -69,7 +69,7 @@ public class PackageInfoUtil {
                     if (line.contains("/**") || line.contains("*/")) {
                         continue;
                     }
-                    line = line.replaceAll("\\*", "").trim();
+                    line = line.replaceFirst("\\*", "").trim();
                     if (StringUtils.isBlank(line)) {
                         continue;
                     }

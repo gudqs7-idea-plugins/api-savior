@@ -45,7 +45,7 @@ public class PsiReturnTypeAnnotationHolderImpl extends AbstractAnnotationHolder 
                             if (line.contains("/**") || line.contains("*/")) {
                                 continue;
                             }
-                            line = line.replaceAll("\\*", "").trim();
+                            line = removeJavaDocPrefix(line);
                             if (StringUtils.isBlank(line)) {
                                 continue;
                             }
