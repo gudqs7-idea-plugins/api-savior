@@ -468,12 +468,12 @@ public class JavaToAmpSavior extends AbstractSavior<Map<String, Object>> {
             schema.put("title", title);
         }
         if (StringUtils.isNotBlank(defaultVal)) {
-            parameter.put("default", defaultVal);
+            schema.put("default", defaultVal);
         }
         if (StringUtils.isNotBlank(example)) {
-            parameter.put("example", example);
+            schema.put("example", example);
         }
-        parameter.put("required", required);
+        schema.put("required", required);
         return parameter;
     }
 
