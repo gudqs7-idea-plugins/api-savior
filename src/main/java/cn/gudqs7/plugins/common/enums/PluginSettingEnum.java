@@ -44,6 +44,7 @@ public enum PluginSettingEnum {
     AMP_ERROR_MESSAGE("amp.error.message", PluginSettingTypeEnum.STRING),
     AMP_PARAM_SYSTEM("amp.param.system", PluginSettingTypeEnum.STRING),
     AMP_PARAM_REQUEST("amp.param.req", PluginSettingTypeEnum.STRING),
+    AMP_PARAM_HOST("amp.param.host", PluginSettingTypeEnum.STRING),
 
     // endregion Amp setting
 
@@ -54,7 +55,9 @@ public enum PluginSettingEnum {
     ONE_API_NO_MAIN("oneApi.noMain", PluginSettingTypeEnum.BOOL),
     ONE_API_PROJECT_CODE("oneApi.projectCode", PluginSettingTypeEnum.STRING),
     ONE_API_CATALOG_ID("oneApi.catalogId", PluginSettingTypeEnum.STRING),
-    ONE_API_API_URL("oneApi.createUrl", PluginSettingTypeEnum.STRING),
+    ONE_API_MODE("oneApi.mode", PluginSettingTypeEnum.STRING),
+    ONE_API_CREATE_URL("oneApi.createUrl", PluginSettingTypeEnum.STRING),
+    ONE_API_UPDATE_URL("oneApi.updateUrl", PluginSettingTypeEnum.STRING),
     ONE_API_TAG_URL("oneApi.updateTagUrl", PluginSettingTypeEnum.STRING),
     ONE_API_PARAM_REQ("oneApi.param.req", PluginSettingTypeEnum.STRING),
     ONE_API_COOKIE("oneApi.cookie", PluginSettingTypeEnum.STRING),

@@ -194,6 +194,7 @@ public class JavaToAmpSavior extends AbstractSavior<Map<String, Object>> {
         Set<String> existsParam = new HashSet<>(8);
         addParameterByConfig(existsParam, parameterList, PluginSettingEnum.AMP_PARAM_SYSTEM, "system");
         addParameterByConfig(existsParam, parameterList, PluginSettingEnum.AMP_PARAM_REQUEST, "formData");
+        addParameterByConfig(existsParam, parameterList, PluginSettingEnum.AMP_PARAM_HOST, "host");
 
         for (Map.Entry<String, Object> entry : java2json.entrySet()) {
             String key = entry.getKey();
@@ -205,14 +206,20 @@ public class JavaToAmpSavior extends AbstractSavior<Map<String, Object>> {
                 Object realVal = complexInfo.getRealVal();
                 FieldCommentInfo fieldCommentInfo = complexInfo.getFieldCommentInfo();
                 String example = fieldCommentInfo.getExample();
+                boolean required = fieldCommentInfo.isRequired();
                 String fieldDesc = fieldCommentInfo.getFieldDesc();
                 if (StringUtils.isNotBlank(fieldDesc)) {
                     fieldDesc = fieldDesc.replaceAll(CommonConst.BREAK_LINE, "\n");
                 }
+                if (StringUtils.isNotBlank(example)) {
+                    example = example.replaceAll(CommonConst.BREAK_LINE, "\n");
+                }
 
                 String upperKey = key.substring(0, 1).toUpperCase() + key.substring(1);
+                String defaultVal = "";
                 if (commentInfo != null) {
                     upperKey = commentInfo.getSingleStr(MoreCommentTagEnum.AMP_FIELD.getTag(), upperKey);
+                    defaultVal = commentInfo.getSingleStr(MoreCommentTagEnum.AMP_DEFAULT.getTag(), defaultVal);
                 }
 
                 String afterIgnoreCase = upperKey.toLowerCase();
@@ -242,7 +249,7 @@ public class JavaToAmpSavior extends AbstractSavior<Map<String, Object>> {
                 } else {
                     continue;
                 }
-                parameterList.add(getParameter(upperKey, type, key, "formData", format, fieldDesc));
+                parameterList.add(getParameter(upperKey, type, key, "formData", format, fieldDesc, defaultVal, example, required));
             }
 
         }
@@ -428,26 +435,45 @@ public class JavaToAmpSavior extends AbstractSavior<Map<String, Object>> {
                     if (array.length > 3) {
                         format = array[3];
                     }
-                    parameterList.add(getParameter(key, type, backKey, in, format, ""));
+                    String title = "";
+                    if (array.length > 4) {
+                        title = array[4];
+                    }
+                    String defaultVal = "";
+                    if (array.length > 5) {
+                        defaultVal = array[5];
+                    }
+                    parameterList.add(getParameter(key, type, backKey, in, format, title, defaultVal));
                 }
             }
         }
     }
 
-    private Map<String, Object> getParameter(String key, String type, String backKey, String in, String format, String title) {
+    private Map<String, Object> getParameter(String key, String type, String backKey, String in, String format, String title, String defaultVal) {
+        return getParameter(key, type, backKey, in, format, title, defaultVal, null, false);
+    }
+
+    private Map<String, Object> getParameter(String key, String type, String backKey, String in, String format, String title, String defaultVal, String example, boolean required) {
         Map<String, Object> schema = new LinkedHashMap<>(32);
         schema.put("type", type);
         if (StringUtils.isNotBlank(format)) {
             schema.put("format", format);
         }
         schema.put("backendName", backKey);
-        if (StringUtils.isNotBlank(title)) {
-            schema.put("title", title);
-        }
         Map<String, Object> parameter = new LinkedHashMap<>(32);
         parameter.put("name", key);
         parameter.put("in", in);
         parameter.put("schema", schema);
+        if (StringUtils.isNotBlank(title)) {
+            schema.put("title", title);
+        }
+        if (StringUtils.isNotBlank(defaultVal)) {
+            parameter.put("default", defaultVal);
+        }
+        if (StringUtils.isNotBlank(example)) {
+            parameter.put("example", example);
+        }
+        parameter.put("required", required);
         return parameter;
     }
 

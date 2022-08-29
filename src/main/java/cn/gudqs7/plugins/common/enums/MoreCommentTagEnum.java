@@ -34,6 +34,7 @@ public enum MoreCommentTagEnum {
     AMP_ACTION_NAME("ActionName"),
     AMP_RW("Rw"),
     AMP_FIELD("AmpField"),
+    AMP_DEFAULT("AmpDefault"),
     AMP_DATA_SIZE("DataSize"),
     AMP_CURRENT_TAG("currentTag"),
     AMP_PID("AmpPid"),

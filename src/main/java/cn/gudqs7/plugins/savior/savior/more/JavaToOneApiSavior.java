@@ -84,7 +84,9 @@ public class JavaToOneApiSavior extends AbstractSavior<Void> {
         String projectCode = PluginSettingHelper.getConfigItem(PluginSettingEnum.ONE_API_PROJECT_CODE);
         String catalogId = PluginSettingHelper.getConfigItem(PluginSettingEnum.ONE_API_CATALOG_ID);
         String cookie = PluginSettingHelper.getConfigItem(PluginSettingEnum.ONE_API_COOKIE);
-        String createUrl = PluginSettingHelper.getConfigItem(PluginSettingEnum.ONE_API_API_URL);
+        String mode = PluginSettingHelper.getConfigItem(PluginSettingEnum.ONE_API_MODE);
+        String createUrl = PluginSettingHelper.getConfigItem(PluginSettingEnum.ONE_API_CREATE_URL);
+        String updateUrl = PluginSettingHelper.getConfigItem(PluginSettingEnum.ONE_API_UPDATE_URL);
         String updateTagUrl = PluginSettingHelper.getConfigItem(PluginSettingEnum.ONE_API_TAG_URL);
         boolean noTag = PluginSettingHelper.getConfigItem(PluginSettingEnum.ONE_API_NO_TAG, false);
         boolean noMain = PluginSettingHelper.getConfigItem(PluginSettingEnum.ONE_API_NO_MAIN, false);
@@ -121,7 +123,12 @@ public class JavaToOneApiSavior extends AbstractSavior<Void> {
 
         if (!noMain) {
             Map<String, Object> java2jsonMap = java2ComplexReader.read(paramStructureAndCommentInfo);
-            saveOrUpdateMain(java2jsonMap, returnJava2jsonMap, interfaceName, actionName, projectCode, catalogId, createUrl, currentTag, apiName, header);
+            boolean create = StringUtils.isBlank(mode) || "create".equals(mode);
+            if (create) {
+                saveOrUpdateMain(java2jsonMap, returnJava2jsonMap, interfaceName, actionName, projectCode, catalogId, createUrl, defaultTagName, apiName, header);
+            } else {
+                saveOrUpdateMain(java2jsonMap, returnJava2jsonMap, interfaceName, actionName, projectCode, catalogId, updateUrl, currentTag, apiName, header);
+            }
         }
         if (!noTag) {
             updateTag(returnJava2jsonMap, actionName, projectCode, updateTagUrl, defaultTagName, apiName, header, dataSize);
