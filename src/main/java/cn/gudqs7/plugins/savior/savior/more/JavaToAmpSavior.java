@@ -417,7 +417,7 @@ public class JavaToAmpSavior extends AbstractSavior<Map<String, Object>> {
         String systemParamKey = PluginSettingHelper.getConfigItem(configKey);
         if (StringUtils.isNotBlank(systemParamKey)) {
             String[] systemKeyArray = systemParamKey.split(",");
-            Set<String> systemKeySet = new HashSet<>(Arrays.asList(systemKeyArray));
+            Set<String> systemKeySet = new LinkedHashSet<>(Arrays.asList(systemKeyArray));
             for (String systemKey : systemKeySet) {
                 String[] array = systemKey.split("#");
                 if (array.length > 2) {

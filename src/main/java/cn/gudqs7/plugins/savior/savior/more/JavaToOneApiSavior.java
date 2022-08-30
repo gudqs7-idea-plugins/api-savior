@@ -429,7 +429,7 @@ public class JavaToOneApiSavior extends AbstractSavior<Void> {
     }
 
     private void addParameterByConfig(Set<String> existsParam, List<Map<String, Object>> parameterList, PluginSettingEnum configKey) {
-        Set<String> systemKeySet = new HashSet<>();
+        Set<String> systemKeySet = new LinkedHashSet<>();
         String systemParamKey = PluginSettingHelper.getConfigItem(configKey);
         if (StringUtils.isNotBlank(systemParamKey)) {
             String[] systemKeyArray = systemParamKey.split(",");
