@@ -419,7 +419,7 @@ public class JavaToAmpSavior extends AbstractSavior<Map<String, Object>> {
             String[] systemKeyArray = systemParamKey.split(",");
             Set<String> systemKeySet = new HashSet<>(Arrays.asList(systemKeyArray));
             for (String systemKey : systemKeySet) {
-                String[] array = systemKey.split("-");
+                String[] array = systemKey.split("#");
                 if (array.length > 2) {
                     String key = array[0];
                     String type = array[1];

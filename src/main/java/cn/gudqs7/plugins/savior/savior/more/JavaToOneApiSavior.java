@@ -437,7 +437,7 @@ public class JavaToOneApiSavior extends AbstractSavior<Void> {
         }
 
         for (String systemKey : systemKeySet) {
-            String[] array = systemKey.split("-");
+            String[] array = systemKey.split("#");
             if (array.length > 2) {
                 String key = array[0];
                 String type = array[1];
