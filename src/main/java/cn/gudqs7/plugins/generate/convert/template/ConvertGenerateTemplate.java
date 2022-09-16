@@ -1,11 +1,11 @@
 package cn.gudqs7.plugins.generate.convert.template;
 
 import cn.gudqs7.plugins.common.util.structure.PsiExpressionUtil;
+import cn.gudqs7.plugins.generate.base.BaseGenerate;
 import cn.gudqs7.plugins.generate.base.BaseGenerateTemplate;
 import cn.gudqs7.plugins.generate.base.BaseVar;
-import cn.gudqs7.plugins.generate.base.GenerateBase;
-import cn.gudqs7.plugins.generate.convert.GenerateConvert;
-import cn.gudqs7.plugins.generate.convert.GenerateConvertForDst;
+import cn.gudqs7.plugins.generate.convert.ConvertForDstGenerate;
+import cn.gudqs7.plugins.generate.convert.ConvertGenerate;
 import com.intellij.openapi.editor.Document;
 import com.intellij.psi.*;
 import com.intellij.psi.tree.IElementType;
@@ -67,7 +67,7 @@ public class ConvertGenerateTemplate extends BaseGenerateTemplate {
     }
 
     @Override
-    protected GenerateBase buildGenerate(PsiElement psiElement, PsiFile containingFile, PsiDocumentManager psiDocumentManager, Document document) {
+    protected BaseGenerate buildGenerate(PsiElement psiElement, PsiFile containingFile, PsiDocumentManager psiDocumentManager, Document document) {
         if (psiElement instanceof PsiMethodCallExpression) {
             PsiMethodCallExpression callExpression = (PsiMethodCallExpression) psiElement;
             PsiType psiTypeForSet = PsiExpressionUtil.getPsiTypeByMethodCallExpression(callExpression);
@@ -87,7 +87,7 @@ public class ConvertGenerateTemplate extends BaseGenerateTemplate {
             BaseVar varForGet = new BaseVar();
             varForGet.setVarName(nameForGet);
             varForGet.setVarType(psiTypeForGet);
-            return new GenerateConvert(varForSet, varForGet);
+            return new ConvertGenerate(varForSet, varForGet);
         }
         if (psiElement instanceof PsiExpression) {
             PsiExpression psiExpression = (PsiExpression) psiElement;
@@ -97,7 +97,7 @@ public class ConvertGenerateTemplate extends BaseGenerateTemplate {
                 BaseVar baseVar = new BaseVar();
                 baseVar.setVarName(varName);
                 baseVar.setVarType(psiType);
-                return new GenerateConvertForDst(baseVar, null);
+                return new ConvertForDstGenerate(baseVar, null);
             }
         }
         return null;

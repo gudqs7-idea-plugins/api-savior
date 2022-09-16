@@ -13,9 +13,9 @@ import java.util.Set;
  * @author wenquan
  * @date 2022/8/3
  */
-public class GenerateConvertForDst extends GenerateConvert {
+public class ConvertForDstGenerate extends ConvertGenerate {
 
-    public GenerateConvertForDst(BaseVar varForSet, BaseVar varForGet) {
+    public ConvertForDstGenerate(BaseVar varForSet, BaseVar varForGet) {
         super(varForSet, varForGet);
     }
 

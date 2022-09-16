@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
  * @author wenquan
  * @date 2021/9/30
  */
-public abstract class GenerateBaseAction extends AbstractEditorIntentionAction {
+public abstract class BaseGenerateAction extends AbstractEditorIntentionAction {
 
     /**
      * 根据当前情况构建生成器
@@ -21,7 +21,7 @@ public abstract class GenerateBaseAction extends AbstractEditorIntentionAction {
      * @param element 上下文信息
      * @return 生成器
      */
-    protected GenerateBase buildGenerate(PsiElement element) {
+    protected BaseGenerate buildGenerate(PsiElement element) {
         BaseVar baseVar = null;
         PsiLocalVariable psiLocal = PsiTreeUtil.getParentOfType(element, PsiLocalVariable.class);
         if (psiLocal != null) {
@@ -44,7 +44,7 @@ public abstract class GenerateBaseAction extends AbstractEditorIntentionAction {
      * @param baseVar 变量
      * @return 生成器
      */
-    protected abstract GenerateBase buildGenerateByVar(BaseVar baseVar);
+    protected abstract BaseGenerate buildGenerateByVar(BaseVar baseVar);
 
     private PsiClass getMethodParameterContainingClass(PsiElement element) {
         PsiParameter psiParent = PsiTreeUtil.getParentOfType(element, PsiParameter.class);
@@ -67,7 +67,7 @@ public abstract class GenerateBaseAction extends AbstractEditorIntentionAction {
 
     @Override
     protected boolean isAvailable0(@NotNull Project project, Editor editor, @NotNull PsiElement element) throws Throwable {
-        GenerateBase generateBase = buildGenerate(element);
+        BaseGenerate baseGenerate = buildGenerate(element);
         // 只需确保该变量含有get方法即可
         PsiClass localVariableContainingClass = getLocalVariableContainingClass(element);
         if (localVariableContainingClass != null) {
@@ -90,13 +90,13 @@ public abstract class GenerateBaseAction extends AbstractEditorIntentionAction {
 
     @Override
     protected void invoke0(Project project, Editor editor, PsiElement element, Document elementDocument, PsiDocumentManager psiDocumentManager) throws Throwable {
-        GenerateBase generateBase = buildGenerate(element);
+        BaseGenerate baseGenerate = buildGenerate(element);
         PsiLocalVariable psiLocal = PsiTreeUtil.getParentOfType(element, PsiLocalVariable.class);
         PsiFile containingFile = element.getContainingFile();
         if (psiLocal != null) {
             String splitText = getPrefixWithBreakLine(elementDocument, psiLocal);
             int textOffset = getInsertOffset(psiLocal);
-            generateBase.insertCodeByPsiType(elementDocument, psiDocumentManager, containingFile, splitText, textOffset);
+            insertCode(baseGenerate, editor, elementDocument, psiDocumentManager, containingFile, splitText, textOffset);
         }
         PsiParameter psiParameter = PsiTreeUtil.getParentOfType(element, PsiParameter.class);
         if (psiParameter != null) {
@@ -106,15 +106,20 @@ public abstract class GenerateBaseAction extends AbstractEditorIntentionAction {
                 PsiMethod psiMethod = (PsiMethod) parent0;
                 String splitText = getPrefixWithBreakLine(elementDocument, psiMethod);
                 int insertOffset = getInsertOffset(psiMethod);
-                generateBase.insertCodeByPsiType(elementDocument, psiDocumentManager, containingFile, splitText, insertOffset);
+                insertCode(baseGenerate, editor, elementDocument, psiDocumentManager, containingFile, splitText, insertOffset);
             }
             if (parent instanceof PsiForeachStatement) {
                 PsiForeachStatement psiForeachStatement = (PsiForeachStatement) parent;
                 String splitText = getPrefixWithBreakLine(elementDocument, psiForeachStatement);
                 int insertOffset = getInsertOffset(psiForeachStatement);
-                generateBase.insertCodeByPsiType(elementDocument, psiDocumentManager, containingFile, splitText, insertOffset);
+                insertCode(baseGenerate, editor, elementDocument, psiDocumentManager, containingFile, splitText, insertOffset);
             }
         }
+    }
+
+    private void insertCode(BaseGenerate baseGenerate, Editor editor, Document elementDocument, PsiDocumentManager psiDocumentManager, PsiFile containingFile, String splitText, int textOffset) {
+        editor.getCaretModel().moveToVisualPosition(editor.offsetToVisualPosition(textOffset));
+        baseGenerate.insertCodeWithTemplate(elementDocument, psiDocumentManager, containingFile, editor);
     }
 
 }

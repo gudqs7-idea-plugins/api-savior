@@ -20,11 +20,11 @@ import java.util.Set;
  * @author WQ
  * @date 2021/10/1
  */
-public class GenerateConvert extends AbstractMethodListGenerate {
+public class ConvertGenerate extends AbstractMethodListGenerate {
 
     protected final BaseVar varForGet;
 
-    public GenerateConvert(BaseVar varForSet, BaseVar varForGet) {
+    public ConvertGenerate(BaseVar varForSet, BaseVar varForGet) {
         super(varForSet);
         this.varForGet = varForGet;
     }
@@ -113,11 +113,11 @@ public class GenerateConvert extends AbstractMethodListGenerate {
                         String getterCode = getGetterCode(psiMethod);
 
                         // 若为 List 类型, 则生成的代码不一样
-                        GenerateConvert generateConvertInner;
+                        ConvertGenerate generateConvertInner;
                         if (dstVarTypeFromList) {
-                            generateConvertInner = new GenerateConvertForListInner(varForSetInner, varForGetInner, innerLevel + 1, getterCode);
+                            generateConvertInner = new ConvertForListInnerGenerate(varForSetInner, varForGetInner, innerLevel + 1, getterCode);
                         } else {
-                            generateConvertInner = new GenerateConvertForInner(varForSetInner, varForGetInner, innerLevel + 1, getterCode);
+                            generateConvertInner = new ConvertForInnerGenerate(varForSetInner, varForGetInner, innerLevel + 1, getterCode);
                         }
                         HashSet<String> newImportListInner = new HashSet<>();
                         moreCode = generateConvertInner.generateCode(splitText, newImportListInner);

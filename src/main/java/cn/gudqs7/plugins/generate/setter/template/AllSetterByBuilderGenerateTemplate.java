@@ -1,9 +1,9 @@
 package cn.gudqs7.plugins.generate.setter.template;
 
+import cn.gudqs7.plugins.generate.base.BaseGenerate;
 import cn.gudqs7.plugins.generate.base.BaseGenerateTemplate;
 import cn.gudqs7.plugins.generate.base.BaseVar;
-import cn.gudqs7.plugins.generate.base.GenerateBase;
-import cn.gudqs7.plugins.generate.setter.GenerateBuilder;
+import cn.gudqs7.plugins.generate.setter.BuilderGenerate;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
@@ -104,7 +104,7 @@ public class AllSetterByBuilderGenerateTemplate extends BaseGenerateTemplate {
     }
 
     @Override
-    protected GenerateBase buildGenerate(PsiElement psiElement, PsiFile containingFile, PsiDocumentManager psiDocumentManager, Document document) {
+    protected BaseGenerate buildGenerate(PsiElement psiElement, PsiFile containingFile, PsiDocumentManager psiDocumentManager, Document document) {
         Project project = psiElement.getProject();
         if (psiElement instanceof PsiMethodCallExpression) {
             psiElement = psiElement.getFirstChild().getFirstChild();
@@ -116,7 +116,7 @@ public class AllSetterByBuilderGenerateTemplate extends BaseGenerateTemplate {
             BaseVar baseVar = new BaseVar();
             baseVar.setVarName(expression.getText());
             baseVar.setVarType(psiType);
-            return new GenerateBuilder(generateDefaultVal, baseVar);
+            return new BuilderGenerate(generateDefaultVal, baseVar);
         }
         return null;
     }

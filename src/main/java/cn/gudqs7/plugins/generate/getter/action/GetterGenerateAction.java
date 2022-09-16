@@ -1,11 +1,11 @@
 package cn.gudqs7.plugins.generate.getter.action;
 
 import cn.gudqs7.plugins.common.util.structure.PsiMethodUtil;
+import cn.gudqs7.plugins.generate.base.BaseGenerate;
+import cn.gudqs7.plugins.generate.base.BaseGenerateAction;
 import cn.gudqs7.plugins.generate.base.BaseVar;
-import cn.gudqs7.plugins.generate.base.GenerateBase;
-import cn.gudqs7.plugins.generate.base.GenerateBaseAction;
 import cn.gudqs7.plugins.generate.consant.GenerateConst;
-import cn.gudqs7.plugins.generate.getter.GenerateGetter;
+import cn.gudqs7.plugins.generate.getter.GetterGenerate;
 import com.intellij.psi.PsiClass;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
@@ -14,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
  * @author wq
  */
 @SuppressWarnings("IntentionDescriptionNotFoundInspection")
-public class GenerateAllGetterAction extends GenerateBaseAction {
+public class GetterGenerateAction extends BaseGenerateAction {
 
     @Override
     protected boolean checkVariableClass(PsiClass psiClass) {
@@ -22,8 +22,8 @@ public class GenerateAllGetterAction extends GenerateBaseAction {
     }
 
     @Override
-    protected GenerateBase buildGenerateByVar(BaseVar baseVar) {
-        return new GenerateGetter(baseVar);
+    protected BaseGenerate buildGenerateByVar(BaseVar baseVar) {
+        return new GetterGenerate(baseVar);
     }
 
     @Nls

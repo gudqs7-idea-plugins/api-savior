@@ -10,12 +10,12 @@ import java.util.HashSet;
  * @author WQ
  * @date 2021/10/1
  */
-public class GenerateConvertForInner extends GenerateConvert {
+public class ConvertForInnerGenerate extends ConvertGenerate {
 
     protected final int innerLevel;
     protected final String getterCode;
 
-    public GenerateConvertForInner(BaseVar varForSet, BaseVar varForGet, int innerLevel, String getterCode) {
+    public ConvertForInnerGenerate(BaseVar varForSet, BaseVar varForGet, int innerLevel, String getterCode) {
         super(varForSet, varForGet);
         this.innerLevel = innerLevel;
         this.getterCode = getterCode;

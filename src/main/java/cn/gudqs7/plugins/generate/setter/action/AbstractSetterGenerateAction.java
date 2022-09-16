@@ -1,20 +1,20 @@
 package cn.gudqs7.plugins.generate.setter.action;
 
 import cn.gudqs7.plugins.common.util.structure.PsiMethodUtil;
+import cn.gudqs7.plugins.generate.base.BaseGenerate;
+import cn.gudqs7.plugins.generate.base.BaseGenerateAction;
 import cn.gudqs7.plugins.generate.base.BaseVar;
-import cn.gudqs7.plugins.generate.base.GenerateBase;
-import cn.gudqs7.plugins.generate.base.GenerateBaseAction;
-import cn.gudqs7.plugins.generate.setter.GenerateSetter;
+import cn.gudqs7.plugins.generate.setter.SetterGenerate;
 import com.intellij.psi.PsiClass;
 
 /**
  * @author wq
  */
-public abstract class GenerateAllSetterAction extends GenerateBaseAction {
+public abstract class AbstractSetterGenerateAction extends BaseGenerateAction {
 
     private final boolean generateDefaultVal;
 
-    public GenerateAllSetterAction(boolean generateDefaultVal) {
+    public AbstractSetterGenerateAction(boolean generateDefaultVal) {
         this.generateDefaultVal = generateDefaultVal;
     }
 
@@ -24,8 +24,8 @@ public abstract class GenerateAllSetterAction extends GenerateBaseAction {
     }
 
     @Override
-    protected GenerateBase buildGenerateByVar(BaseVar baseVar) {
-        return new GenerateSetter(generateDefaultVal, baseVar);
+    protected BaseGenerate buildGenerateByVar(BaseVar baseVar) {
+        return new SetterGenerate(generateDefaultVal, baseVar);
     }
 
 }

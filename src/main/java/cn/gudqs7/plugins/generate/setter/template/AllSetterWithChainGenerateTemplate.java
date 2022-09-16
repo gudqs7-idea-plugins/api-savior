@@ -1,9 +1,9 @@
 package cn.gudqs7.plugins.generate.setter.template;
 
 import cn.gudqs7.plugins.generate.base.AbstractVariableGenerateTemplate;
+import cn.gudqs7.plugins.generate.base.BaseGenerate;
 import cn.gudqs7.plugins.generate.base.BaseVar;
-import cn.gudqs7.plugins.generate.base.GenerateBase;
-import cn.gudqs7.plugins.generate.setter.GenerateChain;
+import cn.gudqs7.plugins.generate.setter.ChainGenerate;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -21,7 +21,7 @@ public class AllSetterWithChainGenerateTemplate extends AbstractVariableGenerate
 
     @NotNull
     @Override
-    protected GenerateBase getGenerateByVar(BaseVar baseVar) {
-        return new GenerateChain(generateDefaultVal, baseVar);
+    protected BaseGenerate getGenerateByVar(BaseVar baseVar) {
+        return new ChainGenerate(generateDefaultVal, baseVar);
     }
 }

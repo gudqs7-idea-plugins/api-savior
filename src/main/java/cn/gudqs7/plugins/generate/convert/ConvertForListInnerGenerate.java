@@ -10,9 +10,9 @@ import java.util.HashSet;
  * @author WQ
  * @date 2021/10/1
  */
-public class GenerateConvertForListInner extends GenerateConvertForInner {
+public class ConvertForListInnerGenerate extends ConvertForInnerGenerate {
 
-    public GenerateConvertForListInner(BaseVar varForSet, BaseVar varForGet, int innerLevel, String getterCode) {
+    public ConvertForListInnerGenerate(BaseVar varForSet, BaseVar varForGet, int innerLevel, String getterCode) {
         super(varForSet, varForGet, innerLevel, getterCode);
     }
 

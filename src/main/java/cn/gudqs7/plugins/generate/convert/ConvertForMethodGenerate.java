@@ -12,11 +12,11 @@ import java.util.HashSet;
  * @author WQ
  * @date 2021/10/1
  */
-public class GenerateConvertForMethod extends GenerateConvert {
+public class ConvertForMethodGenerate extends ConvertGenerate {
 
     private final PsiMethod psiMethod;
 
-    public GenerateConvertForMethod(BaseVar varForSet, BaseVar varForGet, PsiMethod psiMethod) {
+    public ConvertForMethodGenerate(BaseVar varForSet, BaseVar varForGet, PsiMethod psiMethod) {
         super(varForSet, varForGet);
         this.psiMethod = psiMethod;
     }

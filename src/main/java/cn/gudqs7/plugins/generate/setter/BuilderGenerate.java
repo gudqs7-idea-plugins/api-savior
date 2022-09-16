@@ -17,9 +17,9 @@ import java.util.Set;
  * @author WQ
  * @date 2021/10/1
  */
-public class GenerateBuilder extends AbstractDefaultValGenerate {
+public class BuilderGenerate extends AbstractDefaultValGenerate {
 
-    public GenerateBuilder(boolean generateDefaultVal, BaseVar baseVar) {
+    public BuilderGenerate(boolean generateDefaultVal, BaseVar baseVar) {
         super(generateDefaultVal, baseVar);
     }
 

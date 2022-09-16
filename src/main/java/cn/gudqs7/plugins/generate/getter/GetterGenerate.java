@@ -18,15 +18,15 @@ import java.util.Set;
  * @author WQ
  * @date 2021/10/1
  */
-public class GenerateGetter extends AbstractMethodListGenerate {
+public class GetterGenerate extends AbstractMethodListGenerate {
 
     private final boolean noSuperClass;
 
-    public GenerateGetter(BaseVar baseVar) {
+    public GetterGenerate(BaseVar baseVar) {
         this(baseVar, false);
     }
 
-    public GenerateGetter(BaseVar baseVar, boolean noSuperClass) {
+    public GetterGenerate(BaseVar baseVar, boolean noSuperClass) {
         super(baseVar);
         this.noSuperClass = noSuperClass;
     }

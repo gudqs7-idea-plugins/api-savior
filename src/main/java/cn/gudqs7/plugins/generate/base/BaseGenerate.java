@@ -21,7 +21,7 @@ import java.util.Set;
  * @author WQ
  * @date 2021/10/1
  */
-public interface GenerateBase {
+public interface BaseGenerate {
 
     /**
      * 根据参数生成代码
@@ -184,7 +184,7 @@ public interface GenerateBase {
      * @param splitText          每行分隔符
      * @param insertOffset       插入的位置
      */
-    default void insertCodeByPsiType(Document document, PsiDocumentManager psiDocumentManager, PsiFile containingFile, String splitText, int insertOffset) {
+    default void insertCode(Document document, PsiDocumentManager psiDocumentManager, PsiFile containingFile, String splitText, int insertOffset) {
         HashSet<String> newImportList = new HashSet<>();
         String insertCode = generateCode(splitText, newImportList);
         document.insertString(insertOffset, insertCode);
@@ -200,15 +200,15 @@ public interface GenerateBase {
      * @param containingFile     当前文件
      * @param editor             editor
      */
-    default void insertCodeByPsiTypeWithTemplate(Document document, PsiDocumentManager psiDocumentManager, PsiFile containingFile, Editor editor) {
-        insertCodeByPsiTypeWithTemplate(document, psiDocumentManager, containingFile, editor, getTemplateVariables());
+    default void insertCodeWithTemplate(Document document, PsiDocumentManager psiDocumentManager, PsiFile containingFile, Editor editor) {
+        insertCodeWithTemplate(document, psiDocumentManager, containingFile, editor, getTemplateVariables());
     }
 
     /**
      * 得到模板变量
      * 子类可重写以传递模版变量
      *
-     * @return {@link Variable[]}
+     * @return 模版变量数组
      */
     @Nullable
     default Variable[] getTemplateVariables() {
@@ -225,7 +225,7 @@ public interface GenerateBase {
      * @param editor             editor
      * @param variableArray      模版变量数组
      */
-    default void insertCodeByPsiTypeWithTemplate(Document document, PsiDocumentManager psiDocumentManager, PsiFile containingFile, Editor editor, Variable... variableArray) {
+    default void insertCodeWithTemplate(Document document, PsiDocumentManager psiDocumentManager, PsiFile containingFile, Editor editor, Variable... variableArray) {
         HashSet<String> newImportList = new HashSet<>();
         String insertCode = generateCode("\n", newImportList);
         PsiDocumentUtil.startTemplate(insertCode, editor, containingFile, variableArray);

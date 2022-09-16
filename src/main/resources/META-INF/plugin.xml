@@ -21,16 +21,16 @@
         <projectService serviceImplementation="cn.gudqs7.plugins.search.MethodFilterConfiguration"/>
 
         <intentionAction>
-            <className>cn.gudqs7.plugins.generate.getter.action.GenerateAllGetterAction</className>
+            <className>cn.gudqs7.plugins.generate.getter.action.GetterGenerateAction</className>
         </intentionAction>
         <intentionAction>
-            <className>cn.gudqs7.plugins.generate.setter.action.GenerateAllSetterWithDefaultValAction</className>
+            <className>cn.gudqs7.plugins.generate.setter.action.SetterWithDefaultValGenerateAction</className>
         </intentionAction>
         <intentionAction>
-            <className>cn.gudqs7.plugins.generate.setter.action.GenerateAllSetterWithoutDefaultValAction</className>
+            <className>cn.gudqs7.plugins.generate.setter.action.SetterWithoutDefaultValGenerateAction</className>
         </intentionAction>
         <intentionAction>
-            <className>cn.gudqs7.plugins.generate.convert.action.GenerateConvertAction</className>
+            <className>cn.gudqs7.plugins.generate.convert.action.ConvertGenerateAction</className>
         </intentionAction>
         <intentionAction>
             <className>cn.gudqs7.plugins.tools.GenerateQueryApiDeclarationAction</className>

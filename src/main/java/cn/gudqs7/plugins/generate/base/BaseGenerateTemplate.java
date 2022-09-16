@@ -34,7 +34,7 @@ public abstract class BaseGenerateTemplate extends AbstractPostfixTemplate {
      * @param document           文档
      * @return 生成器
      */
-    protected abstract GenerateBase buildGenerate(PsiElement psiElement, PsiFile containingFile, PsiDocumentManager psiDocumentManager, Document document);
+    protected abstract BaseGenerate buildGenerate(PsiElement psiElement, PsiFile containingFile, PsiDocumentManager psiDocumentManager, Document document);
 
     @Override
     protected void expandForChooseExpression0(@NotNull PsiElement psiElement, @NotNull Editor editor) {
@@ -45,12 +45,12 @@ public abstract class BaseGenerateTemplate extends AbstractPostfixTemplate {
         if (document == null) {
             return;
         }
-        GenerateBase generateBase = buildGenerate(psiElement, containingFile, psiDocumentManager, document);
-        if (generateBase == null) {
+        BaseGenerate baseGenerate = buildGenerate(psiElement, containingFile, psiDocumentManager, document);
+        if (baseGenerate == null) {
             return;
         }
         removeExpressionFromEditor(psiElement, editor);
-        generateBase.insertCodeByPsiTypeWithTemplate(document, psiDocumentManager, containingFile, editor);
+        baseGenerate.insertCodeWithTemplate(document, psiDocumentManager, containingFile, editor);
     }
 
 }

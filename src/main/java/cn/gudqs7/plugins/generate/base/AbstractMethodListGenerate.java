@@ -17,7 +17,7 @@ import java.util.List;
  * @author WQ
  * @date 2021/10/6
  */
-public abstract class AbstractMethodListGenerate implements GenerateBase {
+public abstract class AbstractMethodListGenerate implements BaseGenerate {
 
     @Nullable
     protected final BaseVar baseVar;

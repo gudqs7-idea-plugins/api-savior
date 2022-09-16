@@ -9,9 +9,9 @@ import org.jetbrains.annotations.NotNull;
  * @date 2021/9/30
  */
 @SuppressWarnings("IntentionDescriptionNotFoundInspection")
-public class GenerateAllSetterWithDefaultValAction extends GenerateAllSetterAction {
+public class SetterWithDefaultValGenerateAction extends AbstractSetterGenerateAction {
 
-    public GenerateAllSetterWithDefaultValAction() {
+    public SetterWithDefaultValGenerateAction() {
         super(true);
     }
 

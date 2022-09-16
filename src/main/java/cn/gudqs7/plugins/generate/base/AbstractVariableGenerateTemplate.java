@@ -36,7 +36,7 @@ public abstract class AbstractVariableGenerateTemplate extends BaseGenerateTempl
     }
 
     @Override
-    protected GenerateBase buildGenerate(PsiElement psiElement, PsiFile containingFile, PsiDocumentManager psiDocumentManager, Document document) {
+    protected BaseGenerate buildGenerate(PsiElement psiElement, PsiFile containingFile, PsiDocumentManager psiDocumentManager, Document document) {
         if (psiElement instanceof PsiExpression) {
             PsiExpression psiExpression = (PsiExpression) psiElement;
             PsiType psiType = psiExpression.getType();
@@ -58,6 +58,6 @@ public abstract class AbstractVariableGenerateTemplate extends BaseGenerateTempl
      * @return 生成器
      */
     @NotNull
-    protected abstract GenerateBase getGenerateByVar(BaseVar baseVar);
+    protected abstract BaseGenerate getGenerateByVar(BaseVar baseVar);
 
 }

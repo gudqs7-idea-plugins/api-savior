@@ -3,11 +3,11 @@ package cn.gudqs7.plugins.generate.convert.action;
 import cn.gudqs7.plugins.common.util.StringTool;
 import cn.gudqs7.plugins.common.util.structure.PsiClassUtil;
 import cn.gudqs7.plugins.common.util.structure.PsiMethodUtil;
+import cn.gudqs7.plugins.generate.base.BaseGenerate;
+import cn.gudqs7.plugins.generate.base.BaseGenerateAction;
 import cn.gudqs7.plugins.generate.base.BaseVar;
-import cn.gudqs7.plugins.generate.base.GenerateBase;
-import cn.gudqs7.plugins.generate.base.GenerateBaseAction;
 import cn.gudqs7.plugins.generate.consant.GenerateConst;
-import cn.gudqs7.plugins.generate.convert.GenerateConvertForMethod;
+import cn.gudqs7.plugins.generate.convert.ConvertForMethodGenerate;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
@@ -22,7 +22,7 @@ import org.jetbrains.annotations.Nullable;
  * @author WQ
  */
 @SuppressWarnings("IntentionDescriptionNotFoundInspection")
-public class GenerateConvertAction extends GenerateBaseAction {
+public class ConvertGenerateAction extends BaseGenerateAction {
 
     @Override
     protected boolean checkVariableClass(PsiClass psiClass) {
@@ -30,7 +30,7 @@ public class GenerateConvertAction extends GenerateBaseAction {
     }
 
     @Override
-    protected GenerateBase buildGenerateByVar(BaseVar baseVar) {
+    protected BaseGenerate buildGenerateByVar(BaseVar baseVar) {
         throw new UnsupportedOperationException();
     }
 
@@ -61,7 +61,7 @@ public class GenerateConvertAction extends GenerateBaseAction {
     }
 
     @Override
-    protected GenerateBase buildGenerate(PsiElement psiElement) {
+    protected BaseGenerate buildGenerate(PsiElement psiElement) {
         if (psiElement instanceof PsiJavaToken) {
             PsiJavaToken psiJavaToken = (PsiJavaToken) psiElement;
             IElementType tokenType = psiJavaToken.getTokenType();
@@ -88,7 +88,7 @@ public class GenerateConvertAction extends GenerateBaseAction {
 
     @Override
     protected void invoke0(Project project, Editor editor, PsiElement psiElement, Document document, PsiDocumentManager psiDocumentManager) throws Throwable {
-        GenerateBase generateBase = buildGenerate(psiElement);
+        BaseGenerate baseGenerate = buildGenerate(psiElement);
         PsiFile containingFile = psiElement.getContainingFile();
         if (psiElement instanceof PsiJavaToken) {
             PsiJavaToken psiJavaToken = (PsiJavaToken) psiElement;
@@ -99,7 +99,7 @@ public class GenerateConvertAction extends GenerateBaseAction {
                 if (parent != null) {
                     if (parent.getParent() instanceof PsiMethod) {
                         PsiMethod psiMethod = (PsiMethod) parent.getParent();
-                        invokeByPsiMethod(generateBase, psiDocumentManager, containingFile, document, editor, psiMethod);
+                        invokeByPsiMethod(baseGenerate, psiDocumentManager, containingFile, document, editor, psiMethod);
                     }
                 }
             }
@@ -108,7 +108,7 @@ public class GenerateConvertAction extends GenerateBaseAction {
             PsiElement parent = psiElement.getParent();
             if (parent instanceof PsiMethod) {
                 PsiMethod psiMethod = (PsiMethod) parent;
-                invokeByPsiMethod(generateBase, psiDocumentManager, containingFile, document, editor, psiMethod);
+                invokeByPsiMethod(baseGenerate, psiDocumentManager, containingFile, document, editor, psiMethod);
             }
         }
     }
@@ -151,7 +151,7 @@ public class GenerateConvertAction extends GenerateBaseAction {
     }
 
     @Nullable
-    private GenerateConvertForMethod buildGenerateByPsiMethod(PsiMethod psiMethod) {
+    private ConvertForMethodGenerate buildGenerateByPsiMethod(PsiMethod psiMethod) {
         PsiType dstPsiType = psiMethod.getReturnType();
         PsiParameter[] parameters = psiMethod.getParameterList().getParameters();
         if (dstPsiType != null && parameters.length == 1) {
@@ -165,18 +165,18 @@ public class GenerateConvertAction extends GenerateBaseAction {
             BaseVar varForGet = new BaseVar();
             varForGet.setVarName(psiParameter.getName());
             varForGet.setVarType(srcPsiType);
-            return new GenerateConvertForMethod(varForSet, varForGet, psiMethod);
+            return new ConvertForMethodGenerate(varForSet, varForGet, psiMethod);
         } else {
             return null;
         }
     }
 
-    private void invokeByPsiMethod(GenerateBase generateBase, PsiDocumentManager psiDocumentManager, PsiFile containingFile, Document document, Editor editor, PsiMethod psiMethod) {
+    private void invokeByPsiMethod(BaseGenerate baseGenerate, PsiDocumentManager psiDocumentManager, PsiFile containingFile, Document document, Editor editor, PsiMethod psiMethod) {
         String prefix = getPrefixWithBreakLine(document, psiMethod);
         Integer insertOffset = getInsertOffset(psiMethod);
         // 在此之前先移动位置
         editor.getCaretModel().moveToVisualPosition(editor.offsetToVisualPosition(insertOffset));
-        generateBase.insertCodeByPsiTypeWithTemplate(document, psiDocumentManager, containingFile, editor);
+        baseGenerate.insertCodeWithTemplate(document, psiDocumentManager, containingFile, editor);
     }
 
 }

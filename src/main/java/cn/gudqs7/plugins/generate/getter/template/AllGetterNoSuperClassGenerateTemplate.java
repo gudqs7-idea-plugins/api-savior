@@ -2,7 +2,7 @@ package cn.gudqs7.plugins.generate.getter.template;
 
 import cn.gudqs7.plugins.generate.base.AbstractVariableGenerateTemplate;
 import cn.gudqs7.plugins.generate.base.BaseVar;
-import cn.gudqs7.plugins.generate.getter.GenerateGetter;
+import cn.gudqs7.plugins.generate.getter.GetterGenerate;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -17,7 +17,7 @@ public class AllGetterNoSuperClassGenerateTemplate extends AbstractVariableGener
     }
 
     @Override
-    protected @NotNull GenerateGetter getGenerateByVar(BaseVar baseVar) {
-        return new GenerateGetter(baseVar, true);
+    protected @NotNull GetterGenerate getGenerateByVar(BaseVar baseVar) {
+        return new GetterGenerate(baseVar, true);
     }
 }

@@ -1,9 +1,9 @@
 package cn.gudqs7.plugins.generate.setter.template;
 
 import cn.gudqs7.plugins.generate.base.AbstractVariableGenerateTemplate;
+import cn.gudqs7.plugins.generate.base.BaseGenerate;
 import cn.gudqs7.plugins.generate.base.BaseVar;
-import cn.gudqs7.plugins.generate.base.GenerateBase;
-import cn.gudqs7.plugins.generate.setter.GenerateSetter;
+import cn.gudqs7.plugins.generate.setter.SetterGenerate;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -19,7 +19,7 @@ public class AllSetterNoSuperClassGenerateTemplate extends AbstractVariableGener
 
     @NotNull
     @Override
-    protected GenerateBase getGenerateByVar(BaseVar baseVar) {
-        return new GenerateSetter(true, baseVar, true);
+    protected BaseGenerate getGenerateByVar(BaseVar baseVar) {
+        return new SetterGenerate(true, baseVar, true);
     }
 }
