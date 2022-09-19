@@ -52,7 +52,10 @@ public class BaseTypeUtil {
             boolean noExampleValue = StringUtils.isBlank(example);
             return noExampleValue ? BigDecimal.valueOf(randomDouble()) : new BigDecimal(example);
         }));
+
+        // 日期, 时间
         OTHER_BASE_TYPE_MAP.put("java.util.Date", TypeInfo.of("java.util.Date", "new Date()", dateGetFn));
+        OTHER_BASE_TYPE_MAP.put("java.time.LocalDateTime", TypeInfo.of("java.time.LocalDateTime", "LocalDateTime.now()", dateGetFn));
         OTHER_BASE_TYPE_MAP.put("java.sql.Date", TypeInfo.of("java.sql.Date", "new Date(System.currentTimeMillis())", dateGetFn));
         OTHER_BASE_TYPE_MAP.put("java.sql.Timestamp", TypeInfo.of("java.sql.Timestamp", "new Timestamp(System.currentTimeMillis())", dateGetFn));
         OTHER_BASE_TYPE_MAP.put("java.sql.Time", TypeInfo.of("java.sql.Time", "new Time(System.currentTimeMillis())", dateGetFn));
