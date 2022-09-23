@@ -37,7 +37,7 @@ public class RequestMapping {
     }
 
     public interface ContentType {
-        String APPLICATION_JSON = "applicatin/json";
+        String APPLICATION_JSON = "application/json";
         String X_WWW_FORM_URLENCODED = "application/x-www-form-urlencoded";
         String FORM_DATA = "form-data";
     }

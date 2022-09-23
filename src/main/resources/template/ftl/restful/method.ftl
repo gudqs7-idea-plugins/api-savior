@@ -24,7 +24,7 @@ ${contentType}
 
 ## 入参
 <#if jsonExample?? && jsonExample != '' && jsonExample != '{}' >
-<#assign jsonExampleType = (contentType?? && contentType=='applicatin/json')?string('RequestBody','Postman Bulk Edit')>
+<#assign jsonExampleType = (contentType?? && contentType=='application/json')?string('RequestBody','Postman Bulk Edit')>
 ### 入参示例 (${jsonExampleType})
 ```json
 ${jsonExample}
