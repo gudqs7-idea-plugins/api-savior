@@ -18,6 +18,7 @@ ${((levelInfo.clazzDesc)?? && levelInfo.clazzDesc != '')?string('> '+ levelInfo.
                 <#list levelInfo.fieldList?sort_by("index") as field>
 | ${field.fieldName} | **${((field.fieldTypeCode)?? && field.originalFieldTypeCode == 2)?string('[' + field.fieldTypeName + '](#' + field.originalFieldTypeName + ')', field.fieldTypeName)}** | ${field.required?string('**是**','否')} |  ${field.fieldDesc} | ${field.notes} |
                 </#list>
+
             </#if>
         </#list>
         </#if>
