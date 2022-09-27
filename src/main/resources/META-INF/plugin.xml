@@ -40,7 +40,7 @@
         </intentionAction>
 
         <codeInsight.template.postfixTemplateProvider language="JAVA" implementationClass="cn.gudqs7.plugins.generate.postfix.GeneratePostfixTemplateProvider"/>
-        
+
         <searchEverywhereContributor implementation="cn.gudqs7.plugins.search.ApiSearchContributorFactory"/>
 
         <errorHandler implementation="cn.gudqs7.plugins.diagnostic.SaviorIssueSubmitter"/>
@@ -67,6 +67,9 @@
             </action>
             <action id="cn.gudqs.docer.savior.curlRequire" class="cn.gudqs7.plugins.savior.action.restful.RestfulCurlRequireSaviorAction"
                     text="Generate cURL(Only required parameters)" description="Generate cURL(Only required parameters)">
+            </action>
+            <action id="cn.gudqs7.docer.savior.req.json-rpc" class="cn.gudqs7.plugins.savior.action.rpc.JsonRpcSaviorAction"
+                    text="Generate JSON-RPC cURL" description="Generate JSON-RPC style cURL">
             </action>
         </group>
 
