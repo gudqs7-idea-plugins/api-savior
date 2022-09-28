@@ -37,7 +37,6 @@ public interface AnnotationHolder {
     String QNAME_OF_VALID_MIN = "javax.validation.constraints.Min";
     String QNAME_OF_VALID_MAX = "javax.validation.constraints.Max";
     String QNAME_OF_VALID_RANGE = "org.hibernate.validator.constraints.Range";
-
     /**
      * Json RPC 接口上都有的注解
      */

@@ -16,7 +16,7 @@ import static cn.gudqs7.plugins.common.resolver.comment.AnnotationHolder.QNAME_O
  * @BelongPackage cn.gudqs7.plugins.savior.action.rpc
  * @Copyleft 2013-3102
  * @Date 2022/9/23 16:42
- * @Description
+ * @Description JsonRpc 接口类型的 Action
  */
 
 public class JsonRpcSaviorAction extends AbstractOnRightClickSavior {
