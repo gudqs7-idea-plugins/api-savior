@@ -12,8 +12,9 @@ import org.jetbrains.annotations.NotNull;
 public class SaviorIssueSubmitter extends AbstractGithubErrorReportSubmitter {
 
     @NotNull
+    @Override
     protected String getGithubRepo() {
-        return "docer-savior/docer-savior-idea-plugin";
+        return "gudqs7-idea-plugins/docer-savior-idea-plugin";
     }
 
     @Override

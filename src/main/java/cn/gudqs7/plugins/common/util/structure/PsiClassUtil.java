@@ -36,7 +36,7 @@ public class PsiClassUtil {
         PsiMethod[] methods = psiClass.getMethods();
         PsiClassType[] extendsListTypes = psiClass.getExtendsListTypes();
         PsiClass[] interfaces = psiClass.getInterfaces();
-        List<PsiMethod> methodList = Arrays.asList(methods);
+        List<PsiMethod> methodList = new ArrayList<>(Arrays.asList(methods));
         if (extendsListTypes.length == 0 && interfaces.length == 0) {
             return methodList;
         }
