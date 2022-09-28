@@ -107,6 +107,7 @@ public class PsiMethodAnnotationHolderImpl extends AbstractAnnotationHolder {
             }
         }
         dealRequestMapping(commentInfoTag);
+        dealJsonRpcRequest(commentInfoTag);
         return commentInfoTag;
     }
 
@@ -154,6 +155,7 @@ public class PsiMethodAnnotationHolderImpl extends AbstractAnnotationHolder {
             commentInfo.getResponseCodeInfoList().add(codeInfo);
         }
         dealRequestMapping(commentInfo);
+        dealJsonRpcRequest(commentInfo);
         return commentInfo;
     }
 
@@ -194,6 +196,39 @@ public class PsiMethodAnnotationHolderImpl extends AbstractAnnotationHolder {
         }
     }
 
+
+    /**
+     * 为 JSON-RPC 类型的请求进行额外处理,目前主要是解析设置 url 参数
+     */
+    private void dealJsonRpcRequest(CommentInfo commentInfo) {
+        String controllerUrl = "/";
+        PsiClass containingClass = psiMethod.getContainingClass();
+        if (containingClass == null) {
+            ExceptionUtil.handleSyntaxError(psiMethod.getName() + "'s Class");
+        }
+        PsiAnnotation psiAnnotation = containingClass.getAnnotation(QNAME_OF_JSON_RPC_SERVICE);
+        if (psiAnnotation != null) {
+            List<String> pathList = PsiAnnotationUtil.getAnnotationListValue(psiAnnotation, "value", null);
+            if (CollectionUtils.isEmpty(pathList)) {
+                pathList = PsiAnnotationUtil.getAnnotationListValue(psiAnnotation, "path", null);
+            }
+            if (CollectionUtils.isNotEmpty(pathList)) {
+                controllerUrl = pathList.get(0);
+            }
+            if (controllerUrl.startsWith("/")) {
+                controllerUrl = controllerUrl.substring(1);
+            }
+            if (!controllerUrl.endsWith("/")) {
+                controllerUrl = controllerUrl + "/";
+            }
+        }
+        String hostPrefix = getHostPrefix();
+        String nowUrl = commentInfo.getUrl("");
+        if (nowUrl.startsWith("/")) {
+            nowUrl = nowUrl.substring(1);
+        }
+        commentInfo.setUrl(hostPrefix + controllerUrl + nowUrl);
+    }
     private void dealRequestMapping(CommentInfo commentInfo) {
         boolean hasMappingAnnotation = hasAnyOneAnnotation(QNAME_OF_MAPPING, QNAME_OF_GET_MAPPING, QNAME_OF_POST_MAPPING, QNAME_OF_PUT_MAPPING, QNAME_OF_DELETE_MAPPING);
         if (hasMappingAnnotation) {

@@ -4,7 +4,9 @@ import cn.gudqs7.plugins.common.consts.MapKeyConstant;
 import cn.gudqs7.plugins.common.pojo.resolver.CommentInfo;
 import cn.gudqs7.plugins.common.pojo.resolver.RequestMapping;
 import cn.gudqs7.plugins.common.pojo.resolver.StructureAndCommentInfo;
+import cn.gudqs7.plugins.common.resolver.comment.PsiClassAnnotationHolderImpl;
 import cn.gudqs7.plugins.common.util.JsonUtil;
+import cn.gudqs7.plugins.common.util.structure.PsiAnnotationUtil;
 import cn.gudqs7.plugins.savior.pojo.PostmanKvInfo;
 import cn.gudqs7.plugins.savior.reader.Java2BulkReader;
 import cn.gudqs7.plugins.savior.savior.base.AbstractSavior;
@@ -16,12 +18,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.google.gson.*;
 import com.intellij.openapi.project.Project;
+import com.intellij.psi.PsiAnnotation;
 import com.intellij.psi.PsiMethod;
 import org.apache.commons.collections.CollectionUtils;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static cn.gudqs7.plugins.common.resolver.comment.AnnotationHolder.QNAME_OF_JSON_RPC_SERVICE;
 
 /**
  * @author Seayon

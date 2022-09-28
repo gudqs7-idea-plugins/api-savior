@@ -8,6 +8,8 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiMethod;
 
+import static cn.gudqs7.plugins.common.resolver.comment.AnnotationHolder.QNAME_OF_JSON_RPC_SERVICE;
+
 /**
  * @author Seayon
  * @BelongProjecet docer-savior-idea-plugin
@@ -20,14 +22,9 @@ import com.intellij.psi.PsiMethod;
 public class JsonRpcSaviorAction extends AbstractOnRightClickSavior {
     private JavaToJsonRpcCurlSavior javaToJsonRpcCurlSavior = new JavaToJsonRpcCurlSavior(ThemeHelper.getRpcTheme());
 
-    /**
-     * Json RPC 接口上都有的注解
-     */
-    public static final String JSON_RPC_SERVICE_ANNOTATION = "com.googlecode.jsonrpc4j.JsonRpcService";
-
     @Override
     protected void checkPsiMethod(PsiMethod psiMethod, Project project, AnActionEvent e) {
-        if (psiMethod!=null&&psiMethod.getContainingClass()!=null && psiMethod.getContainingClass().getAnnotation(JSON_RPC_SERVICE_ANNOTATION) == null) {
+        if (psiMethod!=null&&psiMethod.getContainingClass()!=null && psiMethod.getContainingClass().getAnnotation(QNAME_OF_JSON_RPC_SERVICE) == null) {
             notVisible(e);
         }
     }

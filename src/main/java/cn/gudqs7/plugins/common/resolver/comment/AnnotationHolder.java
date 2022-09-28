@@ -39,6 +39,11 @@ public interface AnnotationHolder {
     String QNAME_OF_VALID_RANGE = "org.hibernate.validator.constraints.Range";
 
     /**
+     * Json RPC 接口上都有的注解
+     */
+    String QNAME_OF_JSON_RPC_SERVICE = "com.googlecode.jsonrpc4j.JsonRpcService";
+
+    /**
      * 获取字段的 holder
      *
      * @param psiField
