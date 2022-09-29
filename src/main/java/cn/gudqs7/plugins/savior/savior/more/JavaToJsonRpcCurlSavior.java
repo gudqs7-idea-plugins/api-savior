@@ -68,7 +68,7 @@ public class JavaToJsonRpcCurlSavior extends AbstractSavior<String> {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         jsonRpcRawBody =  gson.toJson(asJsonObject);
 
-        return String.format("curl --location --request POST '%s' \\ \n" +
+        return String.format("curl --location --request POST '%s' \\\n" +
                 "--header 'Content-Type: application/json' \\\n" +
                 "--data-raw '%s'", url, jsonRpcRawBody);
     }
