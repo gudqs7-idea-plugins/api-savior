@@ -218,9 +218,6 @@ public class PsiMethodAnnotationHolderImpl extends AbstractAnnotationHolder {
             if (controllerUrl.startsWith("/")) {
                 controllerUrl = controllerUrl.substring(1);
             }
-            if (!controllerUrl.endsWith("/")) {
-                controllerUrl = controllerUrl + "/";
-            }
         }
         String hostPrefix = getHostPrefix();
         String nowUrl = commentInfo.getUrl("");
