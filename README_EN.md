@@ -49,10 +49,10 @@ Open IDEA, go to Settings --> Plugins, select Marketplace, enter api savior and 
 ![Marketplace](parts/imgs/install-from-marketplace.png)
 
 ## 2. Open a Spring MVC or Dubbo project
-It is recommended to open the example project I specially prepared: [docer-savior-plugin-usage-examples](https://github.com/docer-savior/docer-savior-plugin-usage-examples)
+It is recommended to open the example project I specially prepared: [api-savior-examples](https://github.com/gudqs7-idea-plugins/api-savior-examples)
 
 ```shell
-git clone https://github.com/docer-savior/docer-savior-plugin-usage-examples
+git clone https://github.com/gudqs7-idea-plugins/api-savior-examples
 ````
 
 ## 3. Generate documentation
@@ -74,7 +74,7 @@ Suppose I click Batch Generate Api Interface Doc, I will get a folder, the Markd
 ## 5. Search APIs through Search Everywhere
 Double-click `Shift` to enter `Search Everywhere` and switch to Api, or use the shortcut keys `Ctrl + \ ` or `Ctrl + Alt + N` to enter the interface as shown below.
 At this point you can search and jump to the interface by url or interface description.
-> For this purpose, I opened a separate project [search-everywhere-api-idea-plugin](https://github.com/docer-savior/search-everywhere-api-idea-plugin), welcome to Star!  
+> For this purpose, I opened a separate project [search-everywhere-api-idea-plugin](https://github.com/gudqs7-idea-plugins/search-everywhere-api-idea-plugin), welcome to Star!  
 
 ![img.png](parts/imgs/search-everywhere-api.png)
 
@@ -94,8 +94,8 @@ At this point you can search and jump to the interface by url or interface descr
 
 ## Understand the actual use of the project by viewing the demo example
 
-- [Click to view the HTML format document effect of the example project](https://docer-savior.github.io/docer-savior-plugin-usage-examples/)
-- [Click to visit the example project Github](https://github.com/docer-savior/docer-savior-plugin-usage-examples)
+- [Click to view the HTML format document effect of the example project](https://gudqs7-idea-plugins.github.io/api-savior-examples/)
+- [Click to visit the example project Github](https://github.com/gudqs7-idea-plugins/api-savior-examples)
 
 ## Contribution Guidelines
 [Contribution Guidelines](CONTRIBUTING_EN.md)

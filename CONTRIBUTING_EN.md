@@ -47,7 +47,7 @@ Also, feel free to post on the [Github Forum](https://github.com/gudqs7-idea-plu
 
 There are 5 main packages under cn.gudqs7.plugins, namely `common / savior / diagnostic / generate / search`, which function as follows:
 - common: some common classes, tools and base classes
-- docer: everything related to the Api documentation plugin
+- savior: everything related to the Api documentation plugin
 - diagnostic: access IDEA exception handling component
 - generate: fast get/set method generation of entity classes
 - search: Access and implementation of the Api Tab in Search Everywhere

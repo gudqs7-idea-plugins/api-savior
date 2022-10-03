@@ -51,10 +51,10 @@
 ![Marketplace](parts/imgs/install-from-marketplace.png)
 
 ## 2.打开一个 Spring MVC 或 Dubbo 项目
-建议直接打开我专门准备的示例项目：[docer-savior-plugin-usage-examples](https://github.com/docer-savior/docer-savior-plugin-usage-examples)    
+建议直接打开我专门准备的示例项目：[api-savior-examples](https://github.com/gudqs7-idea-plugins/api-savior-examples)    
 
 ```shell
-git clone https://github.com/docer-savior/docer-savior-plugin-usage-examples
+git clone https://github.com/gudqs7-idea-plugins/api-savior-examples
 ```
 
 ## 3.生成文档
@@ -76,7 +76,7 @@ git clone https://github.com/docer-savior/docer-savior-plugin-usage-examples
 ## 5.通过 Search Everywhere 搜索 Api
 双击 `Shift` 进入 `Search Everywhere` 后切换到 Api，或使用快捷键 `Ctrl + \ ` 或 `Ctrl + Alt + N` 进入如下图界面。  
 此时您可通过 url 或接口描述来搜索并跳转到该接口。
-> 为此我单独开了一个项目 [search-everywhere-api-idea-plugin](https://github.com/docer-savior/search-everywhere-api-idea-plugin)，欢迎来 Star！    
+> 为此我单独开了一个项目 [search-everywhere-api-idea-plugin](https://github.com/gudqs7-idea-plugins/search-everywhere-api-idea-plugin)，欢迎来 Star！    
 
 ![img.png](parts/imgs/search-everywhere-api.png)
 
@@ -96,8 +96,8 @@ git clone https://github.com/docer-savior/docer-savior-plugin-usage-examples
 
 ## 通过查看 demo 示例来了解项目实际使用效果
 
-- [点击查看示例项目的 HTML 格式文档效果](https://docer-savior.github.io/docer-savior-plugin-usage-examples/)
-- [点击访问示例项目 Github](https://github.com/docer-savior/docer-savior-plugin-usage-examples)
+- [点击查看示例项目的 HTML 格式文档效果](https://gudqs7-idea-plugins.github.io/api-savior-examples/)
+- [点击访问示例项目 Github](https://github.com/gudqs7-idea-plugins/api-savior-examples)
 
 ## 贡献指南
  [贡献指南](CONTRIBUTING_CN.md)
