@@ -1,5 +1,5 @@
-[release-img]: https://img.shields.io/github/release/docer-savior/docer-savior-idea-plugin.svg
-[latest-release]: https://github.com/docer-savior/docer-savior-idea-plugin/releases/latest
+[release-img]: https://img.shields.io/github/release/gudqs7-idea-plugins/api-savior.svg
+[latest-release]: https://github.com/gudqs7-idea-plugins/api-savior/releases/latest
 [plugin-img]: https://img.shields.io/badge/Idea%20Plugin-Api%20Savior-orange.svg
 [plugin]: https://plugins.jetbrains.com/plugin/16860
 [jet-img]: https://img.shields.io/badge/plugin-Install%20Plugin-4597ff.svg
@@ -82,15 +82,15 @@ At this point you can search and jump to the interface by url or interface descr
 # Where can I get more help if needed?
 
 ## Get help by submitting an issue
-[Click to visit Github Issue](https://github.com/docer-savior/docer-savior-idea-plugin/issues)
+[Click to visit Github Issue](https://github.com/gudqs7-idea-plugins/api-savior/issues)
 > Everyone is welcome to ask questions, and everyone is welcome to improve it together!
 
 **In addition, I have connected to the error handling component of IDEA, so when I find an error message from the plugin, follow the IDEA prompt to view the error information and report it to me with one click (that is, an issue is automatically generated)**
 
 ## See the wiki for more instructions
 
-- [Getting Started Tutorial](https://github.com/docer-savior/docer-savior-idea-plugin/wiki/Get-Started)
-- [Advanced Tutorial](https://github.com/docer-savior/docer-savior-idea-plugin/wiki/More-Details)
+- [Getting Started Tutorial](https://github.com/gudqs7-idea-plugins/api-savior/wiki/Get-Started)
+- [Advanced Tutorial](https://github.com/gudqs7-idea-plugins/api-savior/wiki/More-Details)
 
 ## Understand the actual use of the project by viewing the demo example
 

@@ -1,5 +1,5 @@
-[release-img]: https://img.shields.io/github/release/docer-savior/docer-savior-idea-plugin.svg
-[latest-release]: https://github.com/docer-savior/docer-savior-idea-plugin/releases/latest
+[release-img]: https://img.shields.io/github/release/gudqs7-idea-plugins/api-savior.svg
+[latest-release]: https://github.com/gudqs7-idea-plugins/api-savior/releases/latest
 [plugin-img]: https://img.shields.io/badge/Idea%20Plugin-Api%20Savior-orange.svg
 [plugin]: https://plugins.jetbrains.com/plugin/16860
 [jet-img]: https://img.shields.io/badge/plugin-Install%20Plugin-4597ff.svg
@@ -84,15 +84,15 @@ git clone https://github.com/docer-savior/docer-savior-plugin-usage-examples
 # 如果需要，我可以从哪里获得更多帮助？
 
 ## 通过提交 Issue 来获取帮助
- [点击访问 Github Issue](https://github.com/docer-savior/docer-savior-idea-plugin/issues)  
+ [点击访问 Github Issue](https://github.com/gudqs7-idea-plugins/api-savior/issues)  
 > 欢迎大家提问，欢迎大家一起完善它！
 
 **另外，我接入了 IDEA 的错误处理组件，因此当发现插件报错提示时，按照 IDEA 提示，可查看错误信息，并一键上报给我（即自动生成一个 Issue）**
 
 ## 通过查看 Wiki 来获取更多说明
 
-- [入门教程](https://github.com/docer-savior/docer-savior-idea-plugin/wiki/%E5%85%A5%E9%97%A8%E6%95%99%E7%A8%8B)
-- [进阶教程](https://github.com/docer-savior/docer-savior-idea-plugin/wiki/%E8%BF%9B%E9%98%B6%E6%95%99%E7%A8%8B)
+- [入门教程](https://github.com/gudqs7-idea-plugins/api-savior/wiki/%E5%85%A5%E9%97%A8%E6%95%99%E7%A8%8B)
+- [进阶教程](https://github.com/gudqs7-idea-plugins/api-savior/wiki/%E8%BF%9B%E9%98%B6%E6%95%99%E7%A8%8B)
 
 ## 通过查看 demo 示例来了解项目实际使用效果
 

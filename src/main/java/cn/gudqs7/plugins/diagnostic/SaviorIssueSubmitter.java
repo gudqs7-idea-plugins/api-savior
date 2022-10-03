@@ -14,7 +14,7 @@ public class SaviorIssueSubmitter extends AbstractGithubErrorReportSubmitter {
     @NotNull
     @Override
     protected String getGithubRepo() {
-        return "gudqs7-idea-plugins/docer-savior-idea-plugin";
+        return "gudqs7-idea-plugins/api-savior";
     }
 
     @Override

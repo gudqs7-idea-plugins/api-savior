@@ -2,12 +2,12 @@
 > 首先，感谢您考虑为这个项目做出贡献。像您这样的人使这个插件成为如此出色的工具。
 
 ## 提问题
-> 目前，我们使用 Github Issues 管理缺陷，请您在 [Issues 页面](https://github.com/docer-savior/docer-savior-idea-plugin/issues) 提交 `错误报告`
+> 目前，我们使用 Github Issues 管理缺陷，请您在 [Issues 页面](https://github.com/gudqs7-idea-plugins/api-savior/issues) 提交 `错误报告`
 
 ## 提建议
-> 目前，我们使用 Github Issues 收集建议，请您在 [Issues 页面](https://github.com/docer-savior/docer-savior-idea-plugin/issues) 提交 `功能建议`  
+> 目前，我们使用 Github Issues 收集建议，请您在 [Issues 页面](https://github.com/gudqs7-idea-plugins/api-savior/issues) 提交 `功能建议`  
 
-另外，当您对某些功能需要讨论时，也欢迎在 [Github 论坛](https://github.com/docer-savior/docer-savior-idea-plugin/discussions) 发帖！
+另外，当您对某些功能需要讨论时，也欢迎在 [Github 论坛](https://github.com/gudqs7-idea-plugins/api-savior/discussions) 发帖！
 
 ## 提 PR
 

@@ -2,12 +2,12 @@
 > First, thank you for considering contributing to this project. People like you make this plugin such a great tool.
 
 ## ask questions
-> Currently, we use Github Issues to manage bugs, please submit a `bug report` on the [Issues page](https://github.com/docer-savior/docer-savior-idea-plugin/issues)
+> Currently, we use Github Issues to manage bugs, please submit a `bug report` on the [Issues page](https://github.com/gudqs7-idea-plugins/api-savior/issues)
 
 ## Suggestions
-> Currently, we use Github Issues to collect suggestions, please submit `feature request` on the [Issues page](https://github.com/docer-savior/docer-savior-idea-plugin/issues)
+> Currently, we use Github Issues to collect suggestions, please submit `feature request` on the [Issues page](https://github.com/gudqs7-idea-plugins/api-savior/issues)
 
-Also, feel free to post on the [Github Forum](https://github.com/docer-savior/docer-savior-idea-plugin/discussions) when you need to discuss some features!
+Also, feel free to post on the [Github Forum](https://github.com/gudqs7-idea-plugins/api-savior/discussions) when you need to discuss some features!
 
 ## Submit PR
 
