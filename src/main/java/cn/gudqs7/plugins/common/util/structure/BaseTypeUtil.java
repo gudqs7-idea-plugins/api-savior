@@ -319,7 +319,7 @@ public class BaseTypeUtil {
             int length = RandomUtils.nextInt(5, 20);
             StringBuilder stringBuilder = new StringBuilder();
             for (int i = 0; i < length; i++) {
-                stringBuilder.append(randomChar(false));
+                stringBuilder.append(randomChar(true));
             }
             return stringBuilder.toString();
         } else {
@@ -387,7 +387,7 @@ public class BaseTypeUtil {
             return 'Q';
         }
         boolean en = RandomUtils.nextBoolean();
-        return randomChar(en);
+        return randomChar(true);
     }
 
     private static char randomChar(boolean en) {
