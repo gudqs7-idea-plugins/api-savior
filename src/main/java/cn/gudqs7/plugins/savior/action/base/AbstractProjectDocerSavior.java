@@ -38,6 +38,7 @@ public abstract class AbstractProjectDocerSavior extends AbstractBatchDocerSavio
         }
         // 检查该类下方法名是否重复
         List<String> apiNameList = classMarkdownPair.getRight();
+        String classMarkdown0 = classMarkdown;
         List<String> apiNameList0 = new ArrayList<>(32);
         Set<String> methodSet = (Set<String>) otherMap.get("methodSet");
         Map<String, Integer> apiNameNoMap = (Map<String, Integer>) otherMap.get("apiNameNoMap");
@@ -50,13 +51,16 @@ public abstract class AbstractProjectDocerSavior extends AbstractBatchDocerSavio
                 String apiName0 = apiName + generateNo(apiNameNoMap, apiName);
                 String tempH1 = "__" + apiNameEscape + "__";
 
-                classMarkdown = classMarkdown.replaceFirst(originH1 + TOC, tempH1);
-                classMarkdown = classMarkdown.replaceFirst(originH1 + TOC, "# " + apiName0 + TOC);
-                classMarkdown = classMarkdown.replaceFirst(tempH1, originH1 + TOC);
+                // 先将第一个不带数字的替换掉
+                classMarkdown0 = classMarkdown0.replaceFirst(originH1, tempH1);
+                // 替换第一个非数字结尾的
+                classMarkdown0 = classMarkdown0.replaceFirst(originH1 + "(?!\\d+)", "# " + apiName0);
+                // 恢复第一个不带数字的
+                classMarkdown0 = classMarkdown0.replaceFirst(tempH1, originH1);
                 apiNameList0.add(apiName0);
                 continue;
             }
-            classMarkdown = classMarkdown.replaceAll("(" + originH1 + ").*", "$1" + TOC);
+            classMarkdown0 = classMarkdown0.replaceAll(originH1, TOC + "\n" + originH1);
             apiNameList0.add(apiName);
             methodSet.add(apiName);
         }
@@ -64,8 +68,7 @@ public abstract class AbstractProjectDocerSavior extends AbstractBatchDocerSavio
 
         // 拼接 markdown 内容
         StringBuilder allMarkdownSbf = (StringBuilder) otherMap.get("allMarkdown");
-        allMarkdownSbf.append(classMarkdown).append("\n");
-
+        allMarkdownSbf.append(classMarkdown0).append("\n");
 
         // 收集目录信息
         Map<String, Map<String, List<String>>> toc = (Map<String, Map<String, List<String>>>) otherMap.get("toc");
@@ -109,7 +112,8 @@ public abstract class AbstractProjectDocerSavior extends AbstractBatchDocerSavio
 
                 List<String> apiNameList = moduleEntry.getValue();
                 for (String apiName : apiNameList) {
-                    tocMarkdown.append("    - ").append(String.format("[%s](#%s)", apiName, apiName + TOC)).append("\n");
+                    String apiNameRemove = StringTool.removeRegex(apiName);
+                    tocMarkdown.append("    - ").append(String.format("[%s](#%s)", apiName, apiNameRemove)).append("\n");
                 }
             }
         }
