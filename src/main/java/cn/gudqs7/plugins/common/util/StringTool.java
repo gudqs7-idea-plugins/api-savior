@@ -32,4 +32,12 @@ public class StringTool {
         return source;
     }
 
+    public static String escapeRegex(String source) {
+        return source.replaceAll("([${}()*+.\\[\\]?\\\\^|'\"])", "\\\\$1");
+    }
+
+    public static void main(String[] args) {
+        System.out.println(escapeRegex("查询你好${}()*+.[]?\\^|'\""));
+    }
+
 }
