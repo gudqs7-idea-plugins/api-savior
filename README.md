@@ -73,7 +73,32 @@ git clone https://github.com/gudqs7-idea-plugins/api-savior-examples
 假设我点击了 Batch Generate Api Interface Doc，则我会得到一个文件夹，按模块（可自定义，默认是最后两级报名）分子文件夹的 Markdown 接口文档，如下图  
 ![img.png](parts/imgs/markdown-doc-batch.png)    
 
-## 5.通过 Search Everywhere 搜索 Api
+## 5.修改配置文件
+如果需要，你可以通过添加配置文件来修改生成文档时的一些细节。
+
+首先，在项目的任何一个目录下，新建一个`docer-config.properties`文件。当然我们一般会建议你放在根目录或者放在文档生成的目录。
+
+然后，在该文件中添加你想要修改的配置，就像这样：
+
+```properties
+default.ip=127.0.0.1
+default.notUsingRandom=true
+```
+
+这里列出一些常用的配置项：
+
+|         配置项         | 值类型 |                       备注                       |
+| :--------------------: | :----: | :----------------------------------------------: |
+|       default.ip       | String |                给IP设定一个默认值                |
+|      default.url       | String |        给URL设置一个前缀, 设置后, IP 失效        |
+| default.notUsingRandom |  bool  |            生成数据时是否生成随机数据            |
+|        dir.root        | String | 生成文档所在根目录, 基于IDEA项目根目录下相对路径 |
+
+> 完整的配置项写在代码里了，可以阅读[PluginSettingEnum](https://github.com/gudqs7-idea-plugins/api-savior/blob/master/src/main/java/cn/gudqs7/plugins/common/enums/PluginSettingEnum.java)，相信你可以很轻松的理解它。
+
+最后，重新生成文档，看看文档内容是不是符合你的配置要求。
+
+## 6.通过 Search Everywhere 搜索 Api
 双击 `Shift` 进入 `Search Everywhere` 后切换到 Api，或使用快捷键 `Ctrl + \ ` 或 `Ctrl + Alt + N` 进入如下图界面。  
 此时您可通过 url 或接口描述来搜索并跳转到该接口。
 > 为此我单独开了一个项目 [search-everywhere-api-idea-plugin](https://github.com/gudqs7-idea-plugins/search-everywhere-api-idea-plugin)，欢迎来 Star！    
