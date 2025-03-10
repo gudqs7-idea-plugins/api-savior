@@ -101,8 +101,9 @@ public class PsiClassAnnotationHolderImpl extends AbstractAnnotationHolder {
             commentInfo.setValue(getAnnotationValueByQname(QNAME_OF_MODEL, CommentTagEnum.DEFAULT.getTag()));
         }
         if (hasAnnotation(QNAME_OF_API)) {
-            commentInfo.setValue(getAnnotationValueByQname(QNAME_OF_API, CommentTagEnum.DESCRIPTION.getTag()));
-            commentInfo.setNotes(getAnnotationValueByQname(QNAME_OF_API, CommentTagEnum.DESCRIPTION.getTag()));
+            String description = getAnnotationValueByQname(QNAME_OF_API, CommentTagEnum.DESCRIPTION.getTag());
+            commentInfo.setValue(description);
+            commentInfo.setNotes(description);
             List<String> tagsList = getAnnotationListValueByQname(QNAME_OF_API, CommentTagEnum.TAGS.getTag());
             String tags = "";
             if (CollectionUtils.isNotEmpty(tagsList)) {
@@ -111,12 +112,18 @@ public class PsiClassAnnotationHolderImpl extends AbstractAnnotationHolder {
             commentInfo.setTags(tags);
             commentInfo.setHidden(getAnnotationValueByQname(QNAME_OF_API, CommentTagEnum.HIDDEN.getTag()));
         }
+        if (hasAnnotation(QNAME_OF_OPENAPI_API)) {
+            String description = getAnnotationValueByQname(QNAME_OF_OPENAPI_API, CommentTagEnum.DESCRIPTION.getTag());
+            commentInfo.setValue(description);
+            commentInfo.setNotes(description);
+            commentInfo.setTags(getAnnotationValueByQname(QNAME_OF_OPENAPI_API, CommentTagEnum.NAME.getTag()));
+        }
         return commentInfo;
     }
 
     @Override
     protected boolean usingAnnotation() {
-        return hasAnyOneAnnotation(QNAME_OF_MODEL, QNAME_OF_API);
+        return hasAnyOneAnnotation(QNAME_OF_MODEL, QNAME_OF_API, QNAME_OF_OPENAPI_API);
     }
 
 }

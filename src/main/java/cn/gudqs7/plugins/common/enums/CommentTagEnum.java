@@ -22,6 +22,7 @@ public enum CommentTagEnum {
     EXAMPLE("example"),
     NOTES("notes"),
     TAGS("tags"),
+    NAME("name"),
     IMPORTANT("important", true),
     DESCRIPTION("description"),
     ;

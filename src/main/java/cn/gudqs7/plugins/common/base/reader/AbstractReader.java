@@ -57,7 +57,7 @@ public abstract class AbstractReader<T, B> implements IStructureAndCommentReader
         } else {
             T leafData = readLeaf(structureAndCommentInfo, data, parentData);
             Map<String, StructureAndCommentInfo> children = structureAndCommentInfo.getChildren();
-            if (children != null && children.size() > 0) {
+            if (children != null && !children.isEmpty()) {
                 Map<String, Object> loopData = new HashMap<>(8);
                 loopData.put(MapKeyConstant.READER_PARENT_KEY, parentData);
                 beforeLoop(structureAndCommentInfo, loopData, data, parentData);

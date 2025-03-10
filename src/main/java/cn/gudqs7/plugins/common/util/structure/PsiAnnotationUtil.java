@@ -1,10 +1,7 @@
 package cn.gudqs7.plugins.common.util.structure;
 
 import com.intellij.codeInsight.AnnotationUtil;
-import com.intellij.psi.JavaPsiFacade;
-import com.intellij.psi.PsiAnnotation;
-import com.intellij.psi.PsiAnnotationMemberValue;
-import com.intellij.psi.PsiReferenceExpression;
+import com.intellij.psi.*;
 import lombok.SneakyThrows;
 import org.jetbrains.annotations.NotNull;
 
@@ -124,19 +121,25 @@ public class PsiAnnotationUtil {
         return instance;
     }
 
+
     private static Object getValueByPsiAnnotationMemberValue(PsiAnnotationMemberValue value) {
         if (value instanceof PsiReferenceExpression) {
             PsiReferenceExpression psiReferenceExpression = (PsiReferenceExpression) value;
-            String text = psiReferenceExpression.getText();
-            String prefixWithRequestMethod = "RequestMethod.";
-            if (text.startsWith(prefixWithRequestMethod)) {
-                return text.substring(prefixWithRequestMethod.length());
-            } else {
-                return text;
+            PsiElement resolvedElement = psiReferenceExpression.resolve();
+            // 如果解析到的是一个字段（如静态常量）
+            if (resolvedElement instanceof PsiField) {
+                PsiField field = (PsiField) resolvedElement;
+                PsiExpression initializer = field.getInitializer();
+                if (initializer != null) {
+                    // 递归解析字段的初始化表达式
+                    return getValueByPsiAnnotationMemberValue(initializer);
+                }
             }
         } else {
+            // 尝试直接计算常量表达式的值
             return computeConstantExpression(value);
         }
+        return null;
     }
 
     private static Object computeConstantExpression(PsiAnnotationMemberValue psiAnnotationMemberValue) {

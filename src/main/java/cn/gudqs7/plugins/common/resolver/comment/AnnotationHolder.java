@@ -18,6 +18,15 @@ public interface AnnotationHolder {
     String QNAME_OF_PARAM = "io.swagger.annotations.ApiParam";
     String QNAME_OF_RESPONSE = "io.swagger.annotations.ApiResponse";
     String QNAME_OF_RESPONSES = "io.swagger.annotations.ApiResponses";
+
+    // 新增 Swagger v3 注解
+    String QNAME_OF_OPENAPI_API = "io.swagger.v3.oas.annotations.tags.Tag";
+    String QNAME_OF_OPENAPI_OPERATION = "io.swagger.v3.oas.annotations.Operation";
+    String QNAME_OF_OPENAPI_SCHEMA = "io.swagger.v3.oas.annotations.media.Schema";
+    String QNAME_OF_OPENAPI_PARAMETER = "io.swagger.v3.oas.annotations.Parameter";
+    String QNAME_OF_OPENAPI_RESPONSE = "io.swagger.v3.oas.annotations.responses.ApiResponse";
+    String QNAME_OF_OPENAPI_RESPONSES = "io.swagger.v3.oas.annotations.responses.ApiResponses";
+
     String QNAME_OF_MAPPING = "org.springframework.web.bind.annotation.RequestMapping";
     String QNAME_OF_GET_MAPPING = "org.springframework.web.bind.annotation.GetMapping";
     String QNAME_OF_POST_MAPPING = "org.springframework.web.bind.annotation.PostMapping";

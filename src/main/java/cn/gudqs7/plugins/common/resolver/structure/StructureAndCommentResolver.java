@@ -283,7 +283,7 @@ public class StructureAndCommentResolver implements IStructureAndCommentResolver
         structureAndCommentInfo.setFieldName(fieldName);
         structureAndCommentInfo.setCommentInfo(commentInfo);
         structureAndCommentInfo.setFieldType(fieldTypeName);
-        structureAndCommentInfo.setOriginalFieldType(psiFieldTypeName);
+        structureAndCommentInfo.setOriginalFieldType(psiFieldType.getCanonicalText());
         structureAndCommentInfo.setFieldTypeCode(fieldTypeCode);
         structureAndCommentInfo.setOriginalFieldTypeCode(FieldType.BASE.getType());
         structureAndCommentInfo.setPsiType(psiFieldType);
