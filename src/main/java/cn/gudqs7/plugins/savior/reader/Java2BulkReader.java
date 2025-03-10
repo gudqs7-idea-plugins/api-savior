@@ -47,7 +47,7 @@ public class Java2BulkReader extends AbstractJsonReader<List<PostmanKvInfo>> {
     }
 
     private List<PostmanKvInfo> getBulkList(Map<String, Object> json, String prefix) {
-        if (json == null || json.size() == 0) {
+        if (json == null || json.isEmpty()) {
             return new ArrayList<>();
         }
         List<PostmanKvInfo> kvList = new ArrayList<>();
@@ -62,7 +62,7 @@ public class Java2BulkReader extends AbstractJsonReader<List<PostmanKvInfo>> {
     private void handleKeyValue(String prefix, List<PostmanKvInfo> kvList, String key, Object value) {
         if (value instanceof Map) {
             Map<String, Object> map = (Map<String, Object>) value;
-            if (map.size() == 0) {
+            if (map.isEmpty()) {
                 kvList.add(kv(prefix + key, FINAL_DEFAULT_OBJECT_EXAMPLE, "", true));
             } else {
                 List<PostmanKvInfo> mapKvList = getBulkList(map, prefix + key + ".");

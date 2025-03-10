@@ -53,23 +53,26 @@ public class BaseTypeUtil {
         }));
 
         // 日期, 时间
-        OTHER_BASE_TYPE_MAP.put("java.util.Date", TypeInfo.of("java.util.Date", "new java.util.Date()", dateGetFn));
-        OTHER_BASE_TYPE_MAP.put("java.sql.Date", TypeInfo.of("java.sql.Date", "new java.sql.Date(System.currentTimeMillis())", dateGetFn));
-        OTHER_BASE_TYPE_MAP.put("java.sql.Timestamp", TypeInfo.of("java.sql.Timestamp", "new java.sql.Timestamp(System.currentTimeMillis())", dateGetFn));
-        OTHER_BASE_TYPE_MAP.put("java.sql.Time", TypeInfo.of("java.sql.Time", "new java.sql.Time(System.currentTimeMillis())", dateGetFn));
+        OTHER_BASE_TYPE_MAP.put("java.util.Date", TypeInfo.of("java.util.Date", "org.apache.commons.lang.time.DateFormatUtils.format(new java.util.Date(), \"yyyy-MM-dd HH:mm:ss\")", dateGetFn));
+        OTHER_BASE_TYPE_MAP.put("java.sql.Date", TypeInfo.of("java.sql.Date", "new java.sql.Date(System.currentTimeMillis()).toString()", dateGetFn));
+        OTHER_BASE_TYPE_MAP.put("java.sql.Timestamp", TypeInfo.of("java.sql.Timestamp", "new java.sql.Timestamp(System.currentTimeMillis()).toString()", dateGetFn));
+        OTHER_BASE_TYPE_MAP.put("java.sql.Time", TypeInfo.of("java.sql.Time", "new java.sql.Time(System.currentTimeMillis()).toString()", dateGetFn));
 
         // 添加 Java 8 时间类型
-        OTHER_BASE_TYPE_MAP.put("java.time.LocalDateTime", TypeInfo.of("java.time.LocalDateTime", "java.time.LocalDateTime.now()", dateGetFn));
-        OTHER_BASE_TYPE_MAP.put("java.time.LocalDate", TypeInfo.of("java.time.LocalDate", "java.time.LocalDate.now()", dateGetFn));
-        OTHER_BASE_TYPE_MAP.put("java.time.LocalTime", TypeInfo.of("java.time.LocalTime", "java.time.LocalTime.now()", dateGetFn));
-        OTHER_BASE_TYPE_MAP.put("java.time.ZonedDateTime", TypeInfo.of("java.time.ZonedDateTime", "java.time.ZonedDateTime.now()", dateGetFn));
-        OTHER_BASE_TYPE_MAP.put("java.time.Instant", TypeInfo.of("java.time.Instant", "java.time.Instant.now()", dateGetFn));
-        OTHER_BASE_TYPE_MAP.put("java.time.Duration", TypeInfo.of("java.time.Duration", "java.time.Duration.between(java.time.Instant.now(), java.time.Instant.now())", dateGetFn));
-        OTHER_BASE_TYPE_MAP.put("java.time.Period", TypeInfo.of("java.time.Period", "java.time.Period.between(java.time.LocalDate.now(), java.time.LocalDate.now())", dateGetFn));
-        OTHER_BASE_TYPE_MAP.put("java.time.ZoneId", TypeInfo.of("java.time.ZoneId", "java.time.ZoneId.systemDefault()", dateGetFn));
-        OTHER_BASE_TYPE_MAP.put("java.time.ZoneOffset", TypeInfo.of("java.time.ZoneOffset", "java.time.ZoneOffset.UTC", dateGetFn));
-        OTHER_BASE_TYPE_MAP.put("java.time.OffsetDateTime", TypeInfo.of("java.time.OffsetDateTime", "java.time.OffsetDateTime.now()", dateGetFn));
-        OTHER_BASE_TYPE_MAP.put("java.time.OffsetTime", TypeInfo.of("java.time.OffsetTime", "java.time.OffsetTime.now()", dateGetFn));
+        OTHER_BASE_TYPE_MAP.put("java.time.LocalDateTime", TypeInfo.of("java.time.LocalDateTime",
+                "java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern(\"yyyy-MM-dd HH:mm:ss\"))", dateGetFn));
+        OTHER_BASE_TYPE_MAP.put("java.time.LocalDate", TypeInfo.of("java.time.LocalDate",
+                "java.time.LocalDate.now().format(java.time.format.DateTimeFormatter.ofPattern(\"yyyy-MM-dd\"))", dateGetFn));
+        OTHER_BASE_TYPE_MAP.put("java.time.LocalTime", TypeInfo.of("java.time.LocalTime",
+                "java.time.LocalTime.now().format(java.time.format.DateTimeFormatter.ofPattern(\"HH:mm:ss\"))", dateGetFn));
+        OTHER_BASE_TYPE_MAP.put("java.time.Instant", TypeInfo.of("java.time.Instant",
+                "java.time.Instant.now().atZone(java.time.ZoneId.systemDefault()).format(java.time.format.DateTimeFormatter.ofPattern(\"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'\"))", dateGetFn));
+        OTHER_BASE_TYPE_MAP.put("java.time.ZonedDateTime", TypeInfo.of("java.time.ZonedDateTime",
+                "java.time.ZonedDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern(\"yyyy-MM-dd HH:mm:ss.SSSXXX\"))", dateGetFn));
+        OTHER_BASE_TYPE_MAP.put("java.time.OffsetDateTime", TypeInfo.of("java.time.OffsetDateTime",
+                "java.time.OffsetDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern(\"yyyy-MM-dd'T'HH:mm:ss.SSSXXX\"))", dateGetFn));
+        OTHER_BASE_TYPE_MAP.put("java.time.OffsetTime", TypeInfo.of("java.time.OffsetTime",
+                "java.time.OffsetTime.now().format(java.time.format.DateTimeFormatter.ofPattern(\"HH:mm:ss.SSSXXX\"))", dateGetFn));
 
         OTHER_BASE_TYPE_MAP.put("java.sql.Blob", TypeInfo.of("javax.sql.rowset.serial.SerialBlob", "new SerialBlob(new byte[]{})", stringGetFn));
         OTHER_BASE_TYPE_MAP.put("java.sql.Clob", TypeInfo.of("javax.sql.rowset.serial.SerialClob", "new SerialClob(new char[]{})", stringGetFn));

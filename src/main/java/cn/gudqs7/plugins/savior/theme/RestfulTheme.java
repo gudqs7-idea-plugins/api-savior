@@ -65,7 +65,7 @@ public class RestfulTheme implements Theme {
 
     @Override
     public void afterCollectData(Map<String, Object> dataByStr, Project project, PsiMethod publicMethod, String interfaceClassName, CommentInfo commentInfo, StructureAndCommentInfo paramStructureAndCommentInfo, StructureAndCommentInfo returnStructureAndCommentInfo, Map<String, Object> java2jsonMap, Map<String, Object> returnJava2jsonMap, String java2jsonStr, String returnJava2jsonStr) {
-        if (java2jsonMap == null || java2jsonMap.size() == 0) {
+        if (java2jsonMap == null || java2jsonMap.isEmpty()) {
             dataByStr.put("jsonExample", "");
             return;
         }
