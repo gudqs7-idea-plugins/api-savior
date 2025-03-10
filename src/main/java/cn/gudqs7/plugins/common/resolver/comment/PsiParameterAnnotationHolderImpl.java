@@ -35,6 +35,7 @@ public class PsiParameterAnnotationHolderImpl extends AbstractFieldAnnotationHol
         CommentInfoTag commentInfoTag = new CommentInfoTag();
         PsiElement parent = psiParameter.getParent().getParent();
         String parameterName = psiParameter.getName();
+
         if (parent instanceof PsiMethod) {
             for (PsiElement child : parent.getChildren()) {
                 if (child instanceof PsiDocComment) {
@@ -42,49 +43,19 @@ public class PsiParameterAnnotationHolderImpl extends AbstractFieldAnnotationHol
                     Map<String, MoreCommentTagEnum> moreCommentTagMap = MoreCommentTagEnum.allTagMap();
                     PsiDocComment psiComment = (PsiDocComment) child;
                     String text = psiComment.getText();
+
                     if (text.startsWith("/**") && text.endsWith("*/")) {
                         String[] lines = text.replaceAll("\r", "").split("\n");
                         for (String line : lines) {
-                            if (line.contains("/**") || line.contains("*/")) {
+                            line = processCommentLine(line);
+                            if (line == null) {
                                 continue;
                             }
-                            line = removeJavaDocPrefix(line);
-                            if (StringUtils.isBlank(line)) {
-                                continue;
-                            }
-                            if (line.contains("@")) {
-                                String atParam = "@param";
-                                if (line.startsWith("@param")) {
-                                    line = line.substring(atParam.length()).trim();
-                                    String[] paramInfoArray = line.split(" ");
-                                    String fieldName = "";
-                                    if (paramInfoArray.length > 0) {
-                                        fieldName = paramInfoArray[0];
-                                    }
-                                    if (!fieldName.equals(parameterName)) {
-                                        continue;
-                                    }
-                                    String tag = line.substring(fieldName.length()).trim();
-                                    String[] tagArray = tag.split(" ");
-                                    for (String t : tagArray) {
-                                        String tagName = t;
-                                        String tagVal = null;
-                                        if (t.contains("=")) {
-                                            String[] tagKeyVal = t.split("=");
-                                            tagName = tagKeyVal[0];
-                                            if (tagKeyVal.length > 1) {
-                                                tagVal = tagKeyVal[1];
-                                            }
-                                        }
-                                        if (commentTagMap.containsKey(tagName)) {
-                                            setCommentInfoByTag(commentInfoTag, tagName, tagVal);
-                                        } else if (moreCommentTagMap.containsKey(tagName)) {
-                                            commentInfoTag.appendToTag(tagName, tagVal);
-                                        } else {
-                                            commentInfoTag.appendValue(t, CommonConst.SPACE);
-                                        }
-                                    }
-                                }
+
+                            if (line.startsWith("@param")) {
+                                processParamTag(line, parameterName, commentTagMap, moreCommentTagMap, commentInfoTag);
+                            } else {
+                                commentInfoTag.appendValue(line, CommonConst.SPACE);
                             }
                         }
                     }
@@ -92,9 +63,65 @@ public class PsiParameterAnnotationHolderImpl extends AbstractFieldAnnotationHol
                 }
             }
         }
+
         dealOtherAnnotation(commentInfoTag);
         return commentInfoTag;
     }
+
+    private String processCommentLine(String line) {
+        // 去除注释前缀并修剪空白字符
+        line = removeJavaDocPrefix(line).trim();
+        if (StringUtils.isBlank(line)) {
+            return null; // 如果行为空或仅包含空白字符，返回 null
+        }
+        return line;
+    }
+
+    private void processParamTag(String line, String parameterName,
+                                 Map<String, CommentTagEnum> commentTagMap,
+                                 Map<String, MoreCommentTagEnum> moreCommentTagMap,
+                                 CommentInfoTag commentInfoTag) {
+        // 去掉 "@param" 前缀
+        line = line.substring("@param".length()).trim();
+        // 分割参数名和注释内容
+        String[] paramInfoArray = line.split(" ", 2);
+        if (paramInfoArray.length < 2) {
+            return; // 格式错误，跳过
+        }
+
+        String fieldName = paramInfoArray[0];
+        if (!fieldName.equals(parameterName)) {
+            return; // 不是当前参数，跳过
+        }
+
+        // 获取注释内容部分
+        String tagContent = paramInfoArray[1];
+        // 分割注释内容中的标签
+        String[] tagArray = tagContent.split(" ");
+        for (String tagEntry : tagArray) {
+            String tagName = tagEntry;
+            String tagVal = null;
+
+            // 处理键值对形式的标签
+            if (tagEntry.contains("=")) {
+                String[] tagKeyValue = tagEntry.split("=", 2);
+                tagName = tagKeyValue[0];
+                if (tagKeyValue.length > 1) {
+                    tagVal = tagKeyValue[1];
+                }
+            }
+
+            // 根据标签类型处理
+            if (commentTagMap.containsKey(tagName)) {
+                setCommentInfoByTag(commentInfoTag, tagName, tagVal);
+            } else if (moreCommentTagMap.containsKey(tagName)) {
+                commentInfoTag.appendToTag(tagName, tagVal);
+            } else {
+                commentInfoTag.appendValue(tagEntry, CommonConst.SPACE);
+            }
+        }
+    }
+
 
     @Override
     public CommentInfo getCommentInfoByAnnotation() {

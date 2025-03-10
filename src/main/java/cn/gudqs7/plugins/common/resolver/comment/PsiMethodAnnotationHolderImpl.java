@@ -113,8 +113,10 @@ public class PsiMethodAnnotationHolderImpl extends AbstractAnnotationHolder {
     @Override
     public CommentInfo getCommentInfoByAnnotation() {
         CommentInfo commentInfo = new CommentInfo();
-        boolean hasOperationAnnotation = hasAnnotation(QNAME_OF_OPERATION);
-        if (hasOperationAnnotation) {
+
+        // 方法级别的注解：优先使用 @ApiOperation，如果没有则使用 @Operation
+        if (hasAnnotation(QNAME_OF_OPERATION)) {
+            // 使用 Swagger v2 的 @ApiOperation 注解
             commentInfo.setHidden(getAnnotationValueByApiOperation(CommentTagEnum.HIDDEN.getTag()));
             String value = getAnnotationValueByApiOperation(CommentTagEnum.DEFAULT.getTag());
             String notes = getAnnotationValueByApiOperation(CommentTagEnum.NOTES.getTag());
@@ -126,34 +128,40 @@ public class PsiMethodAnnotationHolderImpl extends AbstractAnnotationHolder {
             }
             commentInfo.setValue(value);
             commentInfo.setNotes(notes);
+        } else if (hasAnnotation(QNAME_OF_OPENAPI_OPERATION)) {
+            // 使用 Swagger v3 的 @Operation 注解
+            String summary = getAnnotationValueByQname(QNAME_OF_OPENAPI_OPERATION, "summary");
+            String description = getAnnotationValueByQname(QNAME_OF_OPENAPI_OPERATION, "description");
+            commentInfo.setValue(summary); // 映射到 value
+            commentInfo.setNotes(description); // 映射到 notes
         }
-        // 添加 knife4j 的 ApiOperationSupport 注解支持, 主要是 includeParameters 和 ignoreParameters
-        // 优先级是有 ignoreParameters 则跳过 includeParameters 字段
-        if (hasAnnotation(QNAME_OF_OPERATION_SUPPORT)) {
-            List<String> includeParameters = getAnnotationValueByQname(QNAME_OF_OPERATION_SUPPORT, "includeParameters");
-            addRequestTagInfo(commentInfo, includeParameters, MoreCommentTagEnum.ONLY_REQUEST.getTag());
-            List<String> ignoreParameters = getAnnotationValueByQname(QNAME_OF_OPERATION_SUPPORT, "ignoreParameters");
-            addRequestTagInfo(commentInfo, ignoreParameters, MoreCommentTagEnum.HIDDEN_REQUEST.getTag());
-        }
+
+        // 响应信息：优先使用 @ApiResponses，如果没有则使用 @ApiResponses
         if (hasAnnotation(QNAME_OF_RESPONSES)) {
-            // 存在多个 code
+            // 使用 Swagger v2 的 @ApiResponses 注解
             List<PsiAnnotation> psiAnnotationList = getAnnotationValueByQname(QNAME_OF_RESPONSES, "value");
-            if (psiAnnotationList != null && psiAnnotationList.size() > 0) {
+            if (psiAnnotationList != null) {
                 for (PsiAnnotation psiAnnotation : psiAnnotationList) {
                     Integer code = PsiAnnotationUtil.getAnnotationValue(psiAnnotation, "code", null);
                     String message = PsiAnnotationUtil.getAnnotationValue(psiAnnotation, "message", null);
-                    ResponseCodeInfo codeInfo = new ResponseCodeInfo(String.valueOf(code), message);
-                    commentInfo.getResponseCodeInfoList().add(codeInfo);
+                    commentInfo.getResponseCodeInfoList().add(new ResponseCodeInfo(String.valueOf(code), message));
                 }
             }
-        } else if (hasAnnotation(QNAME_OF_RESPONSE)) {
-            // 存在单个 code
-            Integer code = getAnnotationValueByQname(QNAME_OF_RESPONSE, "code");
-            String message = getAnnotationValueByQname(QNAME_OF_RESPONSE, "message");
-            ResponseCodeInfo codeInfo = new ResponseCodeInfo(String.valueOf(code), message);
-            commentInfo.getResponseCodeInfoList().add(codeInfo);
+        } else if (hasAnnotation(QNAME_OF_OPENAPI_RESPONSES)) {
+            // 使用 Swagger v3 的 @ApiResponses 注解
+            List<PsiAnnotation> psiAnnotationList = getAnnotationValueByQname(QNAME_OF_OPENAPI_RESPONSES, "value");
+            if (psiAnnotationList != null) {
+                for (PsiAnnotation psiAnnotation : psiAnnotationList) {
+                    Integer code = PsiAnnotationUtil.getAnnotationValue(psiAnnotation, "responseCode", null);
+                    String description = PsiAnnotationUtil.getAnnotationValue(psiAnnotation, "description", null);
+                    commentInfo.getResponseCodeInfoList().add(new ResponseCodeInfo(String.valueOf(code), description));
+                }
+            }
         }
+
+        // 请求映射处理
         dealRequestMapping(commentInfo);
+
         return commentInfo;
     }
 
@@ -164,6 +172,7 @@ public class PsiMethodAnnotationHolderImpl extends AbstractAnnotationHolder {
      * @return 信息
      */
     private <T> T getAnnotationValueByApiOperation(String attr) {
+
         return getAnnotationValueByQname(QNAME_OF_OPERATION, attr);
     }
 
@@ -310,7 +319,7 @@ public class PsiMethodAnnotationHolderImpl extends AbstractAnnotationHolder {
 
     @Override
     protected boolean usingAnnotation() {
-        return hasAnnotation(QNAME_OF_OPERATION);
+        return hasAnyOneAnnotation(QNAME_OF_OPERATION,QNAME_OF_OPENAPI_OPERATION);
     }
 
 }

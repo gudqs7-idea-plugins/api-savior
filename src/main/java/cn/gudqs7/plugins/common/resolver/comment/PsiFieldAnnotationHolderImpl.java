@@ -5,6 +5,7 @@ import cn.gudqs7.plugins.common.enums.CommentTagEnum;
 import cn.gudqs7.plugins.common.enums.MoreCommentTagEnum;
 import cn.gudqs7.plugins.common.pojo.resolver.CommentInfo;
 import cn.gudqs7.plugins.common.pojo.resolver.CommentInfoTag;
+import cn.gudqs7.plugins.common.util.structure.PsiAnnotationUtil;
 import com.intellij.psi.PsiAnnotation;
 import com.intellij.psi.PsiComment;
 import com.intellij.psi.PsiElement;
@@ -79,12 +80,12 @@ public class PsiFieldAnnotationHolderImpl extends AbstractFieldAnnotationHolder 
     @Override
     public CommentInfo getCommentInfoByAnnotation() {
         CommentInfo commentInfo = new CommentInfo();
-        boolean hasAnnotatation = hasAnnotation(QNAME_OF_PROPERTY);
-        if (hasAnnotatation) {
-            commentInfo.setHidden(getAnnotationValueByProperty(CommentTagEnum.HIDDEN.getTag()));
-            commentInfo.setRequired(getAnnotationValueByProperty(CommentTagEnum.REQUIRED.getTag()));
-            String value = getAnnotationValueByProperty(CommentTagEnum.DEFAULT.getTag());
-            String notes = getAnnotationValueByProperty(CommentTagEnum.NOTES.getTag());
+        PsiAnnotation psiAnnotation = getAnnotationByQname(QNAME_OF_PROPERTY);
+        if (psiAnnotation != null) {
+            commentInfo.setHidden(getAnnotationValueByProperty(psiAnnotation,CommentTagEnum.HIDDEN.getTag()));
+            commentInfo.setRequired(getAnnotationValueByProperty(psiAnnotation,CommentTagEnum.REQUIRED.getTag()));
+            String value = getAnnotationValueByProperty(psiAnnotation,CommentTagEnum.DEFAULT.getTag());
+            String notes = getAnnotationValueByProperty(psiAnnotation,CommentTagEnum.NOTES.getTag());
             if (StringUtils.isNotBlank(value)) {
                 value = value.replaceAll("\\n", CommonConst.BREAK_LINE);
             }
@@ -93,7 +94,15 @@ public class PsiFieldAnnotationHolderImpl extends AbstractFieldAnnotationHolder 
             }
             commentInfo.setValue(value);
             commentInfo.setNotes(notes);
-            commentInfo.setExample(getAnnotationValueByProperty(CommentTagEnum.EXAMPLE.getTag()));
+            commentInfo.setExample(getAnnotationValueByProperty(psiAnnotation,CommentTagEnum.EXAMPLE.getTag()));
+        }
+        psiAnnotation = getAnnotationByQname(QNAME_OF_OPENAPI_SCHEMA);
+        if (psiAnnotation != null) {
+            // 补充 CommentInfo 中已有的属性
+            commentInfo.setHidden(getAnnotationValueByProperty(psiAnnotation, "hidden"));
+            commentInfo.setRequired(getAnnotationValueByProperty(psiAnnotation, "required"));
+            commentInfo.setValue(getAnnotationValueByProperty(psiAnnotation, "description"));
+            commentInfo.setExample(getAnnotationValueByProperty(psiAnnotation, "example"));
         }
         dealOtherAnnotation(commentInfo);
         return commentInfo;
@@ -118,9 +127,19 @@ public class PsiFieldAnnotationHolderImpl extends AbstractFieldAnnotationHolder 
         return getAnnotationValueByQname(QNAME_OF_PROPERTY, attr);
     }
 
+    /**
+     * 获取注解中的信息
+     *
+     * @param attr 注解字段
+     * @return 信息
+     */
+    private  <T> T getAnnotationValueByProperty( PsiAnnotation psiAnnotation,String attr) {
+        return PsiAnnotationUtil.getAnnotationValue(psiAnnotation, attr, null);
+    }
+
     @Override
     protected boolean usingAnnotation() {
-        return hasAnnotation(QNAME_OF_PROPERTY);
+        return hasAnyOneAnnotation(QNAME_OF_PROPERTY, QNAME_OF_OPENAPI_SCHEMA);
     }
 
 }

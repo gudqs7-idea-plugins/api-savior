@@ -7,6 +7,7 @@ import cn.gudqs7.plugins.common.pojo.resolver.CommentInfo;
 import cn.gudqs7.plugins.common.util.PluginSettingHelper;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiType;
+import groovy.lang.GroovyShell;
 import lombok.Data;
 import org.apache.commons.lang.time.DateFormatUtils;
 import org.apache.commons.lang3.RandomUtils;
@@ -14,6 +15,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.*;
 import java.util.function.Function;
 
@@ -30,13 +32,11 @@ public class BaseTypeUtil {
     static {
         Function<CommentInfo, Object> stringGetFn = commentInfo -> {
             String example = commentInfo.getExample("");
-            boolean noExampleValue = StringUtils.isBlank(example);
-            return noExampleValue ? randomString(commentInfo) : example;
+            return StringUtils.isBlank(example) ? randomString(commentInfo) : example;
         };
         Function<CommentInfo, Object> dateGetFn = commentInfo -> {
             String example = commentInfo.getExample("");
-            boolean noExampleValue = StringUtils.isBlank(example);
-            return noExampleValue ? randomDate(commentInfo) : example;
+            return StringUtils.isBlank(example) ? randomDate(commentInfo) : example;
         };
         // 此处处理不能直接 new 的类型, 也就是接口, 常用的接口目前只想到三大集合
         OTHER_INTERFACE_MAP.put("java.util.List", TypeInfo.of("java.util.ArrayList", "new ArrayList<>()", new ArrayList<>()));
@@ -49,16 +49,27 @@ public class BaseTypeUtil {
         OTHER_BASE_TYPE_MAP.put("java.lang.Number", TypeInfo.of("0", commentInfo -> 0));
         OTHER_BASE_TYPE_MAP.put("java.math.BigDecimal", TypeInfo.of("java.math.BigDecimal", "new BigDecimal(0)", commentInfo -> {
             String example = commentInfo.getExample("");
-            boolean noExampleValue = StringUtils.isBlank(example);
-            return noExampleValue ? BigDecimal.valueOf(randomDouble()) : new BigDecimal(example);
+            return StringUtils.isBlank(example) ? BigDecimal.valueOf(randomDouble()).setScale(2, RoundingMode.HALF_UP) : new BigDecimal(example);
         }));
 
         // 日期, 时间
-        OTHER_BASE_TYPE_MAP.put("java.util.Date", TypeInfo.of("java.util.Date", "new Date()", dateGetFn));
-        OTHER_BASE_TYPE_MAP.put("java.time.LocalDateTime", TypeInfo.of("java.time.LocalDateTime", "LocalDateTime.now()", dateGetFn));
-        OTHER_BASE_TYPE_MAP.put("java.sql.Date", TypeInfo.of("java.sql.Date", "new Date(System.currentTimeMillis())", dateGetFn));
-        OTHER_BASE_TYPE_MAP.put("java.sql.Timestamp", TypeInfo.of("java.sql.Timestamp", "new Timestamp(System.currentTimeMillis())", dateGetFn));
-        OTHER_BASE_TYPE_MAP.put("java.sql.Time", TypeInfo.of("java.sql.Time", "new Time(System.currentTimeMillis())", dateGetFn));
+        OTHER_BASE_TYPE_MAP.put("java.util.Date", TypeInfo.of("java.util.Date", "new java.util.Date()", dateGetFn));
+        OTHER_BASE_TYPE_MAP.put("java.sql.Date", TypeInfo.of("java.sql.Date", "new java.sql.Date(System.currentTimeMillis())", dateGetFn));
+        OTHER_BASE_TYPE_MAP.put("java.sql.Timestamp", TypeInfo.of("java.sql.Timestamp", "new java.sql.Timestamp(System.currentTimeMillis())", dateGetFn));
+        OTHER_BASE_TYPE_MAP.put("java.sql.Time", TypeInfo.of("java.sql.Time", "new java.sql.Time(System.currentTimeMillis())", dateGetFn));
+
+        // 添加 Java 8 时间类型
+        OTHER_BASE_TYPE_MAP.put("java.time.LocalDateTime", TypeInfo.of("java.time.LocalDateTime", "java.time.LocalDateTime.now()", dateGetFn));
+        OTHER_BASE_TYPE_MAP.put("java.time.LocalDate", TypeInfo.of("java.time.LocalDate", "java.time.LocalDate.now()", dateGetFn));
+        OTHER_BASE_TYPE_MAP.put("java.time.LocalTime", TypeInfo.of("java.time.LocalTime", "java.time.LocalTime.now()", dateGetFn));
+        OTHER_BASE_TYPE_MAP.put("java.time.ZonedDateTime", TypeInfo.of("java.time.ZonedDateTime", "java.time.ZonedDateTime.now()", dateGetFn));
+        OTHER_BASE_TYPE_MAP.put("java.time.Instant", TypeInfo.of("java.time.Instant", "java.time.Instant.now()", dateGetFn));
+        OTHER_BASE_TYPE_MAP.put("java.time.Duration", TypeInfo.of("java.time.Duration", "java.time.Duration.between(java.time.Instant.now(), java.time.Instant.now())", dateGetFn));
+        OTHER_BASE_TYPE_MAP.put("java.time.Period", TypeInfo.of("java.time.Period", "java.time.Period.between(java.time.LocalDate.now(), java.time.LocalDate.now())", dateGetFn));
+        OTHER_BASE_TYPE_MAP.put("java.time.ZoneId", TypeInfo.of("java.time.ZoneId", "java.time.ZoneId.systemDefault()", dateGetFn));
+        OTHER_BASE_TYPE_MAP.put("java.time.ZoneOffset", TypeInfo.of("java.time.ZoneOffset", "java.time.ZoneOffset.UTC", dateGetFn));
+        OTHER_BASE_TYPE_MAP.put("java.time.OffsetDateTime", TypeInfo.of("java.time.OffsetDateTime", "java.time.OffsetDateTime.now()", dateGetFn));
+        OTHER_BASE_TYPE_MAP.put("java.time.OffsetTime", TypeInfo.of("java.time.OffsetTime", "java.time.OffsetTime.now()", dateGetFn));
 
         OTHER_BASE_TYPE_MAP.put("java.sql.Blob", TypeInfo.of("javax.sql.rowset.serial.SerialBlob", "new SerialBlob(new byte[]{})", stringGetFn));
         OTHER_BASE_TYPE_MAP.put("java.sql.Clob", TypeInfo.of("javax.sql.rowset.serial.SerialClob", "new SerialClob(new char[]{})", stringGetFn));
@@ -248,11 +259,16 @@ public class BaseTypeUtil {
         String typeName = psiType.getPresentableText();
         String qName = psiType.getCanonicalText();
         TypeInfo typeInfo = JAVA_BASE_TYPE_MAP.get(typeName.toLowerCase());
-        if (typeInfo == null) {
-            typeInfo = OTHER_BASE_TYPE_MAP.get(qName);
-        }
         if (typeInfo != null) {
             return typeInfo.getDefaultValGetFn().apply(commentInfo);
+        }
+        typeInfo = OTHER_BASE_TYPE_MAP.get(qName);
+        if (typeInfo != null) {
+            Object defaultValue = typeInfo.getDefaultValGetFn().apply(commentInfo);
+            if (defaultValue == null ) {
+                defaultValue =  new GroovyShell().evaluate(typeInfo.getDefaultValStr());
+            }
+            return defaultValue;
         }
         return null;
     }
@@ -290,9 +306,14 @@ public class BaseTypeUtil {
     }
 
     private static String randomDate(CommentInfo commentInfo) {
+        String pattern = commentInfo.getSingleStr(MoreCommentTagEnum.DATE_FORMAT.getTag(), null);
+        if (pattern == null) {
+            pattern = commentInfo.getSingleStr(MoreCommentTagEnum.JSON_FORMAT.getTag(), null);
+        }
+        if (pattern == null) {
+            return null;
+        }
         Date now = new Date();
-        String pattern = commentInfo.getSingleStr(MoreCommentTagEnum.JSON_FORMAT.getTag(), "yyyy-MM-dd'T'HH:mm:ss.SSS+0000");
-        pattern = commentInfo.getSingleStr(MoreCommentTagEnum.DATE_FORMAT.getTag(), pattern);
         now.setTime(System.currentTimeMillis() + RandomUtils.nextLong(0, 86400000));
         if (notUsingRandom()) {
             now.setTime(1338182040520L);
