@@ -20,7 +20,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * @author wq
  */
-public abstract class AbstractOnRightClickSavior extends AbstractAction implements UpdateInBackground {
+public abstract class AbstractOnRightClickSavior extends AbstractAction {
 
     @Override
     public void update0(@NotNull AnActionEvent e) {

@@ -37,7 +37,7 @@ import java.util.concurrent.atomic.AtomicReference;
 /**
  * @author wq
  */
-public abstract class AbstractBatchDocerSavior extends AbstractAction implements UpdateInBackground {
+public abstract class AbstractBatchDocerSavior extends AbstractAction {
 
     @Override
     public void update0(@NotNull AnActionEvent e) {
@@ -71,12 +71,9 @@ public abstract class AbstractBatchDocerSavior extends AbstractAction implements
             return;
         }
 
-        Object data = e.getDataContext().getData("psi.Element.array");
-        if (data instanceof PsiElement[]) {
-            PsiElement[] psiElements = (PsiElement[]) data;
-            if (psiElements.length > 1) {
-                return;
-            }
+        PsiElement[] psiElements = e.getData(PlatformDataKeys.PSI_ELEMENT_ARRAY);
+        if (psiElements != null && psiElements.length > 1) {
+            return;
         }
         notVisible(e);
     }
@@ -129,7 +126,7 @@ public abstract class AbstractBatchDocerSavior extends AbstractAction implements
             String title = getModelTitle();
             AtomicBoolean hasCancelAtomic = new AtomicBoolean(false);
             String finalDirRoot = dirRoot;
-            ProgressManager.getInstance().run(new Task.Modal(project, title, true) {
+            new Task.Modal(project, title, true) {
                 @Override
                 public void run(@NotNull ProgressIndicator indicator) {
                     try {
@@ -190,7 +187,8 @@ public abstract class AbstractBatchDocerSavior extends AbstractAction implements
                         ExceptionUtil.handleException(e1);
                     }
                 }
-            });
+            }.setCancelText("取消").queue();
+
             boolean hasCancel = hasCancelAtomic.get();
             if (!hasCancel) {
                 ClipboardUtil.setSysClipboardText(docRootDirPath);
@@ -229,13 +227,11 @@ public abstract class AbstractBatchDocerSavior extends AbstractAction implements
         if (isFromArray) {
             return null;
         }
-        Object data = e.getDataContext().getData("psi.Element.array");
-        if (data instanceof PsiElement[]) {
-            PsiElement[] psiElements = (PsiElement[]) data;
-            if (psiElements.length > 1) {
-                PsiElement psiElement0 = psiElements[0];
-                return getFirstPsiFile(e, project, psiElement0, true);
-            }
+
+        PsiElement[] psiElements = e.getData(PlatformDataKeys.PSI_ELEMENT_ARRAY);
+        if (psiElements != null && psiElements.length > 1) {
+            PsiElement psiElement0 = psiElements[0];
+            return getFirstPsiFile(e, project, psiElement0, true);
         }
         return null;
     }
