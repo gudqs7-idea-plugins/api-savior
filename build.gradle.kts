@@ -1,10 +1,11 @@
 plugins {
     id("java")
+    id("org.jetbrains.kotlin.jvm") version "1.8.21"
     id("org.jetbrains.intellij") version "1.15.0"
 }
 
 group = "cn.gudqs7.idea.plugins"
-version = "2.6.0"
+version = "2.6.1"
 
 repositories {
     mavenCentral()
@@ -27,7 +28,7 @@ intellij {
     plugins.set(listOf(
             // 必须
             "java",
-            "com.jetbrains.rust:232.18264.32",
+            "com.jetbrains.rust:232.23135.116",
             // 可选, 用于录制教程  显示按键的
             "org.nik.presentation-assistant:1.0.11"
     ))
@@ -40,6 +41,9 @@ tasks {
         options.encoding = "UTF-8"
         sourceCompatibility = "17"
         targetCompatibility = "17"
+    }
+    withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+        kotlinOptions.jvmTarget = "17"
     }
 
     publishPlugin {

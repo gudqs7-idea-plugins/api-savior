@@ -1,6 +1,6 @@
-package cn.gudqs7.plugins.common.base.action;
+package cn.gudqs7.plugins.rust.action.base;
 
-import cn.gudqs7.plugins.common.resolver.comment.AnnotationHolder;
+import cn.gudqs7.plugins.common.base.action.AbstractAction;
 import cn.gudqs7.plugins.common.util.PluginSettingHelper;
 import cn.gudqs7.plugins.common.util.WebEnvironmentUtil;
 import cn.gudqs7.plugins.common.util.jetbrain.ClipboardUtil;
@@ -15,13 +15,14 @@ import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiMethod;
 import org.jetbrains.annotations.NotNull;
+import org.rust.lang.core.psi.RsFunction;
+import org.rust.lang.core.psi.RsPatStruct;
 
 /**
  * @author wq
  */
-public abstract class AbstractOnRightClickSavior extends AbstractAction {
+public abstract class AbstractRustAction extends AbstractAction {
 
-    @Override
     public void update0(@NotNull AnActionEvent e) {
         Project project = e.getData(PlatformDataKeys.PROJECT);
         if (project == null) {
@@ -34,22 +35,22 @@ public abstract class AbstractOnRightClickSavior extends AbstractAction {
             return;
         }
 
-        PsiMethod psiMethod = getPsiMethod(psiElement);
-        PsiClass psiClass = getPsiClass(psiElement);
-        boolean isRightClickOnMethod = psiMethod != null;
-        boolean isRightClickOnClass = psiClass != null;
+        RsFunction rustFn = getRustFn(psiElement);
+        RsPatStruct rustStruct = getRustStruct(psiElement);
+        boolean isRightClickOnMethod = rustFn != null;
+        boolean isRightClickOnStruct = rustStruct != null;
 
         // 啥也不是
-        if (!isRightClickOnClass && !isRightClickOnMethod) {
+        if (!isRightClickOnStruct && !isRightClickOnMethod) {
             notVisible(e);
             return;
         }
 
         if (isRightClickOnMethod) {
-            checkPsiMethod(psiMethod, project, e);
+            checkRustFn(rustFn, project, e);
         }
-        if (isRightClickOnClass) {
-            checkPsiClass(psiClass, project, e);
+        if (isRightClickOnStruct) {
+            checkRustStruct(rustStruct, project, e);
         }
     }
 
@@ -95,35 +96,21 @@ public abstract class AbstractOnRightClickSavior extends AbstractAction {
         }
     }
 
-    /**
-     * 方法是否不带 Mapping 注解
-     *
-     * @param psiMethod 方法
-     * @return 是否不带 Mapping 注解
-     */
-    protected boolean methodNotHaveMapping(PsiMethod psiMethod) {
-        AnnotationHolder psiMethodHolder = AnnotationHolder.getPsiMethodHolder(psiMethod);
-        return !psiMethodHolder.hasAnyOneAnnotation(AnnotationHolder.QNAME_OF_MAPPING, AnnotationHolder.QNAME_OF_GET_MAPPING, AnnotationHolder.QNAME_OF_POST_MAPPING, AnnotationHolder.QNAME_OF_PUT_MAPPING, AnnotationHolder.QNAME_OF_DELETE_MAPPING);
+    protected RsFunction getRustFn(PsiElement psiElement) {
+        RsFunction rsFunction = null;
+        if (psiElement instanceof RsFunction) {
+            rsFunction = (RsFunction) psiElement;
+        }
+        return rsFunction;
     }
 
-    /**
-     * 根据方法判断是否应该展示
-     *
-     * @param psiMethod 方法
-     * @param project   项目
-     * @param e         e
-     */
-    protected abstract void checkPsiMethod(PsiMethod psiMethod, Project project, AnActionEvent e);
-
-    /**
-     * 根据类信息判断是否应该展示
-     *
-     * @param psiClass 类
-     * @param project  项目
-     * @param e        e
-     */
-    protected abstract void checkPsiClass(PsiClass psiClass, Project project, AnActionEvent e);
-
+    protected RsPatStruct getRustStruct(PsiElement psiElement) {
+        RsPatStruct rsPatStruct = null;
+        if (psiElement instanceof RsPatStruct) {
+            rsPatStruct = (RsPatStruct) psiElement;
+        }
+        return rsPatStruct;
+    }
     /**
      * 当在类上右键时, 要做的操作
      *
@@ -152,6 +139,26 @@ public abstract class AbstractOnRightClickSavior extends AbstractAction {
         ClipboardUtil.setSysClipboardText(docByMethod);
         DialogUtil.showDialog(project, getTip(), docByMethod);
     }
+
+
+
+    /**
+     * 根据方法判断是否应该展示
+     *
+     * @param rsFunction 方法
+     * @param project   项目
+     * @param e         e
+     */
+    protected abstract void checkRustFn(RsFunction rsFunction, Project project, AnActionEvent e);
+
+    /**
+     * 根据类信息判断是否应该展示
+     *
+     * @param rsPatStruct 类
+     * @param project  项目
+     * @param e        e
+     */
+    protected abstract void checkRustStruct(RsPatStruct rsPatStruct, Project project, AnActionEvent e);
 
     /**
      * 根据类获取展示信息
@@ -184,5 +191,4 @@ public abstract class AbstractOnRightClickSavior extends AbstractAction {
     protected String getTip() {
         return null;
     }
-
 }

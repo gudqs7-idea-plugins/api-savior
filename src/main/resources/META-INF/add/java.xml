@@ -1,0 +1,102 @@
+<idea-plugin>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <notificationGroup displayType="BALLOON" id="Api Savior Tip" bundle="group" key="notification.group.tip.name"/>
+        <notificationGroup displayType="STICKY_BALLOON" id="Api Savior Error" bundle="group" key="notification.group.error.name"/>
+
+        <projectService serviceImplementation="cn.gudqs7.plugins.search.MethodFilterConfiguration"/>
+
+        <intentionAction>
+            <className>cn.gudqs7.plugins.generate.getter.action.GetterGenerateAction</className>
+        </intentionAction>
+        <intentionAction>
+            <className>cn.gudqs7.plugins.generate.setter.action.SetterWithDefaultValGenerateAction</className>
+        </intentionAction>
+        <intentionAction>
+            <className>cn.gudqs7.plugins.generate.setter.action.SetterWithoutDefaultValGenerateAction</className>
+        </intentionAction>
+        <intentionAction>
+            <className>cn.gudqs7.plugins.generate.convert.action.ConvertGenerateAction</className>
+        </intentionAction>
+        <intentionAction>
+            <className>cn.gudqs7.plugins.tools.GenerateQueryApiDeclarationAction</className>
+        </intentionAction>
+        <intentionAction>
+            <className>cn.gudqs7.plugins.tools.GenerateUpdateApiDeclarationAction</className>
+        </intentionAction>
+
+        <codeInsight.template.postfixTemplateProvider language="JAVA" implementationClass="cn.gudqs7.plugins.generate.postfix.GeneratePostfixTemplateProvider"/>
+        
+        <searchEverywhereContributor implementation="cn.gudqs7.plugins.search.ApiSearchContributorFactory"/>
+
+        <errorHandler implementation="cn.gudqs7.plugins.diagnostic.SaviorIssueSubmitter"/>
+    </extensions>
+
+    <actions>
+        <group id="cn.gudqs.docer.savior" text="Api Savior Group">
+            <add-to-group group-id="EditorPopupMenu" anchor="after" relative-to-action="ShowIntentionsGroup"/>
+
+            <action id="cn.gudqs.docer.savior.req.rpc" class="cn.gudqs7.plugins.savior.action.rpc.RpcReqDocSaviorAction"
+                    text="Generate RPC Param Doc" description="Generate RPC request parameter documentation">
+            </action>
+            <action id="cn.gudqs.docer.savior.req.restful" class="cn.gudqs7.plugins.savior.action.restful.RestfulReqDocSaviorAction"
+                    text="Generate Api Param Doc" description="Generate API request parameter documentation">
+            </action>
+            <action id="cn.gudqs.docer.savior.rpc" class="cn.gudqs7.plugins.savior.action.rpc.RpcDocSaviorAction"
+                    text="Generate RPC Interface Doc" description="Generate RPC interface documentation">
+            </action>
+            <action id="cn.gudqs.docer.savior.restful" class="cn.gudqs7.plugins.savior.action.restful.RestfulDocSaviorAction"
+                    text="Generate Api Interface Doc" description="Generate API interface documentation">
+            </action>
+            <action id="cn.gudqs.docer.savior.curl" class="cn.gudqs7.plugins.savior.action.restful.RestfulCurlSaviorAction"
+                    text="Generate cURL" description="Generate cURL">
+            </action>
+            <action id="cn.gudqs.docer.savior.curlRequire" class="cn.gudqs7.plugins.savior.action.restful.RestfulCurlRequireSaviorAction"
+                    text="Generate cURL(Only required parameters)" description="Generate cURL(Only required parameters)">
+            </action>
+        </group>
+
+        <group id="cn.gudqs.docer.savior.project" text="Api Savior Project Group">
+            <add-to-group group-id="ProjectViewPopupMenu" anchor="after" relative-to-action="CutCopyPasteGroup"/>
+
+            <action id="cn.gudqs.docer.savior.project.rpc"
+                    class="cn.gudqs7.plugins.savior.action.rpc.RpcProjectDocSaviorAction"
+                    text="Batch Generate RPC Interface Doc" description="Generate RPC interface documents in batches">
+            </action>
+            <action id="cn.gudqs.docer.savior.project.restful"
+                    class="cn.gudqs7.plugins.savior.action.restful.RestfulProjectDocSaviorAction"
+                    text="Batch Generate Api Interface Doc" description="Generate API interface documents in batches">
+            </action>
+            <action id="cn.gudqs.docer.savior.project.html"
+                    class="cn.gudqs7.plugins.savior.action.batch.HtmlDocerSaviorAction"
+                    text="Batch Generate Api Interface Doc(HTML)"
+                    description="Batch generate Api interface documents in HTML format">
+            </action>
+            <action id="cn.gudqs.docer.savior.project.postman"
+                    class="cn.gudqs7.plugins.savior.action.batch.PostmanDocerSaviorAction"
+                    text="Export Api Interface to Postman" description="Export Api interface to Postman">
+            </action>
+            <action id="cn.gudqs.docer.savior.project.amp"
+                    class="cn.gudqs7.plugins.savior.action.batch.AmpDocerSaviorAction"
+                    text="Export Api to Amp" description="Export Api to amp">
+            </action>
+            <action id="cn.gudqs.docer.savior.project.oneapi"
+                    class="cn.gudqs7.plugins.savior.action.batch.OneApiDocerSaviorAction"
+                    text="Export Api to OneApi" description="Export Api to oneApi">
+            </action>
+        </group>
+
+
+        <!-- url 导航 -->
+        <action id="cn.gudqs.search.goto" class="cn.gudqs7.plugins.search.GotoApiAction"
+                text="_Api" description="Go to Api"
+                icon="AllIcons.Actions.Search">
+            <add-to-group group-id="GoToTargetEx" anchor="first"/>
+            <keyboard-shortcut keymap="$default" first-keystroke="ctrl BACK_SLASH" />
+            <keyboard-shortcut keymap="$default" first-keystroke="ctrl alt N"/>
+        </action>
+
+    </actions>
+
+
+</idea-plugin>
