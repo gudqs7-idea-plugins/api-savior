@@ -1,0 +1,27 @@
+<idea-plugin>
+
+
+    <extensions defaultExtensionNs="com.intellij">
+
+        <intentionAction>
+            <className>cn.gudqs7.plugins.rust.action.RustGenFnDocAction</className>
+        </intentionAction>
+
+        <!-- <inline.completion.provider id="cn.gudqs7.plugins.rust.inline.RustGenDocInlineCompletion" implementation="cn.gudqs7.plugins.rust.inline.RustGenDocInlineCompletion"/> -->
+
+    </extensions>
+
+    <actions>
+
+        <!-- <group id="cn.gudqs.rust.savior" text="Rust Savior Group"> -->
+        <!--     <add-to-group group-id="EditorPopupMenu" anchor="after" relative-to-action="ShowIntentionsGroup"/> -->
+
+        <!--     <action id="cn.gudqs.rust.savior.gen" class="cn.gudqs7.plugins.rust.action.RustGenFnDocAction" -->
+        <!--             text="Generate Function Doc" description="Generate documentation for function"> -->
+        <!--     </action> -->
+        <!-- </group> -->
+
+    </actions>
+
+
+</idea-plugin>

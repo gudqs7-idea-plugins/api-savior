@@ -4,27 +4,33 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.intellij.openapi.progress.ProcessCanceledException;
 
 public class DeepSeekStreamHandler {
     private final String apiKey;
     private final String apiUrl;
     private final ObjectMapper mapper;
-    
+
+    public static DeepSeekStreamHandler getInstance() {
+        return new DeepSeekStreamHandler("sk-94918533df50453780d40f09e99e4506");
+    }
+
     public DeepSeekStreamHandler(String apiKey) {
         this(apiKey, "https://api.deepseek.com/chat/completions");
     }
-    
+
     public DeepSeekStreamHandler(String apiKey, String apiUrl) {
         this.apiKey = apiKey;
         this.apiUrl = apiUrl;
         this.mapper = new ObjectMapper();
     }
-    
+
     public void streamChat(String userMessage, StreamCallback callback) throws IOException {
         HttpURLConnection connection = null;
-        
+
         try {
             connection = createConnection();
             sendRequest(connection, userMessage);
@@ -35,11 +41,11 @@ public class DeepSeekStreamHandler {
             }
         }
     }
-    
+
     private HttpURLConnection createConnection() throws IOException {
         URL url = new URL(apiUrl);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        
+
         connection.setRequestMethod("POST");
         connection.setRequestProperty("Content-Type", "application/json");
         connection.setRequestProperty("Authorization", "Bearer " + apiKey);
@@ -47,19 +53,19 @@ public class DeepSeekStreamHandler {
         connection.setDoOutput(true);
         connection.setConnectTimeout(30000);
         connection.setReadTimeout(120000); // 2分钟超时
-        
+
         return connection;
     }
-    
+
     private void sendRequest(HttpURLConnection connection, String userMessage) throws IOException {
         String requestBody = buildRequestBody(userMessage);
-        
+
         try (OutputStream os = connection.getOutputStream()) {
             byte[] input = requestBody.getBytes(StandardCharsets.UTF_8);
             os.write(input, 0, input.length);
         }
     }
-    
+
     private String buildRequestBody(String userMessage) {
         return String.format("""
                 {
@@ -79,37 +85,37 @@ public class DeepSeekStreamHandler {
                 }
                 """, escapeJsonString(userMessage));
     }
-    
+
     private String escapeJsonString(String str) {
         return str.replace("\\", "\\\\")
-                  .replace("\"", "\\\"")
-                  .replace("\n", "\\n")
-                  .replace("\r", "\\r")
-                  .replace("\t", "\\t");
+                .replace("\"", "\\\"")
+                .replace("\n", "\\n")
+                .replace("\r", "\\r")
+                .replace("\t", "\\t");
     }
-    
+
     private void handleResponse(HttpURLConnection connection, StreamCallback callback) throws IOException {
         int responseCode = connection.getResponseCode();
-        
+
         if (responseCode != HttpURLConnection.HTTP_OK) {
             String errorMessage = readErrorStream(connection);
-            callback.onError("HTTP " + responseCode + ": " + errorMessage);
+            callback.onError(null, "HTTP " + responseCode + ": " + errorMessage);
             return;
         }
-        
+
         try (BufferedReader reader = new BufferedReader(
                 new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8))) {
-            
+
             String line;
             while ((line = reader.readLine()) != null) {
                 if (line.startsWith("data: ")) {
                     String data = line.substring(6).trim();
-                    
+
                     if ("[DONE]".equals(data)) {
                         callback.onComplete();
                         break;
                     }
-                    
+
                     if (!data.isEmpty()) {
                         processDataChunk(data, callback);
                     }
@@ -117,23 +123,23 @@ public class DeepSeekStreamHandler {
             }
         }
     }
-    
+
     private void processDataChunk(String jsonData, StreamCallback callback) {
         try {
             JsonNode root = mapper.readTree(jsonData);
             JsonNode choices = root.path("choices");
-            
+
             if (choices.isArray() && choices.size() > 0) {
                 JsonNode choice = choices.get(0);
                 JsonNode delta = choice.path("delta");
-                
+
                 if (delta.has("content")) {
                     String content = delta.path("content").asText();
                     if (!content.isEmpty()) {
                         callback.onContent(content);
                     }
                 }
-                
+
                 if (choice.has("finish_reason")) {
                     String finishReason = choice.path("finish_reason").asText();
                     if (!"null".equals(finishReason) && !finishReason.isEmpty()) {
@@ -141,32 +147,35 @@ public class DeepSeekStreamHandler {
                     }
                 }
             }
-            
+
         } catch (Exception e) {
-            callback.onError("解析响应数据失败: " + e.getMessage());
+            callback.onError(e, "解析响应数据失败: " + e.getMessage());
         }
     }
-    
+
     private String readErrorStream(HttpURLConnection connection) {
         try (BufferedReader reader = new BufferedReader(
                 new InputStreamReader(connection.getErrorStream(), StandardCharsets.UTF_8))) {
-            
+
             StringBuilder error = new StringBuilder();
             String line;
             while ((line = reader.readLine()) != null) {
                 error.append(line);
             }
             return error.toString();
-            
+
         } catch (IOException e) {
             return "无法读取错误信息: " + e.getMessage();
         }
     }
-    
+
     public interface StreamCallback {
         void onContent(String content);
+
         void onFinish(String reason);
+
         void onComplete();
-        void onError(String error);
+
+        void onError(Exception e, String error);
     }
 }

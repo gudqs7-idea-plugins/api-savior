@@ -13,29 +13,8 @@
          on how to target different products -->
     <depends>com.intellij.modules.platform</depends>
     <depends>com.intellij.modules.lang</depends>
-    <depends>com.intellij.modules.rust-capable</depends>
-    <depends>com.jetbrains.rust</depends>
+    <depends optional="true" config-file="add/rust.xml">com.jetbrains.rust</depends>
     <depends optional="true" config-file="add/java.xml">com.intellij.modules.java</depends>
-
-    <extensions defaultExtensionNs="com.intellij">
-
-        <intentionAction>
-            <className>cn.gudqs7.plugins.rust.action.RustGenFnDocAction</className>
-        </intentionAction>
-
-    </extensions>
-
-    <actions>
-
-        <!-- <group id="cn.gudqs.rust.savior" text="Rust Savior Group"> -->
-        <!--     <add-to-group group-id="EditorPopupMenu" anchor="after" relative-to-action="ShowIntentionsGroup"/> -->
-
-        <!--     <action id="cn.gudqs.rust.savior.gen" class="cn.gudqs7.plugins.rust.action.RustGenFnDocAction" -->
-        <!--             text="Generate Function Doc" description="Generate documentation for function"> -->
-        <!--     </action> -->
-        <!-- </group> -->
-
-    </actions>
 
 
 </idea-plugin>
