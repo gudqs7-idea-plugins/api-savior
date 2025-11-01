@@ -3,11 +3,10 @@
     <name>Api Savior</name>
     <vendor email="gudqs7@gmail.com" url="https://github.com/gudqs7">gudqs7</vendor>
 
-    <description><![CDATA[ Description will be added by gradle build]]></description>
-
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
     <!-- 从 2021.1 到 2022.2, 2022.2 之后使用 jbr 17, 不好做兼容, 带 java17稳定后, 再考虑转17 -->
-    <idea-version since-build="232.10335.12"/>
+    <!-- 从 2023.2.8 开始, 有rust插件 -->
+    <idea-version since-build="232"/>
 
     <!-- please see https://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
          on how to target different products -->

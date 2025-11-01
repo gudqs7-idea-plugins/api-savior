@@ -1,7 +1,7 @@
 plugins {
     id("java")
-    id("org.jetbrains.kotlin.jvm") version "1.8.21"
-    id("org.jetbrains.intellij") version "1.15.0"
+//    id("org.jetbrains.kotlin.jvm") version "1.8.21"
+    id("org.jetbrains.intellij") version "1.17.4"
 }
 
 group = "cn.gudqs7.idea.plugins"
@@ -42,8 +42,17 @@ tasks {
         sourceCompatibility = "17"
         targetCompatibility = "17"
     }
-    withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-        kotlinOptions.jvmTarget = "17"
+
+    buildSearchableOptions {
+        enabled = false
+    }
+
+    patchPluginXml {
+        pluginDescription = file("parts/pluginDescription.md").readText()
+        changeNotes = file("parts/changeNotes.md").readText()
+    }
+    test {
+        useJUnitPlatform()
     }
 
     publishPlugin {

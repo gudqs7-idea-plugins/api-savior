@@ -1,6 +1,10 @@
-<meta http-equiv="Content-Type" content="text/html; charset=utf8">
-
 <pre>
+<strong>Release v2.6.1</strong>
+    1.feat: 支持2022.2 - 2025
+
+    English：
+    1.feat: support 2022.2 - 2025
+
 <strong>Release v2.6.0</strong>
     1.feat: 批量导出时, 新增带全部数据的单独 markdown 文件; #88
     2.fix: 修复随机字符串使用了中文生僻字过多像乱码一样的问题: 不生成中文, 生成字母; #89

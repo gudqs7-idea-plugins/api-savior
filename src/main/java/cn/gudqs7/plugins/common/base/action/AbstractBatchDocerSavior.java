@@ -240,19 +240,14 @@ public abstract class AbstractBatchDocerSavior extends AbstractAction {
             handlePsiDirectory(psiDirectory, psiClassList);
         }
 
-        Object data = e.getDataContext().getData("psi.Element.array");
-        if (data instanceof PsiElement[]) {
-            PsiElement[] psiElements = (PsiElement[]) data;
-            if (psiElements.length > 0) {
-                for (PsiElement element : psiElements) {
-                    if (element instanceof PsiDirectory) {
-                        PsiDirectory directory = (PsiDirectory) element;
-                        handlePsiDirectory(directory, psiClassList);
-                    }
-                    if (element instanceof PsiClass) {
-                        PsiClass aClass = (PsiClass) element;
-                        psiClassList.add(aClass);
-                    }
+        PsiElement[] psiElements = e.getData(PlatformDataKeys.PSI_ELEMENT_ARRAY);
+        if (psiElements != null) {
+            for (PsiElement element : psiElements) {
+                if (element instanceof PsiDirectory directory) {
+                    handlePsiDirectory(directory, psiClassList);
+                }
+                if (element instanceof PsiClass aClass) {
+                    psiClassList.add(aClass);
                 }
             }
         }

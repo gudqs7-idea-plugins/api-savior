@@ -10,8 +10,6 @@ import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.ScrollType;
 import com.intellij.openapi.progress.ProcessCanceledException;
-import com.intellij.openapi.progress.ProgressIndicator;
-import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import kotlin.jvm.internal.Intrinsics;
@@ -21,7 +19,6 @@ import org.jetbrains.annotations.Nullable;
 import org.rust.ide.intentions.RsElementBaseIntentionAction;
 import org.rust.lang.core.psi.RsFunction;
 
-import java.io.IOException;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -30,7 +27,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @suppress IntentionDescriptionNotFoundInspection 警告抑制，表示未找到意图描述
  */
 @SuppressWarnings("IntentionDescriptionNotFoundInspection")
-public class RustGenFnDocAction extends RsElementBaseIntentionAction<RustGenFnDocAction.FunctionContext> {
+public class RustGenFnDocIntentAction extends RsElementBaseIntentionAction<RustGenFnDocIntentAction.FunctionContext> {
 
     /**
      * 获取意图动作的家族名称
@@ -117,10 +114,10 @@ public class RustGenFnDocAction extends RsElementBaseIntentionAction<RustGenFnDo
                             System.out.println("\n\n=== 完整响应 ===");
                             System.out.println(fullContent);
 
+                            document.insertString(startOffset.getAndAdd(fullContent.length() + 1), fullContent + "\n");
+                            editor.getCaretModel().moveToOffset(startOffset.get());
+                            editor.getScrollingModel().scrollToCaret(ScrollType.MAKE_VISIBLE);
                             IdeaApplicationUtil.runWriteAction(() -> {
-                                document.insertString(startOffset.getAndAdd(fullContent.length() + 1), fullContent + "\n");
-                                editor.getCaretModel().moveToOffset(startOffset.get());
-                                editor.getScrollingModel().scrollToCaret(ScrollType.MAKE_VISIBLE);
                             });
                         }
 

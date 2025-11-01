@@ -1,19 +1,14 @@
 package cn.gudqs7.plugins.rust.action.base;
 
 import cn.gudqs7.plugins.common.base.action.AbstractAction;
-import cn.gudqs7.plugins.common.util.PluginSettingHelper;
 import cn.gudqs7.plugins.common.util.WebEnvironmentUtil;
 import cn.gudqs7.plugins.common.util.jetbrain.ClipboardUtil;
 import cn.gudqs7.plugins.common.util.jetbrain.DialogUtil;
-import cn.gudqs7.plugins.common.util.jetbrain.ExceptionUtil;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.openapi.actionSystem.PlatformDataKeys;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiMethod;
 import org.jetbrains.annotations.NotNull;
 import org.rust.lang.core.psi.RsFunction;
 import org.rust.lang.core.psi.RsPatStruct;
@@ -66,31 +61,24 @@ public abstract class AbstractRustAction extends AbstractAction {
                 return;
             }
 
-            PsiMethod psiMethod = getPsiMethod(psiElement);
-            boolean isRightClickOnMethod = psiMethod != null;
-            PsiClass psiClass = getPsiClass(psiElement);
-            boolean isRightClickOnClass = psiClass != null;
+            RsFunction rustFn = getRustFn(psiElement);
+            RsPatStruct rustStruct = getRustStruct(psiElement);
+            boolean isRightClickOnMethod = rustFn != null;
+            boolean isRightClickOnStruct = rustStruct != null;
 
-            VirtualFile virtualFile = null;
-            if (isRightClickOnClass) {
-                virtualFile = psiClass.getContainingFile().getVirtualFile();
-            }
-            if (isRightClickOnMethod) {
-                virtualFile = psiMethod.getContainingFile().getVirtualFile();
-            }
-
-            if (virtualFile != null) {
-                PluginSettingHelper.initConfig(project, virtualFile);
-            }
-
-            if (isRightClickOnMethod) {
-                handlePsiMethod(project, psiMethod);
+            // 啥也不是
+            if (!isRightClickOnStruct && !isRightClickOnMethod) {
+                notVisible(e);
                 return;
             }
 
-            if (isRightClickOnClass) {
-                handlePsiClass(project, psiClass);
+            if (isRightClickOnMethod) {
+                handleRustFn(project, rustFn);
             }
+            if (isRightClickOnStruct) {
+                handleRustStruct(project, rustStruct);
+            }
+
         } finally {
             WebEnvironmentUtil.emptyIp();
         }
@@ -117,8 +105,8 @@ public abstract class AbstractRustAction extends AbstractAction {
      * @param project  项目
      * @param psiClass 类
      */
-    protected void handlePsiClass(Project project, PsiClass psiClass) {
-        String showContent = handlePsiClass0(project, psiClass);
+    protected void handleRustStruct(Project project, RsPatStruct psiClass) {
+        String showContent = handleRustStruct0(project, psiClass);
         ClipboardUtil.setSysClipboardText(showContent);
         DialogUtil.showDialog(project, getTip(), showContent);
     }
@@ -127,15 +115,10 @@ public abstract class AbstractRustAction extends AbstractAction {
      * 当在方法上右键时, 要做的操作
      *
      * @param project   项目
-     * @param psiMethod 方法
+     * @param rsFunction 方法
      */
-    protected void handlePsiMethod(Project project, PsiMethod psiMethod) {
-        PsiClass containingClass = psiMethod.getContainingClass();
-        if (containingClass == null) {
-            ExceptionUtil.handleSyntaxError(psiMethod.getName() + "'s Class");
-        }
-        String psiClassName = containingClass.getQualifiedName();
-        String docByMethod = handlePsiMethod0(project, psiMethod, psiClassName);
+    protected void handleRustFn(Project project, RsFunction rsFunction) {
+        String docByMethod = handleRustFn0(project, rsFunction);
         ClipboardUtil.setSysClipboardText(docByMethod);
         DialogUtil.showDialog(project, getTip(), docByMethod);
     }
@@ -164,10 +147,10 @@ public abstract class AbstractRustAction extends AbstractAction {
      * 根据类获取展示信息
      *
      * @param project  项目
-     * @param psiClass 类
+     * @param rsPatStruct 类
      * @return 展示信息
      */
-    protected String handlePsiClass0(Project project, PsiClass psiClass) {
+    protected String handleRustStruct0(Project project, RsPatStruct rsPatStruct) {
         return null;
     }
 
@@ -175,11 +158,10 @@ public abstract class AbstractRustAction extends AbstractAction {
      * 根据方法获取展示信息
      *
      * @param project      项目
-     * @param psiMethod    方法
-     * @param psiClassName 类名
+     * @param rsFunction    方法
      * @return 展示信息
      */
-    protected String handlePsiMethod0(Project project, PsiMethod psiMethod, String psiClassName) {
+    protected String handleRustFn0(Project project, RsFunction rsFunction) {
         return null;
     }
 

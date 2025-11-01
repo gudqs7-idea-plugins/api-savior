@@ -1,10 +1,5 @@
-<meta http-equiv="Content-Type" content="text/html; charset=utf8">
-
-<h2>
-    接口文档生成工具, 根据 Javadoc 注释(或 Swagger 注解)生成接口调用文档, 包含 url, content-type, 入参字段示例及说明, 出参字段示例及说明; 同时支持导出到 Postman 以及 cURL!
-     |
-    An interface document generation tool that generates interface call documents based on javadoc comment (or Swagger annotations), including url, content-type, examples and descriptions of input fields, and examples and descriptions of output fields; also supports exporting to Postman and cURL!
-</h2>
+<p><b>An interface document generation tool that generates interface call documents based on javadoc comment (or Swagger annotations), including url, content-type, examples and descriptions of input fields, and examples and descriptions of output fields; also supports exporting to Postman and cURL!</b></p>
+<p><b>接口文档生成工具, 根据 Javadoc 注释(或 Swagger 注解)生成接口调用文档, 包含 url, content-type, 入参字段示例及说明, 出参字段示例及说明; 同时支持导出到 Postman 以及 cURL!</b></p>
 
 <a href="https://github.com/gudqs7-idea-plugins/api-savior">GitHub</a> |
 <a href="https://github.com/gudqs7-idea-plugins/api-savior/issues">Issues</a> |
