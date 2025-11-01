@@ -20,7 +20,7 @@ public class RustGenFnDocRightClickAction extends AbstractRustRightClickAction {
      */
     @Override
     protected void checkRustFn(RsFunction rsFunction, Project project, AnActionEvent e) {
-        
+        notVisible(e);
     }
 
     /**
@@ -62,6 +62,10 @@ public class RustGenFnDocRightClickAction extends AbstractRustRightClickAction {
         List<RsNamedFieldDecl> namedFieldDeclList = blockFields.getNamedFieldDeclList();
         for (RsNamedFieldDecl namedFieldDecl : namedFieldDeclList) {
             String fieldName = namedFieldDecl.getName();
+            if (namedFieldDecl.getTypeReference() != null) {
+                String type = namedFieldDecl.getTypeReference().getText();
+                System.out.println("type:" + type);
+            }
             System.out.println("fieldName = " + fieldName);
         }
 
