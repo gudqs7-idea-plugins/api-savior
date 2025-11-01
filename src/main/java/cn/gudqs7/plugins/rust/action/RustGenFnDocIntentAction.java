@@ -3,14 +3,17 @@ package cn.gudqs7.plugins.rust.action;
 import cn.gudqs7.plugins.common.util.api.DeepSeekStreamHandler;
 import cn.gudqs7.plugins.common.util.jetbrain.ExceptionUtil;
 import cn.gudqs7.plugins.common.util.jetbrain.IdeaApplicationUtil;
+import cn.gudqs7.plugins.common.util.jetbrain.PsiDocumentUtil;
 import com.intellij.codeInspection.util.IntentionFamilyName;
 import com.intellij.codeInspection.util.IntentionName;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.editor.ScrollType;
 import com.intellij.openapi.progress.ProcessCanceledException;
+import com.intellij.openapi.progress.ProgressIndicator;
+import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.Project;
+import com.intellij.psi.PsiComment;
 import com.intellij.psi.PsiElement;
 import kotlin.jvm.internal.Intrinsics;
 import lombok.Data;
@@ -22,26 +25,16 @@ import org.rust.lang.core.psi.RsFunction;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * @author wq
- * @description Rust函数文档生成动作类，用于为Rust函数生成文档注释
- * @suppress IntentionDescriptionNotFoundInspection 警告抑制，表示未找到意图描述
+ * rust 函数文档生成
  */
 @SuppressWarnings("IntentionDescriptionNotFoundInspection")
 public class RustGenFnDocIntentAction extends RsElementBaseIntentionAction<RustGenFnDocIntentAction.FunctionContext> {
 
-    /**
-     * 获取意图动作的家族名称
-     * @return 返回"Generate function doc"作为家族名称
-     */
     @Override
     public @NotNull @IntentionFamilyName String getFamilyName() {
         return "Generate function doc";
     }
 
-    /**
-     * 获取意图动作的文本描述
-     * @return 返回"Generate function doc"作为文本描述
-     */
     @Override
     public @NotNull @IntentionName String getText() {
         return "Generate function doc";
@@ -83,53 +76,73 @@ public class RustGenFnDocIntentAction extends RsElementBaseIntentionAction<RustG
             RsFunction rsFunction = functionContext.getRsFunction();
             if (rsFunction != null) {
                 String text = rsFunction.getText(); // 获取函数的完整文本
-
                 Document document = editor.getDocument();
-
-                int start = rsFunction.getTextRange().getStartOffset(); // 获取函数文本的起始偏移量
                 if (!ApplicationManager.getApplication().isWriteAccessAllowed()) {
-                    document.insertString(start, "/// 无法预览\n"); // 如果没有权限，插入无预览提示
+                    document.insertString(0, "/// 无法预览\n"); // 如果没有权限，插入无预览提示
                     return;
                 }
-
-                AtomicInteger startOffset = new AtomicInteger(start);
+                PsiElement firstChild = rsFunction.getFirstChild();
+                if (firstChild instanceof PsiComment) {
+                    firstChild.delete();
+                }
+                PsiDocumentUtil.commitAndSaveDocumentEx(document, project);
                 try {
-                    DeepSeekStreamHandler.getInstance().streamChat(text, new DeepSeekStreamHandler.StreamCallback() {
-                        private final StringBuilder fullContent = new StringBuilder();
+                    new Task.Backgroundable(project, "Generating function doc", true) {
 
                         @Override
-                        public void onContent(String content) {
-                            fullContent.append(content);
-                            System.out.print(content);
-                            System.out.flush();
-                        }
+                        public void run(@NotNull ProgressIndicator indicator) {
+                            // 获取函数文本的起始偏移量
+                            int start = rsFunction.getTextRange().getStartOffset();
+                            AtomicInteger startOffset = new AtomicInteger(start - 1);
 
-                        @Override
-                        public void onFinish(String reason) {
-                            System.out.println("\n\n结束原因: " + reason);
-                        }
-
-                        @Override
-                        public void onComplete() {
-                            System.out.println("\n\n=== 完整响应 ===");
-                            System.out.println(fullContent);
-
-                            document.insertString(startOffset.getAndAdd(fullContent.length() + 1), fullContent + "\n");
-                            editor.getCaretModel().moveToOffset(startOffset.get());
-                            editor.getScrollingModel().scrollToCaret(ScrollType.MAKE_VISIBLE);
-                            IdeaApplicationUtil.runWriteAction(() -> {
+                            IdeaApplicationUtil.runWriteAction(project, () -> {
+                                document.insertString(startOffset.getAndAdd(1), "\n");
                             });
-                        }
 
-                        @Override
-                        public void onError(Exception e, String error) {
-                            System.err.println("错误: " + error);
-                            if (e instanceof ProcessCanceledException) {
-                                throw ((ProcessCanceledException) e);
-                            }
-                        }
-                    });
+                            DeepSeekStreamHandler.getInstance().streamChat(text, new DeepSeekStreamHandler.StreamCallback() {
+                                private final StringBuilder fullContent = new StringBuilder();
 
+                                @Override
+                                public void onContent(String content) {
+                                    fullContent.append(content);
+                                    System.out.print(content);
+                                    System.out.flush();
+
+                                    indicator.setText(content);
+                                    indicator.setText2(fullContent.toString());
+                                    IdeaApplicationUtil.runWriteAction(project, () -> {
+                                        document.insertString(startOffset.getAndAdd(content.length()), content);
+                                    });
+                                }
+
+                                @Override
+                                public void onFinish(String reason) {
+                                    System.out.println("\n\n结束原因: " + reason);
+                                }
+
+                                @Override
+                                public void onComplete() {
+                                    System.out.println("\n\n=== 完整响应 ===");
+                                    System.out.println(fullContent);
+
+                                    IdeaApplicationUtil.runWriteAction(project, () -> {
+                                        PsiDocumentUtil.commitAndSaveDocumentEx(document, project);
+                                    });
+                                }
+
+                                @Override
+                                public void onError(Exception e, String error) {
+                                    System.err.println("错误: " + error);
+                                    if (e instanceof ProcessCanceledException) {
+                                        throw ((ProcessCanceledException) e);
+                                    }
+                                }
+                            });
+
+                        }
+                    }
+                            .setCancelText("停止生成")
+                            .queue();
                 } catch (Throwable e) {
                     ExceptionUtil.handleException(e);
                 }

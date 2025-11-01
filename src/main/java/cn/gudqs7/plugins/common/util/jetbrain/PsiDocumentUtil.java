@@ -3,18 +3,14 @@ package cn.gudqs7.plugins.common.util.jetbrain;
 import com.intellij.codeInsight.template.Template;
 import com.intellij.codeInsight.template.TemplateManager;
 import com.intellij.codeInsight.template.impl.Variable;
-import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.editor.ScrollType;
 import com.intellij.openapi.fileEditor.FileDocumentManager;
+import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Psi 文档工具类
@@ -23,32 +19,12 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class PsiDocumentUtil {
 
-    public static void writeAndUpdateDocument(Document document, String insertText, AtomicInteger startOffset, @NotNull Editor editor) {
-        if (org.apache.commons.lang.StringUtils.isNotBlank(insertText)) {
-            // 在后台线程中执行写入操作
-            ApplicationManager.getApplication().executeOnPooledThread(() -> {
-                for (char c : insertText.toCharArray()) {
-                    // 在 UI 线程中执行文档修改
-                    ApplicationManager.getApplication().invokeLater(() -> {
-                        WriteCommandAction.runWriteCommandAction(editor.getProject(), () -> {
-                            int offset = startOffset.getAndIncrement();
-                            document.insertString(offset, String.valueOf(c));
-
-                            // 可选：滚动到插入位置
-                            editor.getCaretModel().moveToOffset(offset + 1);
-                            editor.getScrollingModel().scrollToCaret(ScrollType.MAKE_VISIBLE);
-                        });
-                    });
-
-                    // 延迟以创建流式效果
-                    try {
-                        Thread.sleep(100);
-                    } catch (InterruptedException e) {
-                        Thread.currentThread().interrupt();
-                        break;
-                    }
-                }
-            });
+    public static void commitAndSaveDocumentEx(Document document, Project project) {
+        if (document != null) {
+            PsiDocumentManager psiDocumentManager = PsiDocumentManager.getInstance(project);
+            psiDocumentManager.doPostponedOperationsAndUnblockDocument(document);
+            psiDocumentManager.commitDocument(document);
+            FileDocumentManager.getInstance().saveDocument(document);
         }
     }
 

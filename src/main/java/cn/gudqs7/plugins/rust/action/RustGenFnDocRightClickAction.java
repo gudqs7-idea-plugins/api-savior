@@ -1,12 +1,16 @@
 package cn.gudqs7.plugins.rust.action;
 
-import cn.gudqs7.plugins.rust.action.base.AbstractRustAction;
+import cn.gudqs7.plugins.rust.action.base.AbstractRustRightClickAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.Project;
+import org.rust.lang.core.psi.RsBlockFields;
 import org.rust.lang.core.psi.RsFunction;
-import org.rust.lang.core.psi.RsPatStruct;
+import org.rust.lang.core.psi.RsNamedFieldDecl;
+import org.rust.lang.core.psi.RsStructItem;
 
-public class RustGenFnDocRightClickAction extends AbstractRustAction {
+import java.util.List;
+
+public class RustGenFnDocRightClickAction extends AbstractRustRightClickAction {
     /**
      * 根据方法判断是否应该展示
      *
@@ -16,18 +20,18 @@ public class RustGenFnDocRightClickAction extends AbstractRustAction {
      */
     @Override
     protected void checkRustFn(RsFunction rsFunction, Project project, AnActionEvent e) {
-
+        
     }
 
     /**
      * 根据类信息判断是否应该展示
      *
-     * @param rsPatStruct 类
+     * @param rsStructItem 类
      * @param project     项目
      * @param e           e
      */
     @Override
-    protected void checkRustStruct(RsPatStruct rsPatStruct, Project project, AnActionEvent e) {
+    protected void checkRustStruct(RsStructItem rsStructItem, Project project, AnActionEvent e) {
 
     }
 
@@ -40,6 +44,27 @@ public class RustGenFnDocRightClickAction extends AbstractRustAction {
      */
     @Override
     protected String handleRustFn0(Project project, RsFunction rsFunction) {
-        return super.handleRustFn0(project, rsFunction);
+
+
+        return null;
+    }
+
+    /**
+     * 根据类获取展示信息
+     *
+     * @param project      项目
+     * @param rsStructItem 类
+     * @return 展示信息
+     */
+    @Override
+    protected String handleRustStruct0(Project project, RsStructItem rsStructItem) {
+        RsBlockFields blockFields = rsStructItem.getBlockFields();
+        List<RsNamedFieldDecl> namedFieldDeclList = blockFields.getNamedFieldDeclList();
+        for (RsNamedFieldDecl namedFieldDecl : namedFieldDeclList) {
+            String fieldName = namedFieldDecl.getName();
+            System.out.println("fieldName = " + fieldName);
+        }
+
+        return null;
     }
 }

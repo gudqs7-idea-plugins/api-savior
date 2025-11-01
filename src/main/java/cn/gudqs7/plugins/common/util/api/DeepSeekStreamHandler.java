@@ -1,13 +1,15 @@
 package cn.gudqs7.plugins.common.util.api;
 
-import java.io.*;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.intellij.openapi.progress.ProcessCanceledException;
 
 public class DeepSeekStreamHandler {
     private final String apiKey;
@@ -28,13 +30,15 @@ public class DeepSeekStreamHandler {
         this.mapper = new ObjectMapper();
     }
 
-    public void streamChat(String userMessage, StreamCallback callback) throws IOException {
+    public void streamChat(String userMessage, StreamCallback callback) {
         HttpURLConnection connection = null;
 
         try {
             connection = createConnection();
             sendRequest(connection, userMessage);
             handleResponse(connection, callback);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         } finally {
             if (connection != null) {
                 connection.disconnect();
