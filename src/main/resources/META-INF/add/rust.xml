@@ -4,7 +4,7 @@
     <extensions defaultExtensionNs="com.intellij">
 
         <intentionAction>
-            <className>cn.gudqs7.plugins.rust.action.RustGenFnDocIntentAction</className>
+            <className>cn.gudqs7.plugins.rust.action.intent.RustGenFnDocIntentAction</className>
         </intentionAction>
 
         <!-- <inline.completion.provider id="cn.gudqs7.plugins.rust.inline.RustGenDocInlineCompletion" implementation="cn.gudqs7.plugins.rust.inline.RustGenDocInlineCompletion"/> -->
@@ -16,8 +16,19 @@
         <group id="cn.gudqs.rust.savior" text="Rust Savior Group">
             <add-to-group group-id="EditorPopupMenu" anchor="after" relative-to-action="ShowIntentionsGroup"/>
 
-            <action id="cn.gudqs.rust.savior.gen" class="cn.gudqs7.plugins.rust.action.RustGenFnDocRightClickAction"
-                    text="Generate Rust Function Doc" description="Generate documentation for rust function">
+            <action id="cn.gudqs.rust.savior.gen.doc" class="cn.gudqs7.plugins.rust.action.right.RustGenFnDocRightClickAction"
+                    text="AI生成函数文档" description="Generate documentation for rust function">
+            </action>
+            <action id="cn.gudqs.rust.savior.gen.ts" class="cn.gudqs7.plugins.rust.action.right.RustStructToTsRightClickAction"
+                    text="Struct生成TS类" description="Generate ts by rust struct">
+            </action>
+        </group>
+
+        <group id="cn.gudqs.rust.savior.project" text="Project Rust Savior Group">
+            <add-to-group group-id="ProjectViewPopupMenu" anchor="after" relative-to-action="CutCopyPasteGroup"/>
+
+            <action id="cn.gudqs.rust.savior.project.gen.doc" class="cn.gudqs7.plugins.rust.action.right.RustBatchGenDocAction"
+                    text="批量生成函数文档" description="Batch Generate documentation for rust function">
             </action>
         </group>
 

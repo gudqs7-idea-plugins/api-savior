@@ -1,7 +1,9 @@
 package cn.gudqs7.plugins.common.util.api;
 
+import cn.gudqs7.plugins.common.util.jetbrain.ExceptionUtil;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.intellij.openapi.progress.ProcessCanceledException;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -17,7 +19,8 @@ public class DeepSeekStreamHandler {
     private final ObjectMapper mapper;
 
     public static DeepSeekStreamHandler getInstance() {
-        return new DeepSeekStreamHandler("sk-94918533df50453780d40f09e99e4506");
+        String aiSk = System.getenv("RUST_SAVIOR_AI_SK");
+        return new DeepSeekStreamHandler(aiSk);
     }
 
     public DeepSeekStreamHandler(String apiKey) {
@@ -32,13 +35,13 @@ public class DeepSeekStreamHandler {
 
     public void streamChat(String userMessage, StreamCallback callback) {
         HttpURLConnection connection = null;
-
         try {
             connection = createConnection();
             sendRequest(connection, userMessage);
             handleResponse(connection, callback);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        } catch (ProcessCanceledException ignored) {
+        } catch (Throwable e) {
+            ExceptionUtil.handleException(e);
         } finally {
             if (connection != null) {
                 connection.disconnect();
@@ -103,7 +106,7 @@ public class DeepSeekStreamHandler {
 
         if (responseCode != HttpURLConnection.HTTP_OK) {
             String errorMessage = readErrorStream(connection);
-            callback.onError(null, "HTTP " + responseCode + ": " + errorMessage);
+            callback.onError(new RuntimeException("AI请求失败, HTTP状态码: " + responseCode + "; 错误信息: " + errorMessage));
             return;
         }
 
@@ -153,7 +156,7 @@ public class DeepSeekStreamHandler {
             }
 
         } catch (Exception e) {
-            callback.onError(e, "解析响应数据失败: " + e.getMessage());
+            callback.onError(e);
         }
     }
 
@@ -180,6 +183,6 @@ public class DeepSeekStreamHandler {
 
         void onComplete();
 
-        void onError(Exception e, String error);
+        void onError(Exception e);
     }
 }

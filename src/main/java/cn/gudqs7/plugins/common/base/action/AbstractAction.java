@@ -3,6 +3,7 @@ package cn.gudqs7.plugins.common.base.action;
 import cn.gudqs7.plugins.common.util.WebEnvironmentUtil;
 import cn.gudqs7.plugins.common.util.jetbrain.ExceptionUtil;
 import cn.gudqs7.plugins.common.util.structure.PsiTypeUtil;
+import com.intellij.openapi.actionSystem.ActionUpdateThread;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.psi.*;
@@ -96,4 +97,9 @@ public abstract class AbstractAction extends AnAction {
         e.getPresentation().setVisible(false);
     }
 
+    @Override
+    public @NotNull ActionUpdateThread getActionUpdateThread() {
+        // 设为 BGT, 可访问PSI信息, 但 update 方法要快
+        return ActionUpdateThread.BGT;
+    }
 }

@@ -9,11 +9,8 @@ import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.openapi.actionSystem.PlatformDataKeys;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiIdentifier;
-import com.intellij.psi.PsiManager;
 import com.intellij.psi.impl.source.tree.LeafPsiElement;
 import org.jetbrains.annotations.NotNull;
 import org.rust.lang.core.psi.RsFunction;
@@ -30,18 +27,12 @@ public abstract class AbstractRustRightClickAction extends AbstractAction {
             notVisible(e);
             return;
         }
-        VirtualFile virtualFile = e.getData(CommonDataKeys.VIRTUAL_FILE);
         Editor editor = e.getData(CommonDataKeys.EDITOR);
-        if (virtualFile == null || editor == null) {
+        if (editor == null) {
             notVisible(e);
             return;
         }
-        PsiFile psiFile = PsiManager.getInstance(project).findFile(virtualFile);
-        if (psiFile == null) {
-            notVisible(e);
-            return;
-        }
-        PsiElement psiElement = psiFile.findElementAt(editor.getCaretModel().getOffset());
+        PsiElement psiElement = e.getData(CommonDataKeys.PSI_ELEMENT);
         if (psiElement == null) {
             notVisible(e);
             return;
@@ -72,6 +63,10 @@ public abstract class AbstractRustRightClickAction extends AbstractAction {
             if (project == null) {
                 return;
             }
+            Editor editor = e.getData(CommonDataKeys.EDITOR);
+            if (editor == null) {
+                return;
+            }
             PsiElement psiElement = e.getData(CommonDataKeys.PSI_ELEMENT);
             if (psiElement == null) {
                 return;
@@ -89,10 +84,10 @@ public abstract class AbstractRustRightClickAction extends AbstractAction {
             }
 
             if (isRightClickOnMethod) {
-                handleRustFn(project, rustFn);
+                handleRustFn(project, rustFn, editor);
             }
             if (isRightClickOnStruct) {
-                handleRustStruct(project, rustStruct);
+                handleRustStruct(project, rustStruct, editor);
             }
 
         } finally {
@@ -121,13 +116,15 @@ public abstract class AbstractRustRightClickAction extends AbstractAction {
         }
         return rsStructItem;
     }
+
     /**
      * 当在类上右键时, 要做的操作
      *
      * @param project  项目
      * @param psiClass 类
+     * @param editor 编辑器
      */
-    protected void handleRustStruct(Project project, RsStructItem psiClass) {
+    protected void handleRustStruct(Project project, RsStructItem psiClass, Editor editor) {
         String showContent = handleRustStruct0(project, psiClass);
         ClipboardUtil.setSysClipboardText(showContent);
         DialogUtil.showDialog(project, getTip(), showContent);
@@ -136,15 +133,15 @@ public abstract class AbstractRustRightClickAction extends AbstractAction {
     /**
      * 当在方法上右键时, 要做的操作
      *
-     * @param project   项目
+     * @param project    项目
      * @param rsFunction 方法
+     * @param editor 编辑器
      */
-    protected void handleRustFn(Project project, RsFunction rsFunction) {
+    protected void handleRustFn(Project project, RsFunction rsFunction, Editor editor) {
         String docByMethod = handleRustFn0(project, rsFunction);
         ClipboardUtil.setSysClipboardText(docByMethod);
         DialogUtil.showDialog(project, getTip(), docByMethod);
     }
-
 
 
     /**

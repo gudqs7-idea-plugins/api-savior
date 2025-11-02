@@ -1,4 +1,4 @@
-package cn.gudqs7.plugins.rust.action;
+package cn.gudqs7.plugins.rust.action.right;
 
 import cn.gudqs7.plugins.rust.action.base.AbstractRustRightClickAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
@@ -10,7 +10,7 @@ import org.rust.lang.core.psi.RsStructItem;
 
 import java.util.List;
 
-public class RustGenFnDocRightClickAction extends AbstractRustRightClickAction {
+public class RustStructToTsRightClickAction extends AbstractRustRightClickAction {
     /**
      * 根据方法判断是否应该展示
      *
@@ -36,20 +36,6 @@ public class RustGenFnDocRightClickAction extends AbstractRustRightClickAction {
     }
 
     /**
-     * 根据方法获取展示信息
-     *
-     * @param project    项目
-     * @param rsFunction 方法
-     * @return 展示信息
-     */
-    @Override
-    protected String handleRustFn0(Project project, RsFunction rsFunction) {
-
-
-        return null;
-    }
-
-    /**
      * 根据类获取展示信息
      *
      * @param project      项目
@@ -58,6 +44,7 @@ public class RustGenFnDocRightClickAction extends AbstractRustRightClickAction {
      */
     @Override
     protected String handleRustStruct0(Project project, RsStructItem rsStructItem) {
+        StringBuilder tsSbf = new StringBuilder();
         RsBlockFields blockFields = rsStructItem.getBlockFields();
         List<RsNamedFieldDecl> namedFieldDeclList = blockFields.getNamedFieldDeclList();
         for (RsNamedFieldDecl namedFieldDecl : namedFieldDeclList) {
@@ -69,6 +56,6 @@ public class RustGenFnDocRightClickAction extends AbstractRustRightClickAction {
             System.out.println("fieldName = " + fieldName);
         }
 
-        return null;
+        return tsSbf.toString();
     }
 }
