@@ -3,7 +3,6 @@ package cn.gudqs7.plugins.rust.action.base;
 import cn.gudqs7.plugins.common.util.jetbrain.ClipboardUtil;
 import cn.gudqs7.plugins.common.util.jetbrain.DialogUtil;
 import cn.gudqs7.plugins.common.util.jetbrain.ExceptionUtil;
-import cn.gudqs7.plugins.common.util.jetbrain.NotificationUtil;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.openapi.actionSystem.PlatformDataKeys;
@@ -28,52 +27,38 @@ public abstract class AbstractRustRightClickAction extends AbstractRustAction {
     protected PsiElement getPsiElementByCurEditor(AnActionEvent e) {
         Project project = e.getData(PlatformDataKeys.PROJECT);
         if (project == null) {
-            NotificationUtil.showTips("project is null");
             return null;
         }
         Editor editor = e.getData(CommonDataKeys.EDITOR);
         if (editor == null) {
-            NotificationUtil.showTips("editor is null");
             return null;
         }
         VirtualFile virtualFile = e.getData(CommonDataKeys.VIRTUAL_FILE);
         if (virtualFile == null) {
-            NotificationUtil.showTips("virtualFile is null");
             return null;
         }
         PsiFile psiFile = PsiManager.getInstance(project).findFile(virtualFile);
         if (psiFile == null) {
-            NotificationUtil.showTips("findFile is null");
             return null;
         }
         if (psiFile instanceof RsFile) {
             int offset = editor.getCaretModel().getOffset();
-            PsiElement psiElement = psiFile.findElementAt(offset);
-            if (psiElement != null) {
-                NotificationUtil.showTips("psiElement = " + psiElement.getText());
-                return psiElement;
-            }
-        } else {
-            NotificationUtil.showTips("psiFile is not RsFile");
+            return psiFile.findElementAt(offset);
         }
         return null;
     }
 
     public void update0(@NotNull AnActionEvent e) {
-        NotificationUtil.showTips("update0 start");
         Project project = e.getData(PlatformDataKeys.PROJECT);
         if (project == null) {
-            NotificationUtil.showTips("PlatformDataKeys.PROJECT is null");
             notVisible(e);
             return;
         }
         PsiElement psiElement = e.getData(CommonDataKeys.PSI_ELEMENT);
         if (psiElement == null) {
-            NotificationUtil.showTips("CommonDataKeys.PSI_ELEMENT is null");
             psiElement = getPsiElementByCurEditor(e);
         }
         if (psiElement == null) {
-            NotificationUtil.showTips("finally psiElement == null");
             notVisible(e);
             return;
         }
@@ -83,9 +68,6 @@ public abstract class AbstractRustRightClickAction extends AbstractRustAction {
         boolean isRightClickOnMethod = rustFn != null;
         boolean isRightClickOnStruct = rustStruct != null;
         boolean isRightClickOnEnum = rsEnumItem != null;
-
-
-        NotificationUtil.showTips("rustFn = " + rustFn);
 
         // 啥也不是
         if (!isRightClickOnStruct && !isRightClickOnMethod && !isRightClickOnEnum) {

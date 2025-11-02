@@ -1,6 +1,7 @@
 package cn.gudqs7.plugins.rust.action.right;
 
 import cn.gudqs7.plugins.common.util.jetbrain.ExceptionUtil;
+import cn.gudqs7.plugins.common.util.jetbrain.NotificationUtil;
 import cn.gudqs7.plugins.rust.action.base.AbstractRustAction;
 import cn.gudqs7.plugins.rust.helper.GenRustFnDocHelper;
 import com.intellij.openapi.actionSystem.AnActionEvent;
@@ -64,6 +65,7 @@ public class RustBatchGenDocAction extends AbstractRustAction {
                     @Override
                     public void run(@NotNull ProgressIndicator indicator) {
                         handleRustFile(rsFile, project, indicator);
+                        NotificationUtil.showTips("文件 " + fileName + " 的函数文档生成完毕~");
                     }
                 }.setCancelText("停止生成").queue();
             }

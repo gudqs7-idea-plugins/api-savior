@@ -1,7 +1,6 @@
 package cn.gudqs7.plugins.rust.action.base;
 
 import cn.gudqs7.plugins.common.util.jetbrain.ExceptionUtil;
-import cn.gudqs7.plugins.common.util.jetbrain.NotificationUtil;
 import com.intellij.openapi.actionSystem.ActionUpdateThread;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
@@ -18,7 +17,6 @@ public abstract class AbstractRustAction extends AnAction {
         try {
             update0(e);
         } catch (Throwable ex) {
-            NotificationUtil.showTips("Throwable = " + ex.getMessage());
             ExceptionUtil.handleException(ex);
         } finally {
             destroy(e);
