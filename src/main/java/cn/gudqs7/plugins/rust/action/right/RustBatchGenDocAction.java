@@ -1,7 +1,7 @@
 package cn.gudqs7.plugins.rust.action.right;
 
-import cn.gudqs7.plugins.common.base.action.AbstractAction;
 import cn.gudqs7.plugins.common.util.jetbrain.ExceptionUtil;
+import cn.gudqs7.plugins.rust.action.base.AbstractRustAction;
 import cn.gudqs7.plugins.rust.helper.GenRustFnDocHelper;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
@@ -27,7 +27,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * @author wq
  */
-public class RustBatchGenDocAction extends AbstractAction {
+public class RustBatchGenDocAction extends AbstractRustAction {
 
     public void update0(@NotNull AnActionEvent e) {
         Project project = e.getData(PlatformDataKeys.PROJECT);

@@ -1,40 +1,79 @@
 package cn.gudqs7.plugins.rust.action.base;
 
-import cn.gudqs7.plugins.common.base.action.AbstractAction;
 import cn.gudqs7.plugins.common.util.jetbrain.ClipboardUtil;
 import cn.gudqs7.plugins.common.util.jetbrain.DialogUtil;
 import cn.gudqs7.plugins.common.util.jetbrain.ExceptionUtil;
+import cn.gudqs7.plugins.common.util.jetbrain.NotificationUtil;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.openapi.actionSystem.PlatformDataKeys;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiIdentifier;
+import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiManager;
 import com.intellij.psi.impl.source.tree.LeafPsiElement;
 import org.jetbrains.annotations.NotNull;
 import org.rust.lang.core.psi.RsEnumItem;
+import org.rust.lang.core.psi.RsFile;
 import org.rust.lang.core.psi.RsFunction;
 import org.rust.lang.core.psi.RsStructItem;
 
 /**
  * @author wq
  */
-public abstract class AbstractRustRightClickAction extends AbstractAction {
+public abstract class AbstractRustRightClickAction extends AbstractRustAction {
 
-    public void update0(@NotNull AnActionEvent e) {
+    protected PsiElement getPsiElementByCurEditor(AnActionEvent e) {
         Project project = e.getData(PlatformDataKeys.PROJECT);
         if (project == null) {
-            notVisible(e);
-            return;
+            NotificationUtil.showTips("project is null");
+            return null;
         }
         Editor editor = e.getData(CommonDataKeys.EDITOR);
         if (editor == null) {
+            NotificationUtil.showTips("editor is null");
+            return null;
+        }
+        VirtualFile virtualFile = e.getData(CommonDataKeys.VIRTUAL_FILE);
+        if (virtualFile == null) {
+            NotificationUtil.showTips("virtualFile is null");
+            return null;
+        }
+        PsiFile psiFile = PsiManager.getInstance(project).findFile(virtualFile);
+        if (psiFile == null) {
+            NotificationUtil.showTips("findFile is null");
+            return null;
+        }
+        if (psiFile instanceof RsFile) {
+            int offset = editor.getCaretModel().getOffset();
+            PsiElement psiElement = psiFile.findElementAt(offset);
+            if (psiElement != null) {
+                NotificationUtil.showTips("psiElement = " + psiElement.getText());
+                return psiElement;
+            }
+        } else {
+            NotificationUtil.showTips("psiFile is not RsFile");
+        }
+        return null;
+    }
+
+    public void update0(@NotNull AnActionEvent e) {
+        NotificationUtil.showTips("update0 start");
+        Project project = e.getData(PlatformDataKeys.PROJECT);
+        if (project == null) {
+            NotificationUtil.showTips("PlatformDataKeys.PROJECT is null");
             notVisible(e);
             return;
         }
         PsiElement psiElement = e.getData(CommonDataKeys.PSI_ELEMENT);
         if (psiElement == null) {
+            NotificationUtil.showTips("CommonDataKeys.PSI_ELEMENT is null");
+            psiElement = getPsiElementByCurEditor(e);
+        }
+        if (psiElement == null) {
+            NotificationUtil.showTips("finally psiElement == null");
             notVisible(e);
             return;
         }
@@ -44,6 +83,9 @@ public abstract class AbstractRustRightClickAction extends AbstractAction {
         boolean isRightClickOnMethod = rustFn != null;
         boolean isRightClickOnStruct = rustStruct != null;
         boolean isRightClickOnEnum = rsEnumItem != null;
+
+
+        NotificationUtil.showTips("rustFn = " + rustFn);
 
         // 啥也不是
         if (!isRightClickOnStruct && !isRightClickOnMethod && !isRightClickOnEnum) {
@@ -75,6 +117,10 @@ public abstract class AbstractRustRightClickAction extends AbstractAction {
             }
             PsiElement psiElement = e.getData(CommonDataKeys.PSI_ELEMENT);
             if (psiElement == null) {
+                psiElement = getPsiElementByCurEditor(e);
+            }
+            if (psiElement == null) {
+                notVisible(e);
                 return;
             }
 
@@ -107,7 +153,7 @@ public abstract class AbstractRustRightClickAction extends AbstractAction {
 
     protected RsFunction getRustFn(PsiElement psiElement) {
         RsFunction rsFunction = null;
-        if (psiElement instanceof PsiIdentifier) {
+        if (psiElement instanceof LeafPsiElement) {
             psiElement = psiElement.getParent();
         }
         if (psiElement instanceof RsFunction) {
