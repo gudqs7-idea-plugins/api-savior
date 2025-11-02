@@ -15,4 +15,10 @@
     <depends optional="true" config-file="add/rust.xml">com.jetbrains.rust</depends>
     <depends optional="true" config-file="add/java.xml">com.intellij.modules.java</depends>
 
+
+    <extensions defaultExtensionNs="com.intellij">
+        <notificationGroup displayType="BALLOON" id="Api Savior Tip" bundle="group" key="notification.group.tip.name"/>
+        <notificationGroup displayType="STICKY_BALLOON" id="Api Savior Error" bundle="group" key="notification.group.error.name"/>
+    </extensions>
+
 </idea-plugin>
