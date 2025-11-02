@@ -23,12 +23,12 @@ public class RustGenFnDocIntentAction extends RsElementBaseIntentionAction<RustG
 
     @Override
     public @NotNull @IntentionFamilyName String getFamilyName() {
-        return "Generate function doc";
+        return "AI生成函数文档";
     }
 
     @Override
     public @NotNull @IntentionName String getText() {
-        return "Generate function doc";
+        return "AI生成函数文档";
     }
 
     /**

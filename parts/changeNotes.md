@@ -1,4 +1,12 @@
 <pre>
+<strong>Release v2.6.2</strong>
+    1.feat: 新增 rust 函数AI生成注释, 需配置环境变量 RUST_SAVIOR_AI_SK; 支持多选文件批量生成, 支持识别 train 块, impl 块
+    2.feat: 新增 rust struct 和 enum 转 TypeScript interface 或 联合类型
+
+    English：
+    1.feat: Added AI-generated comments for Rust functions, requiring configuration of the environment variable RUST_SAVIOR_AI_SK; supports batch generation for multiple selected files, and recognizes train blocks and impl blocks.
+    2.feat: Added conversion of Rust structs and enums to TypeScript interfaces or union types.
+
 <strong>Release v2.6.1</strong>
     1.feat: 支持2022.2 - 2025
 
