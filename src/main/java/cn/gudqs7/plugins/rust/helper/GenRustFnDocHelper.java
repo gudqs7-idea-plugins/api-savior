@@ -80,8 +80,7 @@ public class GenRustFnDocHelper {
 
             @Override
             public void onComplete() {
-                System.out.println("\n\n=== 完整响应 ===");
-                System.out.println(fullContent);
+//                System.out.println("\n\n=== 完整响应 ===\n" + fullContent);
 
                 IdeaApplicationUtil.runWriteAction(project, () -> {
                     // 提交文档 刷新PSI
