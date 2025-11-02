@@ -1,9 +1,9 @@
 package cn.gudqs7.plugins.rust.action.base;
 
 import cn.gudqs7.plugins.common.base.action.AbstractAction;
-import cn.gudqs7.plugins.common.util.WebEnvironmentUtil;
 import cn.gudqs7.plugins.common.util.jetbrain.ClipboardUtil;
 import cn.gudqs7.plugins.common.util.jetbrain.DialogUtil;
+import cn.gudqs7.plugins.common.util.jetbrain.ExceptionUtil;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.openapi.actionSystem.PlatformDataKeys;
@@ -13,6 +13,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiIdentifier;
 import com.intellij.psi.impl.source.tree.LeafPsiElement;
 import org.jetbrains.annotations.NotNull;
+import org.rust.lang.core.psi.RsEnumItem;
 import org.rust.lang.core.psi.RsFunction;
 import org.rust.lang.core.psi.RsStructItem;
 
@@ -39,11 +40,13 @@ public abstract class AbstractRustRightClickAction extends AbstractAction {
         }
         RsFunction rustFn = getRustFn(psiElement);
         RsStructItem rustStruct = getRustStruct(psiElement);
+        RsEnumItem rsEnumItem = getRustEnum(psiElement);
         boolean isRightClickOnMethod = rustFn != null;
         boolean isRightClickOnStruct = rustStruct != null;
+        boolean isRightClickOnEnum = rsEnumItem != null;
 
         // 啥也不是
-        if (!isRightClickOnStruct && !isRightClickOnMethod) {
+        if (!isRightClickOnStruct && !isRightClickOnMethod && !isRightClickOnEnum) {
             notVisible(e);
             return;
         }
@@ -53,6 +56,9 @@ public abstract class AbstractRustRightClickAction extends AbstractAction {
         }
         if (isRightClickOnStruct) {
             checkRustStruct(rustStruct, project, e);
+        }
+        if (isRightClickOnEnum) {
+            checkRustEnum(rsEnumItem, project, e);
         }
     }
 
@@ -74,12 +80,13 @@ public abstract class AbstractRustRightClickAction extends AbstractAction {
 
             RsFunction rustFn = getRustFn(psiElement);
             RsStructItem rustStruct = getRustStruct(psiElement);
+            RsEnumItem rsEnumItem = getRustEnum(psiElement);
             boolean isRightClickOnMethod = rustFn != null;
             boolean isRightClickOnStruct = rustStruct != null;
+            boolean isRightClickOnEnum = rsEnumItem != null;
 
             // 啥也不是
-            if (!isRightClickOnStruct && !isRightClickOnMethod) {
-                notVisible(e);
+            if (!isRightClickOnStruct && !isRightClickOnMethod && !isRightClickOnEnum) {
                 return;
             }
 
@@ -89,9 +96,12 @@ public abstract class AbstractRustRightClickAction extends AbstractAction {
             if (isRightClickOnStruct) {
                 handleRustStruct(project, rustStruct, editor);
             }
+            if (isRightClickOnEnum) {
+                handleRustEnum(project, rsEnumItem, editor);
+            }
 
-        } finally {
-            WebEnvironmentUtil.emptyIp();
+        } catch (Throwable throwable) {
+            ExceptionUtil.handleException(throwable);
         }
     }
 
@@ -115,6 +125,14 @@ public abstract class AbstractRustRightClickAction extends AbstractAction {
             rsStructItem = (RsStructItem) psiElement;
         }
         return rsStructItem;
+    }
+
+    protected RsEnumItem getRustEnum(PsiElement psiElement) {
+        RsEnumItem rsEnumItem = null;
+        if (psiElement instanceof RsEnumItem) {
+            rsEnumItem = (RsEnumItem) psiElement;
+        }
+        return rsEnumItem;
     }
 
     /**
@@ -143,6 +161,12 @@ public abstract class AbstractRustRightClickAction extends AbstractAction {
         DialogUtil.showDialog(project, getTip(), docByMethod);
     }
 
+    protected void handleRustEnum(Project project, RsEnumItem rsEnumItem, Editor editor) {
+        String showContent = handleRustEnum0(project, rsEnumItem);
+        ClipboardUtil.setSysClipboardText(showContent);
+        DialogUtil.showDialog(project, getTip(), showContent);
+    }
+
 
     /**
      * 根据方法判断是否应该展示
@@ -151,7 +175,9 @@ public abstract class AbstractRustRightClickAction extends AbstractAction {
      * @param project   项目
      * @param e         e
      */
-    protected abstract void checkRustFn(RsFunction rsFunction, Project project, AnActionEvent e);
+    protected void checkRustFn(RsFunction rsFunction, Project project, AnActionEvent e) {
+        notVisible(e);
+    }
 
     /**
      * 根据类信息判断是否应该展示
@@ -160,7 +186,13 @@ public abstract class AbstractRustRightClickAction extends AbstractAction {
      * @param project  项目
      * @param e        e
      */
-    protected abstract void checkRustStruct(RsStructItem rsStructItem, Project project, AnActionEvent e);
+    protected void checkRustStruct(RsStructItem rsStructItem, Project project, AnActionEvent e) {
+        notVisible(e);
+    }
+
+    protected void checkRustEnum(RsEnumItem rsEnumItem, Project project, AnActionEvent e) {
+        notVisible(e);
+    }
 
     /**
      * 根据类获取展示信息
@@ -181,6 +213,10 @@ public abstract class AbstractRustRightClickAction extends AbstractAction {
      * @return 展示信息
      */
     protected String handleRustFn0(Project project, RsFunction rsFunction) {
+        return null;
+    }
+
+    protected String handleRustEnum0(Project project, RsEnumItem rsEnumItem) {
         return null;
     }
 

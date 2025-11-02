@@ -6,7 +6,6 @@ import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import org.rust.lang.core.psi.RsFunction;
-import org.rust.lang.core.psi.RsStructItem;
 
 public class RustGenFnDocRightClickAction extends AbstractRustRightClickAction {
     /**
@@ -18,18 +17,6 @@ public class RustGenFnDocRightClickAction extends AbstractRustRightClickAction {
      */
     @Override
     protected void checkRustFn(RsFunction rsFunction, Project project, AnActionEvent e) {
-    }
-
-    /**
-     * 根据类信息判断是否应该展示
-     *
-     * @param rsStructItem 类
-     * @param project     项目
-     * @param e           e
-     */
-    @Override
-    protected void checkRustStruct(RsStructItem rsStructItem, Project project, AnActionEvent e) {
-        notVisible(e);
     }
 
     /**
