@@ -223,7 +223,7 @@ public abstract class AbstractRustRightClickAction extends AbstractRustAction {
     }
 
     /**
-     * 根据类获取展示信息
+     * 处理struct
      *
      * @param project  项目
      * @param rsStructItem 类
@@ -234,7 +234,7 @@ public abstract class AbstractRustRightClickAction extends AbstractRustAction {
     }
 
     /**
-     * 根据方法获取展示信息
+     * 处理方法
      *
      * @param project      项目
      * @param rsFunction    方法
@@ -244,6 +244,13 @@ public abstract class AbstractRustRightClickAction extends AbstractRustAction {
         return null;
     }
 
+    /**
+     * 处理枚举
+     *
+     * @param project      项目
+     * @param rsEnumItem    枚举
+     * @return 展示信息
+     */
     protected String handleRustEnum0(Project project, RsEnumItem rsEnumItem) {
         return null;
     }

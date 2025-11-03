@@ -23,7 +23,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 /**
- * 导出相应信息成 AMP 格式 yaml
+ * 导出相应信息成 HTML 格式
  *
  * @author wenquan
  * @date 2022/3/30

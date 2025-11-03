@@ -18,6 +18,8 @@
 
             <action id="cn.gudqs.rust.savior.gen.doc" class="cn.gudqs7.plugins.rust.action.right.RustGenFnDocRightClickAction"
                     text="AI生成函数文档" description="Generate documentation for rust function">
+                <keyboard-shortcut keymap="$default" first-keystroke="alt BACK_SLASH" />
+                <keyboard-shortcut keymap="$default" first-keystroke="ctrl BACK_SLASH"/>
             </action>
             <action id="cn.gudqs.rust.savior.gen.ts" class="cn.gudqs7.plugins.rust.action.right.RustStructToTsRightClickAction"
                     text="Struct生成TS类" description="Generate ts by rust struct">

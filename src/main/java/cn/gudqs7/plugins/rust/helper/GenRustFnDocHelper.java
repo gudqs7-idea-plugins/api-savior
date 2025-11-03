@@ -39,6 +39,9 @@ public class GenRustFnDocHelper {
             String text = rsFunction.getText();
             int start = rsFunction.getTextRange().getStartOffset();
             int lineStartOffset = DocumentUtil.getLineStartOffset(start, document);
+            if (lineStartOffset == 0) {
+                lineStartOffset = start;
+            }
             AtomicInteger startOffset = new AtomicInteger(lineStartOffset - 1);
             new Task.Backgroundable(project, "生成函数文档中...", true) {
                 @Override
@@ -53,7 +56,8 @@ public class GenRustFnDocHelper {
 
     public static void generateByAi(Project project, Document document, @Nullable ProgressIndicator indicator, String text, AtomicInteger startOffset) {
         IdeaApplicationUtil.runWriteAction(project, () -> {
-            document.insertString(startOffset.getAndAdd(1), "\n");
+            String firstLine = "\n//noinspection RsUnresolvedReference\n";
+            document.insertString(startOffset.getAndAdd(firstLine.length()), firstLine);
         });
         DeepSeekStreamHandler.getInstance().streamChat(text, new DeepSeekStreamHandler.StreamCallback() {
             private final StringBuilder fullContent = new StringBuilder();

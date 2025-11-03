@@ -19,6 +19,8 @@
     <extensions defaultExtensionNs="com.intellij">
         <notificationGroup displayType="BALLOON" id="Api Savior Tip" bundle="group" key="notification.group.tip.name"/>
         <notificationGroup displayType="STICKY_BALLOON" id="Api Savior Error" bundle="group" key="notification.group.error.name"/>
+
+        <errorHandler implementation="cn.gudqs7.plugins.diagnostic.SaviorIssueSubmitter"/>
     </extensions>
 
 </idea-plugin>

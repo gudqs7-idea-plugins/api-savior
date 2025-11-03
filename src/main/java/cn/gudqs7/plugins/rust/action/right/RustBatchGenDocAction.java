@@ -142,11 +142,15 @@ public class RustBatchGenDocAction extends AbstractRustAction {
             }
         });
 
+        Document document = PsiDocumentManager.getInstance(project).getDocument(rsFile);
+        if (document == null) {
+            return;
+        }
         int totalFunCount = rsFuncInfoList.size();
         for (int i = 0; i < rsFuncInfoList.size(); i++) {
             indicator.setFraction(i * 1d / totalFunCount);
             RsFuncInfo rsFuncInfo = rsFuncInfoList.get(i);
-            handleRustFn(rsFile, rsFuncInfo, project, indicator);
+            handleRustFn(rsFuncInfo, project, indicator, document);
         }
 
     }
@@ -175,22 +179,21 @@ public class RustBatchGenDocAction extends AbstractRustAction {
     /**
      * 当在方法上右键时, 要做的操作
      *
-     * @param rsFile 文件
      * @param rsFuncInfo 函数信息
      * @param project    项目
      * @param indicator  进度条
+     * @param document 文档
      */
-    protected void handleRustFn(RsFile rsFile, RsFuncInfo rsFuncInfo, Project project, @NotNull ProgressIndicator indicator) {
+    protected void handleRustFn(RsFuncInfo rsFuncInfo, Project project, @NotNull ProgressIndicator indicator, Document document) {
         String text = rsFuncInfo.getText();
         RsFunction rsFunction = rsFuncInfo.getRsFunction();
-        Document document = PsiDocumentManager.getInstance(project).getDocument(rsFile);
-        if (document == null) {
-            return;
-        }
         AtomicInteger startOffset = new AtomicInteger(0);
         ApplicationManager.getApplication().runReadAction(() -> {
             int start = rsFunction.getTextRange().getStartOffset();
             int lineStartOffset = DocumentUtil.getLineStartOffset(start, document);
+            if (lineStartOffset == 0) {
+                lineStartOffset = start;
+            }
             startOffset.set(lineStartOffset - 1);
         });
         GenRustFnDocHelper.generateByAi(project, document, indicator, text, startOffset);
